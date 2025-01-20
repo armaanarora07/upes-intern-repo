@@ -1,21 +1,18 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom"; // for navigation
-
+import { useNavigate } from "react-router-dom"; 
 const SignUp = () => {
   const [phone, setPhone] = useState("");
   const [otp, setOtp] = useState("");
-  const [step, setStep] = useState(1); // Step 1: Phone input, Step 2: OTP verification
-  const [authToken, setAuthToken] = useState(""); // Store initial authToken
+  const [step, setStep] = useState(1); 
+  const [authToken, setAuthToken] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
-  const navigate = useNavigate(); // Hook to navigate to AddBusiness
+  const navigate = useNavigate();
 
-  // Handle phone number submission and get authToken
   const handlePhoneSubmit = async (e) => {
     e.preventDefault();
 
-    // Validate phone number (basic validation)
     if (!phone || phone.length !== 10) {
       setErrorMessage("Please enter a valid 10-digit phone number.");
       return;
@@ -27,10 +24,10 @@ const SignUp = () => {
       });
 
       if (response.status === 200 && response.data.authToken) {
-        setAuthToken(response.data.authToken); // Save the authToken for later
-        setStep(2); // Move to OTP input step
+        setAuthToken(response.data.authToken);
+        setStep(2); 
         setSuccessMessage("Verification code sent. Please check your messages.");
-        setErrorMessage(""); // Clear any existing error message
+        setErrorMessage(""); 
       } else {
         setErrorMessage("Failed to send verification code. Please try again.");
       }
@@ -39,11 +36,9 @@ const SignUp = () => {
     }
   };
 
-  // Handle OTP submission and verification
   const handleOtpSubmit = async (e) => {
     e.preventDefault();
 
-    // Validate OTP (basic validation)
     if (!otp || otp.length !== 6) {
       setErrorMessage("Please enter a valid 6-digit OTP.");
       return;
@@ -52,23 +47,22 @@ const SignUp = () => {
     try {
       const response = await axios.post(
         "https://fyntl.sangrahinnovations.com/user/optVerification",
-        { otp: otp }, // OTP is sent in the body
+        { otp: otp }, 
         {
           headers: {
-            Authorization: `Bearer ${authToken}`, // Send authToken in headers
+            Authorization: `Bearer ${authToken}`,
           },
         }
       );
 
       if (response.status === 200 && response.data.authToken) {
         const newAuthToken = response.data.authToken;
-        localStorage.setItem('authToken', newAuthToken); // Save the new authToken in localStorage
-        setAuthToken(newAuthToken); // Update authToken in state
+        localStorage.setItem('authToken', newAuthToken);
+        setAuthToken(newAuthToken);
         setSuccessMessage("OTP verified successfully.");
-        setErrorMessage(""); // Clear any existing error message
+        setErrorMessage("");
 
-        // Navigate to AddBusiness after OTP verification
-        navigate("/add-business"); // Redirect to AddBusiness page
+        navigate("/add-business");
       } else {
         setErrorMessage("OTP verification failed. Please try again.");
       }
@@ -89,7 +83,6 @@ const SignUp = () => {
         </div>
 
         <form onSubmit={step === 1 ? handlePhoneSubmit : handleOtpSubmit} className="space-y-6">
-          {/* Phone Number Input */}
           <div>
             <label htmlFor="phone" className="block text-sm font-medium text-gray-700">Phone Number</label>
             <div className="flex">
@@ -104,13 +97,12 @@ const SignUp = () => {
                 onChange={(e) => setPhone(e.target.value)}
                 placeholder="Enter your phone number"
                 className="w-full px-4 py-3 bg-white bg-opacity-80 border border-gray-300 rounded-r-full shadow-sm focus:outline-none focus:ring-4 focus:ring-blue-300 transition duration-300"
-                disabled={step === 2} // Disable input after OTP is sent
+                disabled={step === 2} 
               />
             </div>
             {errorMessage && <p className="mt-2 text-sm text-red-500">{errorMessage}</p>}
           </div>
 
-          {/* OTP Input (only visible on step 2) */}
           {step === 2 && (
             <div>
               <label htmlFor="otp" className="block text-sm font-medium text-gray-700">Enter OTP</label>

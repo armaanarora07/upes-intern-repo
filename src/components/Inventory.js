@@ -116,14 +116,11 @@ const Inventory = () => {
     } catch (err) {
       console.error("Error deleting product:", err);
       if (err.response) {
-        // If there's an error response from the API
         console.error("API Error Response:", err.response);
         setError(`Failed to delete the product: ${err.response.data.message || "Unknown error"}`);
       } else if (err.request) {
-        // If there was no response from the API
         setError("Network error: Unable to reach the server.");
       } else {
-        // Generic error
         setError("Error deleting product. Please try again.");
       }
     }
@@ -214,7 +211,7 @@ const Inventory = () => {
                     <Edit size={18} />
                   </button>
                   <button
-                    onClick={() => handleDelete(product._id)} // Now it will call the handleDelete function
+                    onClick={() => handleDelete(product._id)}
                     className="bg-red-500 text-white py-1 px-2 rounded"
                   >
                     <Trash2 size={18} />

@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import { Bar } from "react-chartjs-2";  // Importing Bar chart from Chart.js
+import { Bar } from "react-chartjs-2";
 import { Line } from "react-chartjs-2";
 
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from "chart.js";
 import { FaEye } from "react-icons/fa";
 
-// Registering Chart.js components
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
 const Dashboard = () => {
@@ -60,13 +59,12 @@ const Dashboard = () => {
     fetchData();
   }, []);
 
-  // Prepare the sales chart data if salesData is available
   const chartData = salesData ? {
-    labels: salesData.map(item => item.date),  // Dates for x-axis
+    labels: salesData.map(item => item.date),  
     datasets: [
       {
         label: "Sales Over Time",
-        data: salesData.map(item => item.amount),  // Sales values for y-axis
+        data: salesData.map(item => item.amount),  
         borderColor: "rgba(65, 84, 241, 0.5)",
         backgroundColor: "rgba(65, 84, 241, 0.5)",
         tension: 0.4,
@@ -93,7 +91,6 @@ const Dashboard = () => {
 
       {transactions.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 py-8 px-5 gap-4">
-          {/* Transactions Section */}
           <div className="border p-4 rounded shadow-sm">
             <h2 className="text-lg font-semibold mb-2">Latest Transactions</h2>
             <table className="w-full text-left border-collapse">
@@ -121,13 +118,11 @@ const Dashboard = () => {
             </Link>
           </div>
 
-          {/* Sales Report Section with Bar Chart */}
           <div className="border p-4 rounded shadow-sm">
             <h2 className="text-lg font-semibold mb-2">Sales Report</h2>
             {salesData ? (
               <div>
             
-              {/* <p>Last 7 days sales: ₹ {salesData.reduce((total, txn) => total + txn.amount, 0).toLocaleString() || "0"}</p> */}
               <Line
                   data={chartData}
                   options={{

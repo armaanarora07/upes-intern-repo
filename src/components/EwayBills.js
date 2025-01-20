@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { FaBusinessTime } from "react-icons/fa";
 import Additem from "../assets/Additem.png";
-import TemplateModal from "./TemplateModal"; // Import the modal component
+import TemplateModal from "./TemplateModal"; 
 import {  FaFileAlt } from "react-icons/fa";
 
 import { FaTrash } from "react-icons/fa";
@@ -13,7 +13,7 @@ import Next from "../assets/Next.png";
 const createRow = (id) => ({
    id: id,
    product_info: "", // Add product_info
-   hsn_code: "", // Add hsn_code
+   hsn_code: "", // Add hsn_codegi
    quantity: "",
    unit: "KG",
    price: "",
