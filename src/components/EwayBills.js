@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { FaBusinessTime } from "react-icons/fa";
 import Additem from "../assets/Additem.png";
 import TemplateModal from "./TemplateModal"; // Import the modal component
+import {  FaFileAlt } from "react-icons/fa";
 
 import { FaTrash } from "react-icons/fa";
 import Share from "../assets/Share.png";
@@ -97,6 +98,75 @@ const EwayBills = () => {
       setRows(newRows);
    };
 
+   const setupEway = async () => {
+      const authToken = localStorage.getItem("authToken");
+      if (!authToken) {
+        alert("Authorization token is missing. Please log in again.");
+        return;
+      }
+  
+      const body = {
+        x: "05AAACH6188F1ZM", 
+        y: "abc123@@", 
+      };
+  
+      try {
+        const response = await fetch("/user/eway_setup", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${authToken}`,
+          },
+          body: JSON.stringify(body),
+        });
+  
+        if (response.ok) {
+          alert("E-way bill credentials set up successfully!");
+        } else {
+          alert("Failed to set up E-way bill credentials.");
+          console.error(`Error: ${response.status} ${response.statusText}`);
+        }
+      } catch (error) {
+        alert("An error occurred while setting up E-way bill credentials.");
+        console.error(error);
+      }
+    };
+    const updateEway = async () => {
+      const authToken = localStorage.getItem("authToken");
+      if (!authToken) {
+        alert("Authorization token is missing. Please log in again.");
+        return;
+      }
+  
+      const body = {
+        x: "05AAACH6188F1ZM", 
+        y: "abc123@@", 
+      };
+  
+      try {
+        const response = await fetch("/user/eway_setup", {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${authToken}`,
+          },
+          body: JSON.stringify(body),
+        });
+  
+        if (response.ok) {
+          alert("E-way bill credentials updated successfully!");
+        } else {
+          alert("Failed to update E-way bill credentials.");
+          console.error(`Error: ${response.status} ${response.statusText}`);
+        }
+      } catch (error) {
+        alert("An error occurred while updating E-way bill credentials.");
+        console.error(error);
+      }
+    };
+    
+    
+
    const downloadPDF = async () => {
       const authToken = localStorage.getItem("authToken");
       if (!authToken) {
@@ -145,8 +215,8 @@ const EwayBills = () => {
       };
 
       try {
-         const response = await fetch("/user/bill", {
-            method: "PUT",
+         const response = await fetch("/user/eway", {
+            method: "POST",
             headers: {
                "Content-Type": "application/json",
                Authorization: `Bearer ${authToken}`,
@@ -178,16 +248,16 @@ const EwayBills = () => {
 
    return (
       <div className="p-2 pl-2 sm:pl-4">
-         <div className="bg-blue-200 text-blue-600 text-xl sm:text-3xl font-semibold rounded-lg p-4 flex items-center">
-            <FaBusinessTime className="text-gray-500 mr-4" />
+         <div className=" text-[#4154f1] text-xl sm:text-3xl font-semibold  p-4 flex items-center">
+            <FaBusinessTime className="text-[#4154f1] mr-4" />
             E-Way Bills
          </div>
          <div className="text-xl sm:text-3xl mt-2 font-semibold">Generate E-Way Bills</div>
 
          {/* Your existing form content goes here */}
          <div className="flex space-x-4 mt-4">
-            <button className="bg-transparent text-black px-4 py-2">Invoice</button>
-            <label className="bg-blue-500 text-white rounded-lg px-4 py-2 cursor-pointer">
+            <button className="bg-transparent text-[20px] text-black font-semibold px-4 py-2">Invoice</button>
+            <label className="bg-[#4154f1] text-white rounded-lg px-4 py-2 cursor-pointer">
                Upload Doc.
                <input type="file" className="hidden" />
             </label>
@@ -211,12 +281,12 @@ const EwayBills = () => {
                </label>
                <div className="space-y-8 relative">
                   <div className="relative">
-                     <span className="absolute -top-3 left-2 text-sm bg-white px-1 text-blue-500">Transporter Id</span>
-                     <input type="text" className="w-full border border-blue-500 rounded-lg p-2" disabled={!isLeftEnabled} />
+                     <span className="absolute -top-3 left-2 text-sm bg-white px-1 text-black">Transporter Id</span>
+                     <input type="text" className="w-full border border-[#4154f1] rounded-lg p-2" disabled={!isLeftEnabled} />
                   </div>
                   <div className="relative">
-                     <span className="absolute -top-3 left-2 text-sm bg-white px-1 text-blue-500">Vehicle Number</span>
-                     <input type="text" className="w-full border border-blue-500 rounded-lg p-2" disabled={!isLeftEnabled} />
+                     <span className="absolute -top-3 left-2 text-sm bg-white px-1 text-black">Vehicle Number</span>
+                     <input type="text" className="w-full border border-[#4154f1] rounded-lg p-2" disabled={!isLeftEnabled} />
                   </div>
                </div>
             </div>
@@ -237,16 +307,16 @@ const EwayBills = () => {
                </label>
                <div className="space-y-8 relative">
                   <div className="relative">
-                     <span className="absolute -top-3 left-2 text-sm bg-white px-1 text-blue-500">Transporter Id</span>
-                     <input type="text" className="w-full border border-blue-500 rounded-lg p-2" disabled={!isRightEnabled} />
+                     <span className="absolute -top-3 left-2 text-sm bg-white px-1 text-black">Transporter Id</span>
+                     <input type="text" className="w-full border border-[#4154f1] rounded-lg p-2" disabled={!isRightEnabled} />
                   </div>
                   <div className="relative">
-                     <span className="absolute -top-3 left-2 text-sm bg-white px-1 text-blue-500">Transport Document Number</span>
-                     <input type="text" className="w-full border border-blue-500 rounded-lg p-2" disabled={!isRightEnabled} />
+                     <span className="absolute -top-3 left-2 text-sm bg-white px-1 text-black">Transport Document Number</span>
+                     <input type="text" className="w-full border border-[#4154f1] rounded-lg p-2" disabled={!isRightEnabled} />
                   </div>
                   <div className="relative">
-                     <span className="absolute -top-3 left-2 text-sm bg-white px-1 text-blue-500">Date on the document</span>
-                     <input type="date" className="w-full border border-blue-500 rounded-lg p-2" disabled={!isRightEnabled} />
+                     <span className="absolute -top-3 left-2 text-sm bg-white px-1 text-black">Date on the document</span>
+                     <input type="date" className="w-full border border-[#4154f1] rounded-lg p-2" disabled={!isRightEnabled} />
                   </div>
                </div>
             </div>
@@ -254,58 +324,60 @@ const EwayBills = () => {
 
          {/* Items Table */}
          <div className="p-5 text-[#3D3F4B] ">
-            <h2 className="text-[1.6rem] font-normal mb-4">Items Details -</h2>
+            <div className="flex justify-between items-center">
+            <h2 className="text-[1.6rem] text-black font-semibold mb-4">Items Details -</h2>
             {/* Edit/Add Items Button */}
             <button
                onClick={addRow}
-               className="flex items-center text-lg gap-2 px-3 py-[0.35rem] bg-[#eff0f4] border  border-[#BCC3D5] rounded-md shadow-md mb-4 hover:bg-gray-200"
+               className="flex items-center text-lg gap-2 px-3 py-[0.35rem] bg-white border  border-black text-black font-semibold rounded-md shadow-md mb-4 hover:bg-gray-200"
             >
                <img src={Additem} alt="logo"></img>
                Edit/Add Items
             </button>
+            </div>
             {/* Row Items Table */}
             <div className="w-full mb-4">
                <table className="min-w-full bg-[#F9FAFC] shadow-md">
                   <thead className="bg-gray-100 text-[#51535e]  ">
                      <tr>
-                        <th className=" border-b-2 border-r-2 border-[#989BAA] font-medium text-lg w-16" rowSpan="2">
+                        <th className=" border-b-2 border-r-2 border-black font-medium text-lg text-black w-16" rowSpan="2">
                            S No.
                         </th>
-                        <th className="border-b-2 border-r-2 border-[#989BAA] font-medium text-lg w-72" rowSpan="2">
+                        <th className="border-b-2 border-r-2 border-black font-medium text-lg text-black w-72" rowSpan="2">
                            Item Name
                         </th>
-                        <th className="border-b-2 border-r-2 border-[#989BAA] font-medium text-lg w-28" rowSpan="2">
+                        <th className="border-b-2 border-r-2 border-black font-medium text-lg text-black w-28" rowSpan="2">
                            HSN Code
                         </th>
-                        <th className="border-b-2 border-r-2 border-[#989BAA] font-medium text-lg w-28" rowSpan="2">
+                        <th className="border-b-2 border-r-2 border-black font-medium text-lg text-black w-28" rowSpan="2">
                            Quantity
                         </th>
-                        <th className="border-b-2 border-r-2 border-[#989BAA] font-medium text-lg w-28" rowSpan="2">
+                        <th className="border-b-2 border-r-2 border-black font-medium text-lg text-black w-28" rowSpan="2">
                            Unit
                         </th>
-                        <th className="border-b-2 border-r-2 border-[#989BAA] font-medium text-lg w-32" rowSpan="2">
-                           Price/Unit
+                        <th className="border-b-2 border-r-2 border-black font-medium text-lg text-black w-32" rowSpan="2">
+                           Price
                         </th>
-                        <th className="border-b-2 border-r-2 border-[#989BAA] font-medium text-lg w-36" colSpan="2">
+                        <th className="border-b-2 border-r-2 border-black font-medium text-lg text-black w-36" colSpan="2">
                            Tax (%)
                         </th>
-                        <th className="border-b-2 border-[#989BAA] font-medium text-lg w-36" rowSpan="2">
+                        <th className="border-b-2 border-black font-medium text-lg text-black w-36" rowSpan="2">
                            Amount
                         </th>
-                        <th className="border-b-2 border-l-2 border-[#989BAA] font-medium text-lg w-20" rowSpan="2">
+                        <th className="border-b-2 border-l-2 border-black font-medium text-lg text-black w-20" rowSpan="2">
                            Action
                         </th>
                      </tr>
                      <tr>
-                        <th className="border-b-2 border-r-2 border-[#989BAA] font-normal text-lg">Percent (%)</th>
-                        <th className="border-b-2 border-r-2 border-[#989BAA] font-normal text-lg">Amount</th>
+                        <th className="border-b-2 border-r-2 border-black font-normal text-black text-lg">Percent (%)</th>
+                        <th className="border-b-2 border-r-2 border-black font-normal text-black text-lg">Amount</th>
                      </tr>
                   </thead>
                   <tbody>
                      {rows.map((row, index) => (
                         <tr key={index} className="border-t">
-                           <td className="p-1 border-r-2 border-[#989BAA] text-center">{index + 1}</td>
-                           <td className="p-1 border-r-2 border-[#989BAA]">
+                           <td className="p-1 border-r-2 border-black text-center">{index + 1}</td>
+                           <td className="p-1 border-r-2 border-black">
                               <input
                                  type="text"
                                  className="border-2 border-[#EFF0F4] p-1 w-full rounded-xl"
@@ -314,7 +386,7 @@ const EwayBills = () => {
                                  onChange={(e) => handleInputChange(index, "product_info", e.target.value)}
                               />
                            </td>
-                           <td className="p-1 border-r-2 border-[#989BAA]">
+                           <td className="p-1 border-r-2 border-black">
                               <input
                                  type="text"
                                  className="border-2 border-[#EFF0F4] p-1 w-full rounded-xl"
@@ -323,7 +395,7 @@ const EwayBills = () => {
                                  onChange={(e) => handleInputChange(index, "hsn_code", e.target.value)}
                               />
                            </td>
-                           <td className="p-1 border-r-2 border-[#989BAA]">
+                           <td className="p-1 border-r-2 border-black">
                               <input
                                  type="number"
                                  className="border-2 border-[#EFF0F4] p-1 w-full rounded-xl"
@@ -332,7 +404,7 @@ const EwayBills = () => {
                                  onChange={(e) => handleInputChange(index, "quantity", Number(e.target.value))}
                               />
                            </td>
-                           <td className="p-1 border-r-2 border-[#989BAA]">
+                           <td className="p-1 border-r-2 border-black">
                               <select
                                  className="border-2 border-[#EFF0F4] p-1 w-full rounded-xl"
                                  value={row.unit}
@@ -343,7 +415,7 @@ const EwayBills = () => {
                                  <option value="PCS">PCS</option>
                               </select>
                            </td>
-                           <td className="p-1 border-r-2 border-[#989BAA]">
+                           <td className="p-1 border-r-2 border-black">
                               <input
                                  type="number"
                                  className="border-2 border-[#EFF0F4] p-1 w-full rounded-xl"
@@ -352,7 +424,7 @@ const EwayBills = () => {
                                  onChange={(e) => handleInputChange(index, "price", Number(e.target.value))}
                               />
                            </td>
-                           <td className="p-1 border-r-2 border-[#989BAA]">
+                           <td className="p-1 border-r-2 border-black">
                               <input
                                  type="number"
                                  className="border-2 border-[#EFF0F4] p-1 w-full rounded-xl"
@@ -361,7 +433,7 @@ const EwayBills = () => {
                                  onChange={(e) => handleInputChange(index, "taxPercent", Number(e.target.value))}
                               />
                            </td>
-                           <td className="p-1 border-r-2 border-[#989BAA]">
+                           <td className="p-1 border-r-2 border-black">
                               <input
                                  type="number"
                                  className="border-2 border-[#EFF0F4] p-1 w-full rounded-xl"
@@ -373,24 +445,24 @@ const EwayBills = () => {
                            <td className="p-1">
                               <input type="number" className="border p-1 w-full rounded-lg" placeholder="Amount" value={row.amount} readOnly />
                            </td>
-                           <td align="center" className=" border-l-2 border-[#989BAA] ">
+                           <td align="center" className=" border-l-2 border-black ">
                               <button onClick={() => deleteRow(index)} className="">
                                  <FaTrash className="text-[#797b85] " />
                               </button>
                            </td>
                         </tr>
                      ))}
-                     <tr className="font-semibold bg-[#E7EDFF] text-[#1436FF]">
-                        <td colSpan="3" className="p-3 text-right border-r-2 border-[#989BAA]">
+                     <tr className="font-semibold bg-[#989baaa7] text-black">
+                        <td colSpan="3" className="p-3 text-right border-r-2 border-black">
                            TOTAL
                         </td>
-                        <td className="p-3 border-r-2 border-[#989BAA] text-right">{totalQuantity}</td>
-                        <td className="p-3 border-r-2 border-[#989BAA] text-right"></td>
-                        <td className="p-3 border-r-2 border-[#989BAA] text-right"></td>
-                        <td className="p-3 border-r-2 border-[#989BAA] text-right"></td>
-                        <td className="p-3 border-r-2 border-[#989BAA] text-right">{totalTax.toFixed(2)}</td>
+                        <td className="p-3 border-r-2 border-black text-right">{totalQuantity}</td>
+                        <td className="p-3 border-r-2 border-black text-right"></td>
+                        <td className="p-3 border-r-2 border-black text-right"></td>
+                        <td className="p-3 border-r-2 border-black text-right"></td>
+                        <td className="p-3 border-r-2 border-black text-right">{totalTax.toFixed(2)}</td>
                         <td className="p-3 text-right">{totalAmount}</td>
-                        <td className="p-3 text-right border-l-2 border-[#989BAA]"></td>
+                        <td className="p-3 text-right border-l-2 border-black"></td>
                      </tr>
                   </tbody>
                </table>
@@ -398,20 +470,22 @@ const EwayBills = () => {
             <div className="flex items-stretch justify-end">
                {/* Next Button to open the modal */}
                <button
-                  className="flex items-center font-medium text-lg px-4 py-2 bg-[#F9FAFC] rounded-lg mr-6 mt-8 text-[#1436FF]"
+                  className="flex items-center font-medium text-lg px-4 py-2 bg-[#4154f1] rounded-lg mr-6 mt-8 text-white"
                   onClick={() => setIsModalOpen(true)}
                >
                   <i className="fas fa-arrow-right"></i>
                   Select Template
-                  <img src={Select} alt="logo" className="ml-2 w-[1.2rem]"></img>
+                  {/* <img src={Select} alt="logo" className="ml-2 w-[1.2rem]"></img> */}
+                  <FaFileAlt className="text-white ml-2 w-[1.2rem] mr-4" />
+
                </button>
 
                {/* Next Button to open the modal */}
                <button
                   onClick={() => setShowModal(true)}
-                  className="flex items-center font-medium text-lg px-4 py-2 bg-[#F9FAFC] rounded-lg mr-6 mt-8 text-[#1436FF]"
+                  className="flex items-center font-medium text-lg px-4 py-2 bg-[#4154f1] rounded-lg mr-6 mt-8 text-white"
                >
-                  <i className="fas fa-arrow-right"></i>
+                  <i className="fas fa-arrow-right text-white"></i>
                   Next
                   <img src={Next} alt="logo" className="ml-2 w-5"></img>
                </button>
@@ -461,16 +535,6 @@ const EwayBills = () => {
                   </div>
                </div>
             )}
-
-            {/* Generate Bill Section */}
-            {/* <div className="text-right">
-          <button
-            onClick={downloadPDF}
-            className="bg-green-500 text-white px-4 py-2 rounded-lg mt-4"
-          >
-            Generate PDF
-          </button>
-        </div> */}
             {/* Template Modal Section */}
             {isModalOpen && <TemplateModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onSelect={handleTemplateSelect} />}
          </div>

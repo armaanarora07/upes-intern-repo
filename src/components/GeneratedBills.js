@@ -115,23 +115,39 @@ const GeneratedBills = () => {
 
   return (
     <div className="p-4">
-      <div className="flex items-center space-x-2 h-14 bg-[#E7EDFF] border rounded-lg p-5 text-[#1436FF] font-bold text-3xl">
+      <div className="flex items-center space-x-2 h-14   p-5 text-[#4154f1] font-bold text-3xl">
         <FaFileAlt className="text-3xl" />
         <span>Generated Bills</span>
       </div>
 
       {errorMessage && <p className="text-red-500">{errorMessage}</p>}
 
-      <div className="flex justify-end items-center space-x-4 p-4">
-        <div className="flex items-center border rounded-md p-2 bg-white">
+
+      
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-16 px-4 py-2 ">
+        <div className="bg-white shadow-xl border rounded-3xl p-6 w-full h-40 transform transition-all duration-300 hover:scale-105">
+          <h2 className="text-5xl text-center text-gray-800 mt-2">{totalBills}</h2>
+          <p className="text-center text-black text-[16px] font-medium mt-4">Total Bills Generated</p>
+        </div>
+        <div className="bg-white shadow-xl border rounded-3xl p-6 w-full h-40 transform transition-all duration-300 hover:scale-105">
+          <h2 className="text-5xl text-center text-gray-800 mt-2">{lastMonthBills}</h2>
+          <p className="text-center text-black text-[16px] font-medium mt-4">Bills Generated Last Month</p>
+        </div>
+        <div className="bg-white shadow-xl border rounded-3xl p-6 w-full h-40 transform transition-all duration-300 hover:scale-105">
+          <h2 className="text-5xl text-center text-gray-800 mt-2">{thisMonthBills}</h2>
+          <p className="text-center text-black text-[16px] font-medium mt-4">Bills Generated This Month</p>
+        </div>
+      </div>
+      <div className="flex justify-end items-center space-x-4 p-2">
+        <div className="flex items-center border border-black rounded-md p-2 bg-white">
           <input
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Search Bill ID"
-            className="outline-none px-2 text-sm"
+            className="outline-none  placeholder-black px-2 text-sm"
           />
-          <FaSearch className="text-gray-500" />
+          <FaSearch className="text-[#4154f1]" />
         </div>
         <div className="relative">
           <DatePicker
@@ -139,27 +155,13 @@ const GeneratedBills = () => {
             onChange={(date) => setSelectedDate(date)}
             dateFormat="dd/MM/yyyy"
             placeholderText="Select Date"
-            className="border border-gray-300 rounded-md p-2 text-sm bg-white"
+            className="border border-black placeholder-black rounded-md p-2 text-sm bg-white"
           />
         </div>
       </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-16 px-4 py-6 ">
-        <div className="bg-white shadow-xl rounded-3xl p-6 w-full h-40 transform transition-all duration-300 hover:scale-105">
-          <h2 className="text-5xl text-center text-gray-800 mt-2">{totalBills}</h2>
-          <p className="text-center text-gray-500 text-sm mt-4">Total Bills Generated</p>
-        </div>
-        <div className="bg-white shadow-xl rounded-3xl p-6 w-full h-40 transform transition-all duration-300 hover:scale-105">
-          <h2 className="text-5xl text-center text-gray-800 mt-2">{lastMonthBills}</h2>
-          <p className="text-center text-gray-500 text-sm mt-4">Bills Generated Last Month</p>
-        </div>
-        <div className="bg-white shadow-xl rounded-3xl p-6 w-full h-40 transform transition-all duration-300 hover:scale-105">
-          <h2 className="text-5xl text-center text-gray-800 mt-2">{thisMonthBills}</h2>
-          <p className="text-center text-gray-500 text-sm mt-4">Bills Generated This Month</p>
-        </div>
-      </div>
 
-      <div className="p-4 overflow-x-auto">
+      <div className="p-2 overflow-x-auto">
         <table className="min-w-full bg-white border border-gray-300">
           <thead>
             <tr>

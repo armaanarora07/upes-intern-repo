@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { FaBusinessTime } from "react-icons/fa";
+import React, { useState ,useEffect } from "react";
+import { FaBusinessTime, FaFileAlt } from "react-icons/fa";
 import Additem from "../assets/Additem.png";
 import Share from "../assets/Share.png";
 import Download from "../assets/Download.png";
@@ -35,6 +35,52 @@ const GenerateNewBill = () => {
   const [saddress, setsAddress] = useState("");
   const [spincode, setSPincode] = useState("");
   const [sstate, setSState] = useState("");
+  const [billNo, setBillNo] = useState([]); // State for the bill number
+
+
+  useEffect(() => {
+    const fetchBillNumber = async () => {
+      const authToken = localStorage.getItem("authToken");
+      if (!authToken) {
+        alert("Authorization token is missing. Please log in again.");
+        return;
+      }
+
+      try {
+        const response = await fetch(
+          "/user/mySnNo?gstin=09CYLPR6774F1ZN", 
+          {
+            headers: {
+              Authorization: `Bearer ${authToken}`,
+            },
+          }
+        );
+
+        if (response.ok) {
+          
+          const data = await response.json();
+          console.log(data);
+          // setBillNo(data.bill_no || data.serial_no || ""); 
+          const fetchedBillNumbers = Array.isArray(data.sn_no)
+            ? data.sn_no
+            : data.sn_no
+            ? [data.sn_no] // Wrap single value in an array
+            : [];
+          setBillNo(fetchedBillNumbers)
+        } else {
+          alert("Failed to fetch bill number.");
+          
+        }
+        
+      } catch (error) {
+
+        console.error("Error fetching bill number:", error);
+        alert("An error occurred while fetching the bill number.");
+      }
+    };
+
+    fetchBillNumber();
+  }, []); 
 
   const addRow = () => {
     setRows([...rows, createRow(rows.length + 1)]);
@@ -44,6 +90,8 @@ const GenerateNewBill = () => {
     const newRows = [...rows];
     newRows[index][field] = value;
   
+    
+
     // Update amounts when price, quantity, or tax changes
     if (["quantity", "price", "taxPercent", "cgst", "sgst", "igst"].includes(field)) {
       const quantity = Number(newRows[index].quantity);
@@ -97,7 +145,7 @@ const GenerateNewBill = () => {
     }
   
     // Check your rows structure
-    console.log("Rows data:", rows); // Debugging line
+    console.log("Rows data:", rows);
   
     const body = {
       party: {
@@ -170,18 +218,37 @@ const GenerateNewBill = () => {
       console.error(error);
     }
   };
+  
+  const handleSameAsShipping = () => {
+    setIsRightEnabled(true);
+    setsAddress(paddress);
+    setSPincode(pincode);
+    setSState(state);
+  };
 
   return (
     <div className="p-2 pl-2 sm:pl-4">
-      <div className="bg-blue-200 text-blue-600 text-xl sm:text-3xl font-semibold rounded-lg p-4 flex items-center">
-        <FaBusinessTime className="text-gray-500 mr-4" />
+      <div className=" text-[#4154f1] text-xl sm:text-4xl font-semibold rounded-lg p-2 flex justify-between items-center">
+      <div className="flex items-center">
+        <FaBusinessTime className="text-[#4154f1] mr-4" />
         Generate New Bill
       </div>
-      <div className="text-xl sm:text-2xl mt-2 font-semibold">
+        <button
+            className="flex items-center font-medium text-lg px-4 py-2 bg-[#4154f1] rounded-lg mr-6 mt-8 text-white"
+            onClick={() => setIsModalOpen(true)}
+          >
+            <i className="fas fa-arrow-right"></i>
+            Select Template
+            {/* <img src={Select} alt="logo" className="ml-2 w-[1.2rem]"></img> */}
+          <FaFileAlt className="text-white ml-2 w-[1.2rem] mr-4" />
+            
+          </button>
+      </div>
+      <div className="text-xl sm:pl-4 sm:text-2xl mt-2 font-bold">
         Buyer's Details
       </div>
-      <div className="flex space-x-12">
-        <div className="w-2/5 p-2 relative">
+      <div className="flex space-x-12 ">
+        <div className="w-2/5 p-2 relative ">
           <div className="space-y-4 relative mt-4">
             {/* Input 1 */}
             <div className="relative mb-4">
@@ -192,7 +259,7 @@ const GenerateNewBill = () => {
                 type="text"
                 value={tradeName} // Controlled input
                 onChange={(e) => setTradeName(e.target.value)} // Update state on input change
-                className="w-full border border-blue-500 rounded-lg p-2"
+                className="w-full border border-[#4154f1] rounded-lg p-2"
               />
             </div>
 
@@ -203,33 +270,52 @@ const GenerateNewBill = () => {
               </span>
               <input
                 type="text"
-                className="w-full border border-blue-500 rounded-lg p-2"
+                className="w-full border border-[#4154f1] rounded-lg p-2"
               />
             </div>
           </div>
         </div>
         <div className="w-1/5 p-2 relative">
-          <div className="space-y-4">
-            <div className="flex items-end space-x-4">
-              <label htmlFor="billNo" className="font-semibold">
-                Bill No:
-              </label>
-              <input
+          <div className=" space-y-4">
+            <div className="flex  items-end space-x-4">
+              {/* <h1 htmlFor="billNo" className="font-semibold w-[4rem] flex-shrink-0  ">
+               SN No:{billNo}
+              </h1> */}
+              <div className="space-y-2">
+      {billNo.map((bill, index) => (
+      
+        <>
+        <h1 
+          key={index}
+          className="font-semibold w-[4rem] flex-shrink-0"
+        >
+          SN No: {bill.sn_no}
+        </h1>
+        <h2>{bill.message}</h2>
+        </>
+      ))}
+    </div>
+            
+              {/* <input
                 type="text"
                 id="billNo"
-                className="border-b-2 border-gray-300 outline-none focus:border-blue-500 w-full"
+                className="border-b-2 border-black outline-none focus:border-blue-500 w-full"
                 placeholder="Enter Bill No"
-              />
+                value={billNo} 
+                onChange={(e) => setBillNo(e.target.value)} 
+              /> */}
+
+              {/* <p className="text-black">{billNo}</p> */}
             </div>
 
             <div className="flex items-center space-x-4">
-              <label htmlFor="billDate" className="font-semibold">
+              <label htmlFor="billDate" className="font-semibold flex-shrink-0">
                 Bill Date:
               </label>
               <input
                 type="date"
                 id="billDate"
-                className="border-b-2 border-gray-300 outline-none focus:border-blue-500 w-full"
+                className="border-b-2 border-black outline-none focus:border-blue-500 w-full"
               />
             </div>
           </div>
@@ -239,18 +325,16 @@ const GenerateNewBill = () => {
         {/* Left Section */}
         <div className="w-2/5 p-2 relative">
           <span> Address Type </span>
-          {/* Input Fields for Left Section */}
           <div className="space-y-4 relative mt-4">
-            {/* Input 1 */}
             <div className="relative mb-4">
               <span className="absolute -top-3 left-2 text-sm bg-white px-1 text-black">
                 Address
               </span>
               <input
                 type="text"
-                value={paddress} // Controlled input
-                onChange={(e) => setpAddress(e.target.value)} // Update state on input change
-                className="w-full border border-blue-500 rounded-lg p-2"
+                value={paddress} 
+                onChange={(e) => setpAddress(e.target.value)} 
+                className="w-full border border-[#4154f1] rounded-lg p-2"
               />
             </div>
 
@@ -261,9 +345,9 @@ const GenerateNewBill = () => {
               </span>
               <input
                 type="text"
-                value={pincode} // Controlled input
-                onChange={(e) => setPincode(e.target.value)} // Update state on input change
-                className="w-full border border-blue-500 rounded-lg p-2"
+                value={pincode}
+                onChange={(e) => setPincode(e.target.value)} 
+                className="w-full border border-[#4154f1] rounded-lg p-2"
               />
             </div>
             <div className="relative">
@@ -272,24 +356,21 @@ const GenerateNewBill = () => {
               </span>
               <input
                 type="text"
-                value={state} // Controlled input
-                onChange={(e) => setState(e.target.value)} // Update state on input change
+                value={state} 
+                onChange={(e) => setState(e.target.value)} 
                 className="w-full border border-blue-500 rounded-lg p-2"
               />
             </div>
           </div>
         </div>
 
-        {/* Right Section */}
         <div className="w-2/5 p-2 relative">
           <label className="flex items-center mb-4">
             <input
               type="radio"
               name="section"
               className="mr-2 text-black accent-blue-500"
-              onChange={() => {
-                setIsRightEnabled(true);
-              }}
+              onChange={handleSameAsShipping}
             />
             <span>Same as shipping address</span>
           </label>
@@ -302,9 +383,9 @@ const GenerateNewBill = () => {
               </span>
               <input
                 type="text"
-                value={saddress} // Controlled input
-                onChange={(e) => setsAddress(e.target.value)} // Update state on input change
-                className="w-full border border-blue-500 rounded-lg p-2"
+                value={saddress} 
+                onChange={(e) => setsAddress(e.target.value)}
+                className="w-full border border-[#4154f1] rounded-lg p-2"
               />
             </div>
             {/* Input 2 */}
@@ -314,9 +395,9 @@ const GenerateNewBill = () => {
               </span>
               <input
                 type="text"
-                value={spincode} // Controlled input
-                onChange={(e) => setSPincode(e.target.value)} // Update state on input change
-                className="w-full border border-blue-500 rounded-lg p-2"
+                value={spincode}
+                onChange={(e) => setSPincode(e.target.value)}
+                className="w-full border border-[#4154f1] rounded-lg p-2"
               />
             </div>
             {/* Input 3 */}
@@ -326,77 +407,79 @@ const GenerateNewBill = () => {
               </span>
               <input
                 type="text"
-                value={sstate} // Controlled input
-                onChange={(e) => setSState(e.target.value)} // Update state on input change
-                className="w-full border border-blue-500 rounded-lg p-2"
+                value={sstate} 
+                onChange={(e) => setSState(e.target.value)} 
+                className="w-full border border-[#4154f1] rounded-lg p-2"
               />
             </div>
           </div>
         </div>
       </div>
       <div className="p-5 text-[#3D3F4B] ">
-        <h2 className="text-[1.6rem] font-normal mb-4">Items Details -</h2>
+      <div className="flex justify-between">
+        <h2 className="text-[1.6rem] text-black font-medium mb-4 ">Items Details -</h2>
         {/* Edit/Add Items Button */}
         <button
           onClick={addRow}
-          className="flex items-center text-lg gap-2 px-3 py-[0.35rem] bg-[#eff0f4] border  border-[#BCC3D5] rounded-md shadow-md mb-4 hover:bg-gray-200"
+          className="flex items-center text-lg gap-2 px-3 py-[0.35rem] border text-black  border-black font-medium rounded-md shadow-md mb-4 "
         >
           <img src={Additem} alt="logo"></img>
           Edit/Add Items
         </button>
+        </div>
         {/* Row Items Table */}
-        <div className="w-full mb-4">
+        <div className="w-full ">
           <table className="min-w-full bg-[#F9FAFC] shadow-md">
   <thead className="bg-gray-100 text-[#51535e] ">
     <tr>
-      <th className="border-b-2 border-r-2 border-[#989BAA] font-medium text-lg w-16" rowSpan="2">S No.</th>
-      <th className="border-b-2 border-r-2 border-[#989BAA] font-medium text-lg w-80" rowSpan="2">Item Name</th>
-      <th className="border-b-2 border-r-2 border-[#989BAA] font-medium text-lg w-28" rowSpan="2">HSN Code</th>
-      <th className="border-b-2 border-r-2 border-[#989BAA] font-medium text-lg w-28" rowSpan="2">Quantity</th>
-      <th className="border-b-2 border-r-2 border-[#989BAA] font-medium text-lg w-28" rowSpan="2">Unit</th>
-      <th className="border-b-2 border-r-2 border-[#989BAA] font-medium text-lg w-40" rowSpan="2">Price/Unit</th>
-      <th className="border-b-2 border-r-2 border-[#989BAA] font-medium text-lg w-36" colSpan="2">Tax (%)</th>
-      <th className="border-b-2 border-[#989BAA] font-medium text-lg w-36" rowSpan="2">Amount</th>
+      <th className="border-b-2 border-r-2 border-black text-black font-medium text-lg w-16" rowSpan="2">S No.</th>
+      <th className="border-b-2 border-r-2 border-black  text-black font-medium text-lg w-80" rowSpan="2">Item Name</th>
+      <th className="border-b-2 border-r-2 border-black  text-black font-medium text-lg w-28" rowSpan="2">HSN Code</th>
+      <th className="border-b-2 border-r-2 border-black  text-black font-medium text-lg w-28" rowSpan="2">Quantity</th>
+      <th className="border-b-2 border-r-2 border-black text-black font-medium text-lg w-28" rowSpan="2">Unit</th>
+      <th className="border-b-2 border-r-2 border-black text-black font-medium text-lg w-40" rowSpan="2">Price</th>
+      <th className="border-b-2 border-r-2 border-black text-black font-medium text-lg w-36" colSpan="2">Tax (%)</th>
+      <th className="border-b-2 border-black font-medium text-black text-lg w-36" rowSpan="2">Amount</th>
     </tr>
     <tr>
-      <th className="border-b-2 border-r-2 border-[#989BAA] font-normal text-lg">Percent (%)</th>
-      <th className="border-b-2 border-r-2 border-[#989BAA] font-normal text-lg">Amount</th>
+      <th className="border-b-2 border-r-2 border-black text-black font-normal text-lg">Percent (%)</th>
+      <th className="border-b-2 border-r-2 border-black text-black font-normal text-lg">Amount</th>
     </tr>
   </thead>
   <tbody>
     {rows.map((row, index) => (
       <tr key={index} className="border-t">
-        <td className="p-1 border-r-2 border-[#989BAA] text-center">{index + 1}</td>
-        <td className="p-1 border-r-2 border-[#989BAA]">
+        <td className="p-1 border-r-2 border-black text-center">{index + 1}</td>
+        <td className="p-1 border-r-2 border-black">
           <input
             type="text"
-            className="border-2 border-[#EFF0F4] p-1 w-full rounded-xl"
+            className="border-2 border-[#EFF0F4] p-2 w-full rounded-md "
             placeholder="Item Name"
             value={row.product_info}
             onChange={(e) => handleInputChange(index, "product_info", e.target.value)}
           />
         </td>
-        <td className="p-1 border-r-2 border-[#989BAA]">
+        <td className="p-1 border-r-2 border-black">
           <input
             type="text"
-            className="border-2 border-[#EFF0F4] p-1 w-full rounded-xl"
+            className="border-2 border-[#EFF0F4] p-2 w-full rounded-md "
             placeholder="HSN Code"
             value={row.hsn_code}
             onChange={(e) => handleInputChange(index, "hsn_code", e.target.value)}
           />
         </td>
-        <td className="p-1 border-r-2 border-[#989BAA]">
+        <td className="p-1 border-r-2 border-black">
           <input
             type="number"
-            className="border-2 border-[#EFF0F4] p-1 w-full rounded-xl"
+            className="border-2 border-[#EFF0F4] p-2 w-full rounded-md "
             placeholder="Qty"
             value={row.quantity}
             onChange={(e) => handleInputChange(index, "quantity", Number(e.target.value))}
           />
         </td>
-        <td className="p-1 border-r-2 border-[#989BAA]">
+        <td className="p-1 border-r-2 border-black">
           <select
-            className="border-2 border-[#EFF0F4] p-1 w-full rounded-xl"
+            className="border-2 border-[#EFF0F4] p-2 w-full rounded-md "
             value={row.unit}
             onChange={(e) => handleInputChange(index, "unit", e.target.value)}
           >
@@ -405,28 +488,28 @@ const GenerateNewBill = () => {
             <option value="PCS">PCS</option>
           </select>
         </td>
-        <td className="p-1 border-r-2 border-[#989BAA]">
+        <td className="p-1 border-r-2 border-black">
           <input
             type="number"
-            className="border-2 border-[#EFF0F4] p-1 w-full rounded-xl"
+            className="border-2 border-[#EFF0F4] p-2 w-full rounded-md "
             placeholder="Price"
             value={row.price}
             onChange={(e) => handleInputChange(index, "price", Number(e.target.value))}
           />
         </td>
-        <td className="p-1 border-r-2 border-[#989BAA]">
+        <td className="p-1 border-r-2 border-black">
           <input
             type="number"
-            className="border-2 border-[#EFF0F4] p-1 w-full rounded-xl"
+            className="border-2 border-[#EFF0F4] p-2 w-full rounded-md "
             placeholder="Tax %"
             value={row.taxPercent}
             onChange={(e) => handleInputChange(index, "taxPercent", Number(e.target.value))}
           />
         </td>
-        <td className="p-1 border-r-2 border-[#989BAA]">
+        <td className="p-1 border-r-2 border-black">
           <input
             type="number"
-            className="border-2 border-[#EFF0F4] p-1 w-full rounded-xl"
+            className="border-2 border-[#EFF0F4] p-2 w-full rounded-md "
             placeholder="Tax Amount"
             value={row.taxAmount}
             readOnly
@@ -435,7 +518,7 @@ const GenerateNewBill = () => {
         <td className="p-1">
           <input
             type="number"
-            className="border p-1 w-full rounded-lg"
+            className="border-2 border-[#EFF0F4] p-2 w-full rounded-md "
             placeholder="Amount"
             value={row.amount}
             readOnly
@@ -443,17 +526,17 @@ const GenerateNewBill = () => {
         </td>
       </tr>  
     ))}
-    <tr className="font-semibold bg-[#E7EDFF] text-[#1436FF]">
-                <td colSpan="3" className="p-3 text-right border-r-2 border-[#989BAA]">
+    <tr className="font-semibold bg-[#989baaa7] text-black">
+                <td colSpan="3" className="p-3 text-right border-r-2 border-black">
                   TOTAL
                 </td>
-                <td className="p-3 border-r-2 border-[#989BAA] text-right">
+                <td className="p-3 border-r-2 border-black text-right">
                   {totalQuantity}
                 </td>
-                <td className="p-3 border-r-2 border-[#989BAA] text-right"></td>
-                <td className="p-3 border-r-2 border-[#989BAA] text-right"></td>
-                <td className="p-3 border-r-2 border-[#989BAA] text-right"></td>
-                <td className="p-3 border-r-2 border-[#989BAA] text-right">
+                <td className="p-3 border-r-2 border-black text-right"></td>
+                <td className="p-3 border-r-2 border-black text-right"></td>
+                <td className="p-3 border-r-2 border-black text-right"></td>
+                <td className="p-3 border-r-2 border-black text-right">
                   {totalTax.toFixed(2)}
                 </td>
                 <td className="p-3 text-right">{totalAmount}</td>
@@ -463,26 +546,34 @@ const GenerateNewBill = () => {
 </table>
 
         </div>
-        <div className="flex items-stretch justify-end">
+        <div className="flex items-start justify-end">
           {/* Next Button to open the modal */}
-          <button
-            className="flex items-center font-medium text-lg px-4 py-2 bg-[#F9FAFC] rounded-lg mr-6 mt-8 text-[#1436FF]"
+          {/* <button
+            className="flex items-center font-medium text-lg px-4 py-2 bg-[#4154f1] rounded-lg mr-6 mt-8 text-white"
             onClick={() => setIsModalOpen(true)}
           >
             <i className="fas fa-arrow-right"></i>
             Select Template
             <img src={Select} alt="logo" className="ml-2 w-[1.2rem]"></img>
-          </button>
+          </button> */}
 
           {/* Next Button to open the modal */}
           <button
             onClick={() => setShowModal(true)}
-            className="flex items-center font-medium text-lg px-4 py-2 bg-[#F9FAFC] rounded-lg mr-6 mt-8 text-[#1436FF]"
+            className="flex items-center font-semibold text-xl  border border-[#4154f1] px-4 py-2 bg- rounded-[10px] mr-6 mt-4 text-[#4154f1]"
           >
             <i className="fas fa-arrow-right"></i>
             Next
             <img src={Next} alt="logo" className="ml-2 w-5"></img>
           </button>
+           <div className="text-right">
+          <button
+            onClick={downloadPDF}
+            className="bg-[#4154f1] text-white text-xl px-4 py-2 rounded-lg mt-4"
+          >
+            Generate PDF
+          </button>
+        </div> 
         </div>
 
         <TemplateModal
@@ -550,20 +641,21 @@ const GenerateNewBill = () => {
                     Share
                   </button>
                 </div>
+                
               </div>
             </div>
           </div>
         )}
 
         {/* Generate Bill Section */}
-        <div className="text-right">
+        {/* <div className="text-right">
           <button
             onClick={downloadPDF}
-            className="bg-green-500 text-white px-4 py-2 rounded-lg mt-4"
+            className="bg-[#4154f1] text-white text-xl px-4 py-2 rounded-lg mt-4"
           >
             Generate PDF
           </button>
-        </div>
+        </div> */}
         {/* Template Modal Section */}
         {isModalOpen && (
           <TemplateModal

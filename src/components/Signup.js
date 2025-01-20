@@ -82,7 +82,7 @@ const SignUp = () => {
       <div className="relative w-full max-w-lg p-8 space-y-8 bg-white bg-opacity-90 rounded-3xl shadow-xl transform transition-all duration-500 hover:shadow-2xl hover:scale-105">
         
         <div className="text-center">
-          <h2 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-600">
+          <h2 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[#4154f1] to-black">
             Join ScanT Now!
           </h2>
           <p className="mt-2 text-gray-600">Sign up and be part of something amazing</p>
@@ -129,7 +129,7 @@ const SignUp = () => {
 
           <button
             type="submit"
-            className="w-full py-3 text-lg font-bold text-white bg-gradient-to-r from-blue-500 to-purple-500 rounded-full shadow-lg hover:from-blue-600 hover:to-purple-600 focus:outline-none focus:ring-4 focus:ring-purple-400 transform hover:scale-105 transition duration-300"
+            className="w-full py-3 text-lg font-bold text-white bg-gradient-to-r from-[#4154f1] to-black rounded-full shadow-lg hover:from-blue-600 hover:to-purple-600 focus:outline-none focus:ring-4 focus:ring-purple-400 transform hover:scale-105 transition duration-300"
           >
             {step === 1 ? "Sign Up" : "Verify OTP"}
           </button>
