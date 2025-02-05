@@ -8,6 +8,8 @@ import GenerateBill from './components/GenerateNewBill';
 import GeneratedBills from './components/GeneratedBills';
 import GstInvoice from './components/GstInvoice';
 import EwayBills from './components/EwayBills';
+import EWayBillRequest from './components/EWayBillRequest';
+
 import Payments from './components/Payments';
 import Activity from './components/Activity';
 import Users from './components/Users';
@@ -27,6 +29,7 @@ function App() {
       
 
         <div className="flex-grow">
+        
           <Routes>
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/add-business" element={<AddBusiness />} />
@@ -35,6 +38,8 @@ function App() {
             <Route path="/generated-bills" element={<GeneratedBills />} />
             <Route path="/gst-invoice" element={<Inventory/>} />
             <Route path="/eway-bills" element={<EwayBills />} />
+            <Route path="/EWayBillRequest" element={<EWayBillRequest/>} />
+
             <Route path="/payments" element={<Payments />} />
             <Route path="/activity" element={<Activity />} />
             <Route path="/users" element={<Users />} />

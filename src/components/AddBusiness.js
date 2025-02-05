@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { FaBusinessTime } from 'react-icons/fa';
+import YourBusiness from './YourBusiness';
 
 const AddBusiness = () => {
   const [gstin, setGstin] = useState('');

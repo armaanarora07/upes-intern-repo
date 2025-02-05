@@ -171,6 +171,8 @@ const GeneratedBills = () => {
               <th className="px-4 py-2 text-left">Total</th>
               <th className="px-4 py-2 text-left">Status</th>
               <th className="px-4 py-2 text-left">Action</th>
+              <th className="px-4 py-2 text-left">E way</th>
+
             </tr>
           </thead>
           <tbody>
@@ -192,6 +194,7 @@ const GeneratedBills = () => {
                     </a>
                     <FaEdit className="text-blue-500 cursor-pointer" />
                     <FaTrashAlt className="text-red-500 cursor-pointer" />
+            <h1>{bill._id}</h1>
                   </div>
                 </td>
               </tr>

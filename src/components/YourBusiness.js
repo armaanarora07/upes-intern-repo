@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Building from '../assets/building.png';
 import edit from '../assets/edit.png';
+import AddBusiness from './AddBusiness';
 
 const BusinessCard = ({ gstin, legalName, tradeName, onSave }) => {
   const [isEditing, setIsEditing] = useState(false);

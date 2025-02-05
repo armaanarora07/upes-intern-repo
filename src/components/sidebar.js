@@ -107,16 +107,16 @@ const Sidebar = () => {
                 Activity
               </NavLink>
             </li> */}
-            {/* <li className="mb-4 flex items-center">
-              <FaUsers className="text-gray-500 mr-4" />
+            <li className="mb-4 flex items-center">
+              <FaUsers className="text-[#4154f1] mr-4" />
               <NavLink
                 to="/users"
                 className={({ isActive }) =>
-                  isActive ? 'text-[#4154f1] font-semibold' : 'text-gray-700'}
+                  isActive ? 'text-[#4154f1] font-semibold' : 'text-black font-medium'}
               >
-                Users
+                Parties
               </NavLink>
-            </li> */}
+            </li>
           </ul>
         </div>
         <div>
