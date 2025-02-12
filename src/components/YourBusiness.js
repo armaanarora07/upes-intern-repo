@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Building from '../assets/building.png';
 import edit from '../assets/edit.png';
+import AddBusiness from './AddBusiness';
 
 const BusinessCard = ({ gstin, legalName, tradeName, onSave }) => {
   const [isEditing, setIsEditing] = useState(false);
@@ -124,7 +125,7 @@ const YourBusiness = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
-      <div className="flex p-3 rounded-xl bg-blue-100 text-4xl font-normal text-blue-600 items-center mb-6">
+      <div className="flex p-3 rounded-xl text-3xl font-normal text-[#4154f1] font-semibold items-center mb-6">
         <img src={Building} alt='building icon' className='mr-3 -mt-1 w-12' />
         Your Business
       </div>

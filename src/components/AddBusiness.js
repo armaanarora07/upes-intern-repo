@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { FaBusinessTime } from 'react-icons/fa';
+import YourBusiness from './YourBusiness';
 
 const AddBusiness = () => {
   const [gstin, setGstin] = useState('');
@@ -56,7 +57,7 @@ const AddBusiness = () => {
 
   return (
     <div className='p-2 pl-2 sm:pl-4'>
-      <div className='bg-blue-200 text-blue-600 text-xl sm:text-3xl font-semibold rounded-lg p-4 flex items-center'>
+      <div className=' text-[#4154f1] text-xl sm:text-3xl font-semibold rounded-lg p-4 flex items-center'>
         <FaBusinessTime className="text-gray-500 mr-4" /> 
         Add Business
       </div>
@@ -76,7 +77,7 @@ const AddBusiness = () => {
       /><br/>
 
       <button
-        className={`p-2 rounded-md mt-2 ${isVerified ? 'bg-green-500' : 'bg-blue-500'} text-white hover:${isVerified ? 'bg-green-600' : 'bg-blue-600'}`}
+        className={`p-2 rounded-md mt-2 ${isVerified ? 'bg-green-500' : 'bg-[#4154f1]'} text-white hover:${isVerified ? 'bg-green-600' : 'bg-[#4154f1]'}`}
         onClick={isVerified ? null : handleVerify}
       >
         {isVerified ? 'Verified' : 'Verify'}
