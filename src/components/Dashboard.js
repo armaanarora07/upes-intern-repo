@@ -22,10 +22,10 @@ const Dashboard = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(true);
   const [legal_name, setLegalName] = useState(""); // State for legal_name
+  const token = localStorage.getItem('authToken');
 
   useEffect(() => {
     const fetchData = async () => {
-      const token = localStorage.getItem("authToken");
 
       if (!token) {
         setErrorMessage("You need to log in first.");
@@ -52,7 +52,7 @@ const Dashboard = () => {
         setSalesData(sales);
 
         // Fetch business legal name
-        const businessResponse = await axios.get("https://fyntl.sangrahinnovations.com/user/myBusiness", {
+        const businessResponse = await axios.get("/user/myBusiness", {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
