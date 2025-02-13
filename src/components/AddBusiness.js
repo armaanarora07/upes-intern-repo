@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import { FaBusinessTime } from 'react-icons/fa';
 import YourBusiness from './YourBusiness';
 
@@ -17,21 +18,28 @@ const AddBusiness = () => {
   };
 
   const handleVerify = async () => {
+    
+    if(!gstin){
+      alert('Enter a Valid GST Number');  // Alerting the user to enter the valid gst number before verifying
+      return;
+    }
+
     try {
-      const response = await fetch(`https://fyntl.sangrahinnovations.com/user/validategst?gst=${gstin}`, {
-        method: 'GET',
+
+      const response = await axios.get(`https://fyntl.sangrahinnovations.com/user/validategst?gst=${gstin}`, {
         headers: {
-          'Authorization': `Bearer ${authToken}`,
+          Authorization: `Bearer ${authToken}`,
+          "Content-Type": "application/json",
         },
       });
 
-      const data = await response.json();
+      const data = response.data;
 
       // Log the entire response object for structure
       console.log('Complete Response:', response);
       console.log('Parsed API Response:', data);
 
-      if (response.ok) {
+      if (response.statusText === 'OK') {
         // Adjusted for possible nested structure
         console.log('Legal Name:', data.data?.legal_name);
         console.log('Trade Name:', data.data?.trade_name);
