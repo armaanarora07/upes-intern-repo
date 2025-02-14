@@ -2,7 +2,7 @@ import React, { useState,useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom"; 
 import { useDispatch } from "react-redux";
-import { signup } from "../slices/authSlice.js";
+import { signup, verifyotp } from "../slices/authSlice.js";
 import { useSelector } from "react-redux";
 
 const SignUp = () => {
@@ -14,7 +14,7 @@ const SignUp = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch(); // Hook to dispatch the authToken
   const authToken = useSelector((state) => state.auth.authToken); //// Store initial authToken - access from global auth state 
-  
+  const verifiedotp = useSelector((state) => state.auth.otp);
 
   const handlePhoneSubmit = async (e) => {
     e.preventDefault();
@@ -63,6 +63,7 @@ const SignUp = () => {
 
       if (response.status === 200 && response.data.authToken) {
         dispatch(signup(response.data.authToken));
+        dispatch(verifyotp(true));
         setSuccessMessage("OTP verified successfully.");
         setErrorMessage("");
         navigate("/dashboard");
@@ -77,7 +78,7 @@ const SignUp = () => {
   useEffect(()=>{
   
       const checkAuth = ()=>{
-          if(authToken){
+          if(authToken && verifiedotp){
             navigate("/dashboard");
           }
       }

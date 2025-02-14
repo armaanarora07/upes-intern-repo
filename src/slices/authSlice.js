@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   authToken: localStorage.getItem("authToken") || null,
+  otp: localStorage.getItem("authToken") ? true : false,
 };
 
 const authSlice = createSlice({
@@ -18,10 +19,14 @@ const authSlice = createSlice({
       },
     logout: (state) => {
       state.authToken = null;
+      state.otp = false;
       localStorage.removeItem("authToken");
+    },
+    verifyotp: (state) => {
+      state.otp = true;
     },
   },
 });
 
-export const { login, logout, signup } = authSlice.actions;
+export const { login, logout, signup, verifyotp } = authSlice.actions;
 export default authSlice.reducer;
