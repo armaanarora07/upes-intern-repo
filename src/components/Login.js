@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom"; // for navigation
 import { useDispatch } from "react-redux";
@@ -69,7 +69,7 @@ const Login = () => {
         dispatch(login(response.data.authToken));
         setSuccessMessage("OTP verified successfully.");
         setErrorMessage(""); // Clear any existing error message
-        
+
         // Navigate to Dashboard after OTP verification
         navigate("/dashboard"); // Redirect to Dashboard page
       } else {
@@ -79,6 +79,17 @@ const Login = () => {
       setErrorMessage("An error occurred while verifying OTP. Please try again later.");
     }
   };
+
+  useEffect(()=>{
+
+    const checkAuth = ()=>{
+        if(authToken){
+          navigate("/dashboard");
+        }
+    }
+
+    checkAuth();
+  })
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-100 via-white to-purple-100 flex items-center justify-center px-4">
