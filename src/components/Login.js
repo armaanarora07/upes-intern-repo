@@ -1,15 +1,19 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom"; // for navigation
+import { useDispatch } from "react-redux";
+import { login } from "../slices/authSlice.js";
+import { useSelector } from "react-redux";
 
 const Login = () => {
   const [phone, setPhone] = useState("");
   const [otp, setOtp] = useState("");
   const [step, setStep] = useState(1); // Step 1: Phone input, Step 2: OTP verification
-  const [authToken, setAuthToken] = useState(""); // Store initial authToken
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const navigate = useNavigate(); // Hook to navigate to Dashboard
+  const dispatch = useDispatch(); // Hook to dispatch the authToken
+  const authToken = useSelector((state) => state.auth.authToken); //// Store initial authToken - access from global auth state 
 
   // Handle phone number submission and get authToken
   const handlePhoneSubmit = async (e) => {
@@ -27,7 +31,7 @@ const Login = () => {
       });
 
       if (response.status === 200 && response.data.authToken) {
-        setAuthToken(response.data.authToken); // Save the authToken for later
+        dispatch(login(response.data.authToken));
         setStep(2); // Move to OTP input step
         setSuccessMessage("Verification code sent. Please check your messages.");
         setErrorMessage(""); // Clear any existing error message
@@ -62,11 +66,10 @@ const Login = () => {
 
       if (response.status === 200 && response.data.authToken) {
         const newAuthToken = response.data.authToken;
-        localStorage.setItem('authToken', newAuthToken); // Save the new authToken in localStorage
-        setAuthToken(newAuthToken); // Update authToken in state
+        dispatch(login(response.data.authToken));
         setSuccessMessage("OTP verified successfully.");
         setErrorMessage(""); // Clear any existing error message
-
+        
         // Navigate to Dashboard after OTP verification
         navigate("/dashboard"); // Redirect to Dashboard page
       } else {
