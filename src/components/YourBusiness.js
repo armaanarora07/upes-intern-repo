@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import Building from '../assets/building.png';
-import edit from '../assets/edit.png';
-import AddBusiness from './AddBusiness';
+import {FaBriefcase, FaEdit, FaPlusCircle} from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
 
 const BusinessCard = ({ gstin, legalName, tradeName, onSave }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [updatedLegalName, setUpdatedLegalName] = useState(legalName);
   const [updatedTradeName, setUpdatedTradeName] = useState(tradeName);
+  
 
   const handleSave = () => {
     setIsEditing(false);
@@ -14,36 +14,52 @@ const BusinessCard = ({ gstin, legalName, tradeName, onSave }) => {
   };
 
   return (
-    <div className="bg-blue-100 rounded-lg p-4 shadow-md">
+    <div className="bg-white shadow-xl border rounded-3xl p-6 w-full h-auto transform transition-all duration-300 hover:scale-105">
       {isEditing ? (
-        <div>
-          <label><strong>GSTIN:</strong> {gstin}</label>
+        <div className="flex flex-col">
+          <label className="font-semibold mb-1">GSTIN - <span className="text-gray-700">{gstin}</span></label>
           <input
             type="text"
             value={updatedLegalName}
             onChange={(e) => setUpdatedLegalName(e.target.value)}
-            className="border p-1 mt-2"
+            className="border p-2 mt-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Legal Name"
           />
           <input
             type="text"
             value={updatedTradeName}
             onChange={(e) => setUpdatedTradeName(e.target.value)}
-            className="border p-1 mt-2"
+            className="border p-2 mt-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Trade Name"
           />
-          <button onClick={handleSave} className="mt-2 bg-blue-500 text-white p-2 rounded">
-            Save
-          </button>
+          <div className="flex justify-between mt-4">
+            <button onClick={handleSave} className="bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 transition duration-200 w-1/2 mr-1">
+              Save
+            </button>
+            <button onClick={() => setIsEditing(false)} className="bg-gray-300 text-gray-700 p-2 rounded-lg hover:bg-gray-400 transition duration-200 w-1/2 ml-1">
+              Cancel
+            </button>
+          </div>
         </div>
       ) : (
         <div>
-          <p><strong>GSTIN:</strong> {gstin}</p>
-          <p><strong>Legal Name:</strong> {legalName}</p>
-          <p><strong>Trade Name:</strong> {tradeName}</p>
+          <div className="flex flex-col space-y-2">
+            <div className="flex justify-between items-center">
+              <span className="font-semibold">GSTIN</span>
+              <span className="text-gray-700">{gstin}</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="font-semibold">Legal Name</span>
+              <span className="text-gray-700">{legalName}</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="font-semibold">Trade Name</span>
+              <span className="text-gray-700">{tradeName}</span>
+            </div>
+          </div>
           <div className="mt-2 flex justify-end">
             <button onClick={() => setIsEditing(true)} className="text-sm text-gray-500 flex items-center">
-              <img src={edit} alt='edit icon' className='mr-1 w-4 mt-1' /> edit
+              <FaEdit className='mr-1 w-4 mt-1' /> Edit
             </button>
           </div>
         </div>
@@ -56,6 +72,7 @@ const YourBusiness = () => {
   const [businesses, setBusinesses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchBusinesses = async () => {
@@ -124,21 +141,11 @@ const YourBusiness = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
-      <div className="flex p-3 rounded-xl text-3xl font-normal text-[#4154f1] font-semibold items-center mb-6">
-        <img src={Building} alt='building icon' className='mr-3 -mt-1 w-12' />
-        Your Business
-      </div>
+    <div className="p-6">
 
-      <div className="flex justify-between">
-        <div>
-          <p className="text-2xl font-normal mb-4">Hey, here are your businesses</p>
-        </div>
-        <div>
-          <button className="bg-blue-100 text-blue-500 rounded-xl px-4 text-xl py-2 flex items-center">
-            Add More Business <strong className="text-3xl ml-2 -mt-1">+</strong>
-          </button>
-        </div>
+      <div className="flex items-center space-x-3 text-[#4154f1] font-bold text-3xl mb-6">
+        <FaBriefcase className="text-4xl" />
+        <span>Your Business</span>
       </div>
 
       {loading ? (
@@ -148,20 +155,27 @@ const YourBusiness = () => {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mt-8">
           {businesses.length > 0 ? (
-            businesses.map((business, index) => (
-              <BusinessCard
-                key={index}
-                gstin={business.gstin}
-                legalName={business.legal_name}
-                tradeName={business.trade_name}
-                onSave={handleSave}
-              />
-            ))
+            <>
+              {businesses.map((business, index) => (
+                <BusinessCard
+                  key={index}
+                  gstin={business.gstin}
+                  legalName={business.legal_name}
+                  tradeName={business.trade_name}
+                  onSave={handleSave}
+                />
+              ))}
+              <div className="bg-white shadow-xl border rounded-3xl p-6 w-full h-auto transform transition-all duration-300 hover:scale-105 flex items-center justify-center cursor-pointer" onClick={() => navigate('/add-business')}>
+                <FaPlusCircle className="text-3xl mr-2" />
+                <p className="text-xl font-semibold">Add More Business</p>
+              </div>
+            </>
           ) : (
             <p>No businesses found</p>
           )}
         </div>
       )}
+
     </div>
   );
 };

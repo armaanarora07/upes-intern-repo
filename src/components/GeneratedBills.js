@@ -3,6 +3,7 @@ import axios from "axios";
 import { FaFileAlt, FaSearch, FaEdit, FaTrashAlt, FaEye } from "react-icons/fa"; 
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { useSelector } from "react-redux";
 
 const GeneratedBills = () => {
   const [selectedDate, setSelectedDate] = useState(null);
@@ -16,19 +17,19 @@ const GeneratedBills = () => {
   const [lastMonthBills, setLastMonthBills] = useState(0);    // For Bills Generated Last Month
   const [thisMonthBills, setThisMonthBills] = useState(0);    // For Bills Generated This Month
 
-  const token = localStorage.getItem('authToken');
+  const authToken = useSelector((state) => state.auth.authToken); // access from global auth state 
 
   useEffect(() => {
     const fetchBills = async () => {
       try {
-        if (!token) {
+        if (!authToken) {
           setErrorMessage("No token found");
           return;
         }
 
         const response = await axios.get('/user/myTransactions', {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${authToken}`,
             'Content-Type': 'application/json',
           },
         });
@@ -76,7 +77,7 @@ const GeneratedBills = () => {
     };
 
     fetchBills();
-  }, [token]);
+  }, [authToken]);
 
   // Calculate the displayed bills based on the current page
   const indexOfLastBill = currentPage * itemsPerPage;
@@ -114,9 +115,10 @@ const GeneratedBills = () => {
   };
 
   return (
-    <div className="p-4">
-      <div className="flex items-center space-x-2 h-14   p-5 text-[#4154f1] font-bold text-3xl">
-        <FaFileAlt className="text-3xl" />
+    <div className="p-6">
+      
+      <div className="flex items-center space-x-3 text-[#4154f1] font-bold text-3xl mb-6">
+        <FaFileAlt className="text-4xl" />
         <span>Generated Bills</span>
       </div>
 
@@ -124,7 +126,7 @@ const GeneratedBills = () => {
 
 
       
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-16 px-4 py-2 ">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-16 px-4 py-2 mb-3">
         <div className="bg-white shadow-xl border rounded-3xl p-6 w-full h-40 transform transition-all duration-300 hover:scale-105">
           <h2 className="text-5xl text-center text-gray-800 mt-2">{totalBills}</h2>
           <p className="text-center text-black text-[16px] font-medium mt-4">Total Bills Generated</p>

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { FaBox } from "react-icons/fa";
 import axios from "axios";
 import { Edit, Trash2, Plus, Search } from "lucide-react";
 
@@ -132,8 +133,14 @@ const Inventory = () => {
   );
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-6 text-[#4154f1]">Inventory Management</h1>
+  
+    <div className="container mx-auto p-6">
+
+      <div className="flex items-center space-x-3 text-[#4154f1] font-bold text-3xl mb-6">
+        <FaBox className="text-4xl" />
+        <span>Inventory Management</span>
+      </div>
+
       <div className="flex justify-between items-center mb-4">
         <div className="flex items-center gap-4">
           <div className="relative">

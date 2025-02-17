@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { Line } from "react-chartjs-2";
+import { useSelector } from "react-redux";
 
 import {
   Chart as ChartJS,
@@ -22,12 +23,12 @@ const Dashboard = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(true);
   const [legal_name, setLegalName] = useState(""); // State for legal_name
-  const token = localStorage.getItem('authToken');
+  const authToken = useSelector((state) => state.auth.authToken); // access from global auth state 
 
   useEffect(() => {
     const fetchData = async () => {
 
-      if (!token) {
+      if (!authToken) {
         setErrorMessage("You need to log in first.");
         setLoading(false);
         return;
@@ -37,7 +38,7 @@ const Dashboard = () => {
         // Fetch transactions data
         const transactionResponse = await axios.get("/user/myTransactions", {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${authToken}`,
             "Content-Type": "application/json",
           },
         });
@@ -54,7 +55,7 @@ const Dashboard = () => {
         // Fetch business legal name
         const businessResponse = await axios.get("/user/myBusiness", {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${authToken}`,
             "Content-Type": "application/json",
           },
         });

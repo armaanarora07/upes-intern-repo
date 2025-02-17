@@ -1,5 +1,5 @@
 import React, { useState ,useEffect } from "react";
-import { FaBusinessTime, FaFileAlt } from "react-icons/fa";
+import { FaFileAlt, FaCheckCircle, FaTimesCircle } from "react-icons/fa";
 import Additem from "../assets/Additem.png";
 import Share from "../assets/Share.png";
 import Download from "../assets/Download.png";
@@ -27,6 +27,7 @@ const createRow = (id) => ({
 
 const GstInvoice = () => {
   const [GST, setGST] = useState('');
+  const [status, setStatus] = useState(false);
   const [isVerified, setIsVerified] = useState(false);
   const [rows, setRows] = useState([createRow(1)]);
   const [showModal, setShowModal] = useState(false);
@@ -235,16 +236,14 @@ const GstInvoice = () => {
     }
   };
 
-  const handleVerify = async () => {
-    
-    if(!GST){
+  const handleVerify = async (gstNumber) => {
+    if (!gstNumber) {
       alert('Enter a Valid GST Number');  // Alerting the user to enter the valid gst number before verifying
       return;
     }
 
     try {
-
-      const response = await axios.get(`https://fyntl.sangrahinnovations.com/user/validategst?gst=${GST}`, {
+      const response = await axios.get(`https://fyntl.sangrahinnovations.com/user/validategst?gst=${gstNumber}`, {
         headers: {
           Authorization: `Bearer ${authToken}`,
           "Content-Type": "application/json",
@@ -269,13 +268,18 @@ const GstInvoice = () => {
         setScity(data.data?.shipping_address.city || '');
         setScountry(data.data?.shipping_address.country || '');
         setIsVerified(true);
+        setStatus(true);
       } else {
         console.error('Verification failed:', data);
         console.error('Status:', response.status);
         console.error('Status Text:', response.statusText);
+        setIsVerified(false);
+        setStatus(true);
       }
     } catch (error) {
       console.error('Error during verification:', error);
+      setIsVerified(false);
+      setStatus(true);
     }
   };
 
@@ -286,25 +290,33 @@ const GstInvoice = () => {
     setSState(state);
   };
 
+  // Add this function to format GST number
+  const formatGSTNumber = (gst) => {
+    return gst.toUpperCase().trim(); // Convert to uppercase and trim whitespace
+  };
+
   return (
-    <div className="p-2 pl-2 sm:pl-4">
-      <div className=" text-[#4154f1] text-xl sm:text-4xl font-semibold rounded-lg p-2 flex justify-between items-center">
-      <div className="flex items-center">
-        <FaBusinessTime className="text-[#4154f1] mr-4" />
-        Generate New Bill
+    <div className="p-6">
+
+      <div className="flex justify-between">
+
+      <div className="flex items-center space-x-3 text-[#4154f1] font-bold text-3xl mb-6">
+        <FaFileAlt className="text-4xl" />
+        <span>Generate New GST Bill</span>
       </div>
-        <button
-            className="flex items-center font-medium text-lg px-4 py-2 bg-[#4154f1] rounded-lg mr-6 mt-8 text-white"
-            onClick={() => setIsModalOpen(true)}
-          >
-            <i className="fas fa-arrow-right"></i>
-            Select Template
-            {/* <img src={Select} alt="logo" className="ml-2 w-[1.2rem]"></img> */}
-          <FaFileAlt className="text-white ml-2 w-[1.2rem] mr-4" />
-            
-          </button>
+
+      <button
+        className="flex items-center font-medium text-lg px-4 py-2 bg-[#4154f1] rounded-lg mr-6 mt-8 text-white"
+        onClick={() => setIsModalOpen(true)}
+      >
+        <i className="fas fa-arrow-right"></i>
+        Select Template
+        {/* <img src={Select} alt="logo" className="ml-2 w-[1.2rem]"></img> */}
+      <FaFileAlt className="text-white ml-2 w-[1.2rem] mr-4" />
+      </button>
+
       </div>
-      <div className="text-xl sm:pl-4 sm:text-2xl mt-2 font-bold">
+      <div className="text-xl sm:pl-4 sm:text-2xl mt-2 font-medium">
         Buyer's Details
       </div>
       <div className="flex space-x-12 ">
@@ -318,15 +330,28 @@ const GstInvoice = () => {
               <input
                 type="text"
                 value={GST} // Controlled input
-                onChange={(e) => setGST(e.target.value)} // Update state on input change
+                onChange={(e) => {
+                  const formattedGST = formatGSTNumber(e.target.value);
+                  setGST(formattedGST); // Update state with formatted GST
+
+                  // Automatically verify if the GST number is 15 digits
+                  if (formattedGST.length === 15) {
+                    handleVerify(formattedGST); // Call the verification function
+                  }
+                }} // Update state on input change with formatting
                 className="w-full border border-[#4154f1] rounded-lg p-2"
               />
-              <button
-              className={`mt-2 p-2 rounded-md ${isVerified ? 'bg-green-500' : 'bg-[#4154f1]'} text-white hover:${isVerified ? 'bg-green-600' : 'bg-[#4154f1]'}`}
-              onClick={isVerified ? null : handleVerify}
-              >
-              {isVerified ? 'Verified' : 'Verify'}
-            </button>
+              {/* Verification Status Indicator */}
+              {status && (isVerified ? (
+                <span className="absolute right-2 top-2 text-green-500">
+                  <FaCheckCircle /> {/* Green tick icon */}
+                </span>
+              ) : (
+                <span className="absolute right-2 top-2 text-red-500">
+                  <FaTimesCircle /> {/* Red error icon */}
+                </span>
+              ))}
+              
             </div>
             <div className="relative mb-4">
               <span className="absolute -top-3 left-2 text-sm bg-white px-1 text-black">
@@ -494,7 +519,7 @@ const GstInvoice = () => {
       </div>
       <div className="p-5 text-[#3D3F4B] ">
       <div className="flex justify-between">
-        <h2 className="text-[1.6rem] text-black font-medium mb-4 ">Items Details -</h2>
+        <h2 className="text-[1.6rem] text-black font-medium mb-4 ">Items Details</h2>
         {/* Edit/Add Items Button */}
         <button
           onClick={addRow}
@@ -523,7 +548,7 @@ const GstInvoice = () => {
       <th className="border-b-2 border-r-2 border-black text-black font-normal text-lg">Amount</th>
     </tr>
   </thead>
-  <tbody>
+   <tbody>
     {rows.map((row, index) => (
       <tr key={index} className="border-t">
         <td className="p-1 border-r-2 border-black text-center">{index + 1}</td>
@@ -602,8 +627,8 @@ const GstInvoice = () => {
           />
         </td>
       </tr>  
-    ))}
-    <tr className="font-semibold bg-[#989baaa7] text-black">
+      ))}
+     <tr className="font-semibold bg-[#989baaa7] text-black">
                 <td colSpan="3" className="p-3 text-right border-r-2 border-black">
                   TOTAL
                 </td>
@@ -619,8 +644,8 @@ const GstInvoice = () => {
                 <td className="p-3 text-right">{totalAmount}</td>
               </tr>
 
-  </tbody>
-</table>
+       </tbody>
+      </table>
 
         </div>
         <div className="flex items-start justify-end">
