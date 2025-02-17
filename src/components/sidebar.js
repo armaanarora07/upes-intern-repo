@@ -8,7 +8,7 @@ import {
 
 const Sidebar = () => {
   return (
-    <div className="bg-[#F9FAFC] w-64 h-screen flex flex-col  px-6 py-4 shadow-lg">
+    <div className="bg-[#F9FAFC] w-64 h-screen flex flex-col px-6 py-4 shadow-lg">
       <div>
         <div>
           <h1 className="text-[#4154f1] text-2xl font-bold mb-2">SCAN T</h1>
@@ -70,7 +70,7 @@ const Sidebar = () => {
             <li className="mb-4 flex items-center">
               <FaFileInvoice className="text-[#4154f1] mr-4" />
               <NavLink
-                to="/gst-invoice"
+                to="/inventory"
                 className={({ isActive }) =>
                   isActive ? 'text-[#4154f1] font-semibold' : 'text-black font-medium'}
               >
