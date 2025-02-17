@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { useSelector } from "react-redux";
 
 const EWayBillRequest = () => {
   const [vehicleNo, setVehicleNo] = useState("");
@@ -7,7 +8,7 @@ const EWayBillRequest = () => {
   const [docNo, setDocNo] = useState("");
   const [response, setResponse] = useState(null);
   const [loading, setLoading] = useState(false);
-  const token = localStorage.getItem('authToken');
+  const authToken = useSelector((state) => state.auth.authToken); // access from global auth state 
 
 
   const handleSubmit = async (e) => {
@@ -28,7 +29,7 @@ const EWayBillRequest = () => {
         requestData,
         {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${authToken}`,
 
             "Content-Type": "application/json",
           },
@@ -69,7 +70,6 @@ const EWayBillRequest = () => {
         </label>
         
         
-
         <label className="block mb-4">
           Document No:
           <input
