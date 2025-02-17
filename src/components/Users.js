@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import {FaMoneyCheckAlt} from 'react-icons/fa';
 
 const Users = () => {
   const [data, setData] = useState([]);
@@ -59,8 +60,12 @@ const Users = () => {
   if (error) return <div>Error: {error}</div>;
 
   return (
-    <div className="p-4">
-      <h1 className="text-2xl text-[#4154f1] font-bold mb-4">Users Transactions</h1>
+    <div className="p-6">
+
+      <div className="flex items-center space-x-3 text-[#4154f1] font-bold text-3xl mb-6">
+        <FaMoneyCheckAlt className="text-4xl" />
+        <span>Users Transactions</span>
+      </div>
       
       <input
         type="text"
@@ -70,6 +75,7 @@ const Users = () => {
         className="mb-4 p-2 border border-gray-300 rounded w-full max-w-md"
       />
       
+      <div className="p-2 overflow-x-auto">
       <table className="w-[1150px] border-collapse border border-gray-300">
         <thead>
           <tr className="bg-gray-100">
@@ -107,6 +113,7 @@ const Users = () => {
           ))}
         </tbody>
       </table>
+      </div>
     </div>
   );
 };
