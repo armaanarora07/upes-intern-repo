@@ -3,6 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom"; // for navigation
 import { useDispatch } from "react-redux";
 import { login,verifyotp } from "../slices/authSlice.js";
+import { setEway } from "../slices/ewaySlice.js";
 import { useSelector } from "react-redux";
 
 const Login = () => {
@@ -13,8 +14,9 @@ const Login = () => {
   const [successMessage, setSuccessMessage] = useState("");
   const navigate = useNavigate(); // Hook to navigate to Dashboard
   const dispatch = useDispatch(); // Hook to dispatch the authToken
-  const authToken = useSelector((state) => state.auth.authToken); //// Store initial authToken - access from global auth state 
-  const verifiedotp = useSelector((state) => state.auth.otp);
+  const authToken = useSelector((state) => state.auth.authToken); //access from global auth state 
+  const verifiedotp = useSelector((state) => state.auth.otp); 
+
   // Handle phone number submission and get authToken
   const handlePhoneSubmit = async (e) => {
     e.preventDefault();
@@ -63,10 +65,10 @@ const Login = () => {
           },
         }
       );
-
       if (response.status === 200 && response.data.authToken) {
-        const newAuthToken = response.data.authToken;
         dispatch(login(response.data.authToken));
+        console.log(response.data.user.eway_enabled);
+        dispatch(setEway(response.data.user.eway_enabled));
         dispatch(verifyotp(true));
         setSuccessMessage("OTP verified successfully.");
         setErrorMessage(""); // Clear any existing error message
