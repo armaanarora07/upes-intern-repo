@@ -1,13 +1,19 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
 import axios from "axios";
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { setEway } from "../slices/ewaySlice";
 
 const EWayBillSystem = () => {
   const [serviceEnabled, setServiceEnabled] = useState(false);
   const [credentials, setCredentials] = useState({ x: "", y: "" });
   const navigate = useNavigate(); // Initialize navigation
+  const dispatch = useDispatch();
+  const authToken = useSelector((state) => state.auth.authToken); // access from global auth state 
+  const ewayEnabled = useSelector((state) => state.eway.eway_enabled); // access from global eway state 
 
-  // Check service status on component mount
+  /* Check service status on component mount
   useEffect(() => {
     const storedStatus = localStorage.getItem("ewayEnabled");
     if (storedStatus === "true") {
@@ -17,14 +23,17 @@ const EWayBillSystem = () => {
     }
   }, []);
 
+  */
+
   // Redirect to another page when service is enabled
   useEffect(() => {
-    if (serviceEnabled) {
+    console.log(ewayEnabled);
+    if (ewayEnabled) {
       navigate("/EWayBillRequest"); // Redirect to the next page after service is enabled
-      console.log("Service Enabled:", serviceEnabled);
+      console.log("Service Enabled:", ewayEnabled);
 
     }
-  }, [serviceEnabled, navigate]);
+  }, [ewayEnabled, navigate]);
 
   const checkServiceStatus = async () => {
     try {
@@ -32,7 +41,7 @@ const EWayBillSystem = () => {
         "https://fyntl.sangrahinnovations.com/user/eway_status",
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+            Authorization: `Bearer ${authToken}`,
           },
         }
       );
@@ -60,15 +69,16 @@ const EWayBillSystem = () => {
         },
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+            Authorization: `Bearer ${authToken}`,
             "Content-Type": "application/json",
           },
         }
       );
 
       if (response.data.status) {
-        setServiceEnabled(true);
-        localStorage.setItem("ewayEnabled", "true");
+        //setServiceEnabled(true);
+        //localStorage.setItem("ewayEnabled", "true");
+        dispatch(setEway(true));
         alert("Services enabled: " + response.data.message);
       } else {
         alert(response.data.message || "Setup failed");
