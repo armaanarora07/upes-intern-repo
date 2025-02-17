@@ -16,6 +16,7 @@ import Helps from "./components/Helps";
 import Settings from "./components/Settings";
 import Logout from "./components/Logout";
 import Inventory from "./components/Inventory";
+import UrdInvoice from "./components/UrdInvoice";
 
 function Home() {
   return (
@@ -29,6 +30,8 @@ function Home() {
           <Route path="/generate-bill" element={<GenerateBill />} />
           <Route path="/generated-bills" element={<GeneratedBills />} />
           <Route path="/gst-invoice" element={<GstInvoice />} />
+          <Route path="/invoice" element={<UrdInvoice />} />
+          <Route path="/inventory" element={<Inventory/>}></Route>
           <Route path="/eway-bills" element={<EwayBills />} />
           <Route path="/EWayBillRequest" element={<EWayBillRequest />} />
           <Route path="/payments" element={<Payments />} />
