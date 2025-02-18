@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { FaBriefcase,FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
-import YourBusiness from './YourBusiness';
 import { useSelector } from "react-redux";
 
 const AddBusiness = () => {

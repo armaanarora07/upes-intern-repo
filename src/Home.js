@@ -2,7 +2,6 @@ import { Routes, Route } from "react-router-dom";
 import Sidebar from "./components/sidebar";
 import Dashboard from "./components/Dashboard";
 import AddBusiness from "./components/AddBusiness";
-import YourBusiness from "./components/YourBusiness";
 import GenerateBill from "./components/GenerateNewBill";
 import GeneratedBills from "./components/GeneratedBills";
 import GstInvoice from "./components/GstInvoice";
@@ -17,6 +16,8 @@ import Settings from "./components/Settings";
 import Logout from "./components/Logout";
 import Inventory from "./components/Inventory";
 import UrdInvoice from "./components/UrdInvoice";
+import UpdateBusiness from "./components/UpdateBusiness";
+import MyBusiness from "./components/MyBusiness";
 
 function Home() {
   return (
@@ -26,7 +27,8 @@ function Home() {
         <Routes>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/add-business" element={<AddBusiness />} />
-          <Route path="/your-business" element={<YourBusiness />} />
+          <Route path="/my-business" element={<MyBusiness />} />
+          <Route path="/user-business" element={<UpdateBusiness />} />
           <Route path="/generate-bill" element={<GenerateBill />} />
           <Route path="/generated-bills" element={<GeneratedBills />} />
           <Route path="/gst-invoice" element={<GstInvoice />} />

@@ -40,11 +40,11 @@ const Sidebar = () => {
             <li className="mb-4 flex items-center">
               <FaFileAlt className="text-[#4154f1] mr-4" />
               <NavLink
-                to="/your-business"
+                to="/my-business"
                 className={({ isActive }) =>
                   isActive ? 'text-[#4154f1] font-semibold' : 'text-black font-medium'}
               >
-                Your Business
+                My Business
               </NavLink>
             </li>
             <li className="mb-4 flex items-center">

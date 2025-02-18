@@ -377,51 +377,6 @@ const GstInvoice = () => {
             </div>
           </div>
         </div>
-        <div className="w-1/5 p-2 relative">
-          <div className=" space-y-4">
-            <div className="flex  items-end space-x-4">
-              {/* <h1 htmlFor="billNo" className="font-semibold w-[4rem] flex-shrink-0  ">
-               SN No:{billNo}
-              </h1> 
-              <div className="space-y-2">
-                {billNo.map((bill, index) => (
-                
-                  <>
-                  <h1 
-                    key={index}
-                    className="font-semibold w-[4rem] flex-shrink-0"
-                  >
-                    SN No: {bill.sn_no}
-                  </h1>
-                  <h2>{bill.message}</h2>
-                  </>
-                ))}
-              </div>
-            
-              {/* <input
-                type="text"
-                id="billNo"
-                className="border-b-2 border-black outline-none focus:border-blue-500 w-full"
-                placeholder="Enter Bill No"
-                value={billNo} 
-                onChange={(e) => setBillNo(e.target.value)} 
-              /> */}
-
-              {/* <p className="text-black">{billNo}</p> */}
-            </div>
-
-            <div className="flex items-center space-x-4">
-              <label htmlFor="billDate" className="font-semibold flex-shrink-0">
-                Bill Date:
-              </label>
-              <input
-                type="date"
-                id="billDate"
-                className="border-b-2 border-black outline-none focus:border-blue-500 w-full"
-              />
-            </div>
-          </div>
-        </div>
       </div>
       <div className="flex space-x-2">
         {/* Left Section */}
