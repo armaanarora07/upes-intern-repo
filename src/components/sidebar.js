@@ -64,7 +64,7 @@ const Sidebar = () => {
                 className={({ isActive }) =>
                   isActive ? 'text-[#4154f1] font-semibold' : 'text-black font-medium'}
               >
-                Transcations
+                Transactions
               </NavLink>
             </li>
             <li className="mb-4 flex items-center">
@@ -84,29 +84,9 @@ const Sidebar = () => {
                 className={({ isActive }) =>
                   isActive ? 'text-[#4154f1] font-semibold' : 'text-black font-medium'}
               >
-                E-way Bills
+                Generate E-way Bill
               </NavLink>
             </li>
-            {/* <li className="mb-4 flex items-center">
-              <FaMoneyBillWave className="text-gray-500 mr-4" />
-              <NavLink
-                to="/payments"
-                className={({ isActive }) =>
-                  isActive ? 'text-[#4154f1] font-semibold' : 'text-gray-700'}
-              >
-                Payments
-              </NavLink>
-            </li> */}
-            {/* <li className="mb-4 flex items-center">
-              <FaChartLine className="text-gray-500 mr-4" />
-              <NavLink
-                to="/activity"
-                className={({ isActive }) =>
-                  isActive ? 'text-[#4154f1] font-semibold' : 'text-gray-700'}
-              >
-                Activity
-              </NavLink>
-            </li> */}
             <li className="mb-4 flex items-center">
               <FaUsers className="text-[#4154f1] mr-4" />
               <NavLink
@@ -134,7 +114,7 @@ const Sidebar = () => {
             </li>
             <li className="mb-4 flex items-center ">
               <FaQuestionCircle className="text-[#4154f1] mr-4" />
-              <NavLink to="/helps" className={({ isActive }) =>   isActive ? 'text-[#4154f1] font-semibold' : 'text-black font-medium'}  >   Helps </NavLink>
+              <NavLink to="/helps" className={({ isActive }) => isActive ? 'text-[#4154f1] font-semibold' : 'text-black font-medium'} > Help </NavLink>
             </li>
           </ul>
         </div>
@@ -143,8 +123,8 @@ const Sidebar = () => {
         <ul>
           <li className="mb-4 flex items-center">
             <FaCog className="text-[#4154f1] mr-4" />
-            <NavLink to="/settings" className={({ isActive }) =>  isActive ? 'text-[#4154f1] font-semibold' : 'text-black font-medium'}>
-          Settings
+            <NavLink to="/settings" className={({ isActive }) => isActive ? 'text-[#4154f1] font-semibold' : 'text-black font-medium'}>
+              Settings
             </NavLink>
           </li>
           <li className="flex items-center">
@@ -159,7 +139,6 @@ const Sidebar = () => {
           </li>
         </ul>
       </div>
-
       <p className="text-gray-400 text-xs">version 1.0.0</p>
     </div>
   );
