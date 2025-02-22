@@ -40,9 +40,15 @@ const BankDetails = () => {
     setbankName(bank.bankName);
   }
 
+  const handleSelection = (bank) =>{
+    setSelectedBank(bank);
+    dispatch(SelectedBank(bank));
+    closeModal();
+  }
+
   const handleAddBankDetails = () => {
     dispatch(addBankDetails({ accountHolderName, accountNumber, ifscCode, branchName, bankName }));
-    dispatch(selectedBank({ accountHolderName, accountNumber, ifscCode, branchName, bankName }));
+    dispatch(SelectedBank({ accountHolderName, accountNumber, ifscCode, branchName, bankName }));
     setSelectedBank({ accountHolderName, accountNumber, ifscCode, branchName, bankName });
     closeModal();
   };
@@ -159,7 +165,7 @@ const BankDetails = () => {
                 <ul className="mt-2 space-y-2 max-h-60 overflow-y-auto border border-gray-300 rounded-lg p-2">
                   {bankDetails.filter(bank => bank.accountHolderName.toLowerCase().includes(searchTerm.toLowerCase())).map((bank, index) => (
                     <li key={index} className="cursor-pointer p-2 rounded-lg bg-gray-100 hover:bg-gray-200 flex justify-between items-center">
-                      <div onClick={() => { setSelectedBank(bank); closeModal(); }} className="flex-1">
+                      <div onClick={() => { handleSelection(bank); }} className="flex-1">
                         {bank.bankName || ''} - {bank.accountNumber}
                       </div>
                       <div className="flex-end">
