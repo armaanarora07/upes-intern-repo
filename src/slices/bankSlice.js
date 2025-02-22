@@ -10,11 +10,21 @@ const loadBankDetailsFromLocalStorage = () => {
   }
 };
 
+const loadSelectedBankDetailsFromLocalStorage = () => {
+  try {
+    const storedBanks = JSON.parse(localStorage.getItem('selectedBankDetails'));
+    return storedBanks; // Return an empty array if storedBanks is null
+  } catch (error) {
+    console.error("Failed to parse bank details from local storage:", error);
+    return []; // Return an empty array on error
+  }
+};
+
 const bankSlice = createSlice({
   name: 'banks',
   initialState: {
     bankDetails: loadBankDetailsFromLocalStorage(),
-    selectedBankIndex: null,
+    selectedGBank: loadSelectedBankDetailsFromLocalStorage(),
   },
   reducers: {
     addBankDetails: (state, action) => {
@@ -23,10 +33,12 @@ const bankSlice = createSlice({
       localStorage.setItem('bankDetails', JSON.stringify(state.bankDetails));
     },
     SelectedBank: (state, action) => {
-      state.selectedBankIndex = action.payload;
+      state.selectedGBank = action.payload;
+      localStorage.setItem('selectedBankDetails', JSON.stringify(state.selectedGBank));
     },
     clearSelectedBank: (state) => {
-      state.selectedBankIndex = null;
+      state.selectedGBank = [];
+      localStorage.removeItem('selectedBankDetails');
     },
     editBankDetails: (state, action) => {
       const { index, updatedBank } = action.payload;

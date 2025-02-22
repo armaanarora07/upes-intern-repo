@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { addBankDetails, editBankDetails, SelectedBank} from '../slices/bankSlice';
+import { addBankDetails, clearSelectedBank, editBankDetails, SelectedBank} from '../slices/bankSlice';
 import { FaEdit, FaTrash, FaTimes } from 'react-icons/fa';
 
 const BankDetails = () => {
   const dispatch = useDispatch();
-  const { bankDetails } = useSelector((state) => state.banks);
-  const [selectedBank, setSelectedBank] = useState(null);
+  const { bankDetails, selectedGBank } = useSelector((state) => state.banks);
+  const [selectedBank, setSelectedBank] = useState(selectedGBank);
   const [activeModal, setActiveModal] = useState(null);
   const [accountNumber, setAccountNumber] = useState('');
   const [accountHolderName, setAccountHolderName] = useState('');
@@ -61,6 +61,7 @@ const BankDetails = () => {
   const handleRemoveBank = () => {
     if (selectedBank) {
       setSelectedBank(null);
+      dispatch(clearSelectedBank());
     }
   };
 
