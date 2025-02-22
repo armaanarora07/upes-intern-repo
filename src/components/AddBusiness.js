@@ -24,6 +24,38 @@ const AddBusiness = () => {
 
   };
 
+  const handleAddBusiness = async () => {
+
+    if(!isVerified){
+      alert('GST Not Verified');
+    }
+
+    const requestBody = {
+      status: "yes",
+      // Include other necessary fields here, e.g., gstin, legalName, etc.
+    };
+  
+    try {
+      const response = await axios.post('https://fyntl.sangrahinnovations.com/user/business', requestBody, {
+        headers: {
+          Authorization: `Bearer ${authToken}`, // Include the auth token if required
+          "Content-Type": "application/json",
+        },
+      });
+  
+      if (response.status === 200) {
+        // Handle successful response
+        console.log('Business added successfully:', response.data);
+      } else {
+        console.error('Failed to add business:', response.data);
+      }
+    } catch (error) {
+      console.error('Error adding business:', error);
+      alert('Failed to Add Business');
+    }
+  };
+  
+
   const formatGSTNumber = (gst) => {
     return gst.toUpperCase().trim(); // Convert to uppercase and trim whitespace
   };
@@ -82,7 +114,7 @@ const AddBusiness = () => {
             {/* GSTIN Input */}
             <div className="relative mb-4">
               <span className="absolute -top-3 left-2 text-sm bg-white px-1 text-black">
-                GSTIN NUMBER
+                GSTIN Number
               </span>
               <input
                 type="text"
@@ -171,7 +203,7 @@ const AddBusiness = () => {
 
             {/* Buttons */}
             <div className="flex space-x-4 mt-4">
-              <button className="bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 transition duration-200 mr-1">
+              <button className="bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 transition duration-200 mr-1" onClick={handleAddBusiness}>
                 Add Business
               </button>
             </div>
