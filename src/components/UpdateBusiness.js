@@ -1,54 +1,95 @@
 import React, { useState,useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation,useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { FaBriefcase,FaCheckCircle, FaTimesCircle, FaTrashAlt, FaPlus, FaMapMarkerAlt } from 'react-icons/fa';
-import { useSelector } from "react-redux";
+import { FaBriefcase,FaCheckCircle, FaTrashAlt, FaPlus, FaMapMarkerAlt, FaEdit } from 'react-icons/fa';
+import { useSelector, useDispatch } from "react-redux";
+import {fetchBusinesses} from '../slices/businessSlice.js';
 
 const UpdateBusiness = () => {
-  const [gstin, setGstin] = useState('');
+  const [gstin, setGstin] = useState(''); 
+  const [skippedgstin, setSkippedGstin] = useState(''); 
   const [username,setUsername] = useState('');
   const [legalName, setLegalName] = useState('');
   const [tradeName, setTradeName] = useState('');
   const [shippingAddress1, setShippingAddress1] = useState('');
   const [shippingAddress2, setShippingAddress2] = useState('');
-  const [legalAddress, setLegalAddress] = useState('');
-  const [hsnCode, setHsnCode] = useState('');
-  const [isVerified, setIsVerified] = useState(false);
+  const [city, setCity] = useState('');
+  const [state, setState] = useState('');
+  const [pincode, setPincode] = useState('');
+  const [hsnCode, setHsnCode] = useState();
   const authToken = useSelector((state) => state.auth.authToken); // access from global auth state 
   const location = useLocation();
   const [showHsnPopup, setShowHsnPopup] = useState(false);
-  const [availableHsnCodes, setAvailableHsnCodes] = useState(['1234', '5678', '91011']); // Dummy HSN codes
+  const [availableHsnCodes, setAvailableHsnCodes] = useState([]); // HSN codes
   const [showAddressPopup, setShowAddressPopup] = useState(false); // State to control address popup visibility
   const [showAddSkippedBillPopup, setShowAddSkippedBillPopup] = useState(false); // State to control Add Skipped Bill popup visibility
   const [serialNo, setSerialNo] = useState('');
   const [date, setDate] = useState('');
+  const [isUpdated, setIsUpdated] = useState(false); // State to track if the serial number was updated
+  const { businesses } = useSelector((state) => state.business);
+  const navigate = useNavigate();
 
-  useEffect(()=>{
+  const dispatch = useDispatch();
+
+   useEffect(()=>{
+
+   dispatch(fetchBusinesses());
 
    const getQueryParams = () => {
     return new URLSearchParams(location.search);
-  };
+   };
    
-   const fetchdata = () =>{
+   const fetchBusinessData = () => {
     const queryParams = getQueryParams();
-    const id = queryParams.get('id'); // Access the 'id' query parameter
-    setGstin(queryParams.get('gstin'));
-    setUsername(queryParams.get('user'));
-    setLegalName(queryParams.get('legalname'));
-    setTradeName(queryParams.get('tradename'));
-    setShippingAddress1(queryParams.get('shippingAddress1'));
-    setShippingAddress2(queryParams.get('shippingAddress2'));
-   }
+    const Id = queryParams.get('id'); // Access the 'id' query parameter
+    const business = businesses.find(b => b._id === Id); // Find the specific business by _id
 
-   fetchdata();
-  },[]);
+    if (business) {
+      setGstin(business.gstin);
+      setUsername(business.gst_username);
+      setLegalName(business.legal_name);
+      setTradeName(business.trade_name);
+      setShippingAddress1(business.shipping_address.address1);
+      setShippingAddress2(business.shipping_address.address2);
+      setCity(business.shipping_address.city);
+      setState(business.shipping_address.state);
+      setPincode(business.shipping_address.pincode);
+      setAvailableHsnCodes(business.hsns);
+      // Set other fields as necessary
+    }
+  };
+
+  fetchBusinessData();
+
+  },[location.search,businesses]);
+
+  useEffect(() => {
+
+    const fetchSnNo = async () => {
+      try {
+        const response = await axios.get(`https://fyntl.sangrahinnovations.com/user/mySnNo?gstin=${gstin}`, {
+          headers: {
+            Authorization: `Bearer ${authToken}`, // Include the auth token if required
+          },
+        });
+
+        if (response.data.status) {
+          const snNo = response.data.sn_no; // Extract the SN No from the response
+          setSerialNo(snNo['2024-25']); // Set the serial number for the specific year
+        } else {
+          console.error('Failed to fetch SN No:', response.data.message);
+        }
+      } catch (error) {
+        console.error('Error fetching SN No:', error);
+      }
+    };
+
+    fetchSnNo(); // Call the function to fetch SN No when the component mounts or GSTIN changes
+  }, [gstin, authToken]); // Dependency array includes gstin and authToken
+
 
   const handleShowHsnPopup = () => {
     setShowHsnPopup(true); // Show the popup
-  };
-
-  const handleDeleteHsnCode = (code) => {
-    setAvailableHsnCodes(availableHsnCodes.filter(hsn => hsn !== code)); // Remove the selected HSN code
   };
 
   const handleShowAddressPopup = () => {
@@ -58,6 +99,119 @@ const UpdateBusiness = () => {
   const handleShowAddSkippedBillPopup = () => {
     setShowAddSkippedBillPopup(true); // Show the Add Skipped Bill popup
   };
+
+  const handleAddHsnCode = async (hsnCode) =>{
+
+    const requestBody = {
+      gstin: gstin, // Use the current GSTIN
+      hsn: hsnCode, // HSN code to be added
+    };
+
+    try {
+      const response = await axios.put('https://fyntl.sangrahinnovations.com/user/hsn', requestBody, {
+        headers: {
+          Authorization: `Bearer ${authToken}`, // Include the auth token if required
+          "Content-Type": "application/json",
+        },
+      });
+
+    } catch (error) {
+      console.error('Error updating serial number:', error);
+      alert('Failed to Update Serial Number');
+    }
+    setHsnCode('');
+    dispatch(fetchBusinesses());
+
+  }
+
+  const handleDeleteHsnCode = async (hsn) => {
+
+    const requestBody = {
+      gstin: gstin, // Use the current GSTIN
+      hsn: hsn, // HSN code to be deleted
+    };
+   
+    try {
+      const response = await axios.delete('https://fyntl.sangrahinnovations.com/user/hsn', {
+        headers: {
+          Authorization: `Bearer ${authToken}`, // Include the auth token if required
+          "Content-Type": "application/json",
+        },
+        data: requestBody, // Include the request body
+      });
+
+    } catch (error) {
+      console.error('Error deleting HSN code:', error);
+      alert('Failed to delete HSN code');
+    }
+
+    dispatch(fetchBusinesses());
+  };
+
+  const handleEditSnNo = async () => {
+    const requestBody = {
+      sn_no: serialNo, // Use the current serial number
+      gstin: gstin, // Include the GSTIN
+    };
+
+    try {
+      const response = await axios.post('https://fyntl.sangrahinnovations.com/user/mySnNo', requestBody, {
+        headers: {
+          Authorization: `Bearer ${authToken}`, // Include the auth token if required
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.status === 200) {
+        console.log('Serial number updated successfully:', response.data);
+        setIsUpdated(true); // Set the updated state to true
+        setTimeout(() => setIsUpdated(false), 2000); // Reset the state after 2 seconds
+      } else {
+        console.error('Failed to update serial number:', response.data);
+      }
+    } catch (error) {
+      console.error('Error updating serial number:', error);
+      alert('Failed to Update Serial Number');
+    }
+  };
+
+  const handleShippingAddress = async () =>{
+    
+    setShowAddressPopup(false);
+
+    const requestBody = {
+      gstin: gstin,
+      address1: shippingAddress1,
+      address2: shippingAddress2,
+      pincode:pincode,
+      state:state,
+      city:city
+    };
+
+    try {
+      const response = await axios.put('https://fyntl.sangrahinnovations.com/user/address', requestBody, {
+        headers: {
+          Authorization: `Bearer ${authToken}`, // Include the auth token if required
+          "Content-Type": "application/json",
+        },
+      });
+
+    } catch (error) {
+      console.error('Error updating Shipping Address:', error);
+      alert('Failed to Update Shipping Address');
+    }
+
+    dispatch(fetchBusinesses());
+  }
+
+  const handleSkippedBill = ()=>{
+     if(skippedgstin && serialNo && date){
+     navigate(`/gst-invoice?gstin=${skippedgstin}&s.no=${serialNo}&date=${date}`);
+     }else{
+     alert('Required Fields are missing !');
+     }
+  }
+
 
   return (
     <div className='p-6'>
@@ -91,14 +245,22 @@ const UpdateBusiness = () => {
               <span className="font-semibold">Trade Name</span>
               <span className="text-gray-700">{tradeName}</span>
             </div>
-            <div className="flex justify-between items-center">
-              <span className="font-semibold">Serial Number</span>
-              <input
-                type="text"
-                className="border border-[#4154f1] rounded-lg p-2 w-1/2 text-gray-700"
-                value={serialNo}
-                onChange={(e) => setSerialNo(e.target.value)}
-              />
+            <div className="flex items-center">
+              <span className="font-semibold mr-2">Serial Number</span>
+              <div className="flex items-center">
+                <input
+                  type="number"
+                  className="border border-[#4154f1] rounded-lg p-1 w-1/3 text-gray-700"
+                  value={serialNo}
+                  onChange={(e) => setSerialNo(e.target.value)}
+                />
+                <button 
+                  className="ml-2 text-blue-500 hover:text-blue-700"
+                  onClick={handleEditSnNo} // Call the edit function on click
+                >
+                  {isUpdated ? <FaCheckCircle className="text-green-500" /> : <FaEdit />} {/* Show check icon if updated */}
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -139,13 +301,13 @@ const UpdateBusiness = () => {
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white p-6 rounded-lg shadow-lg w-1/3"> {/* Increased width of the popup */}
             <h2 className="font-semibold text-lg mb-4 text-center">Available HSN Codes</h2>
-            <div className="mb-4 border-b pb-4"> {/* Added bottom border and padding */}
+            <div className="mb-4 border-b pb-4 h-48 overflow-y-auto"> {/* Added bottom border and padding */}
               {availableHsnCodes.map((code, index) => (
                 <div key={index} className="flex justify-between items-center mb-2 p-2 hover:bg-gray-100 rounded"> {/* Added hover effect and padding */}
-                  <span>{code}</span>
+                  <span>{code.hsn}</span>
                   <FaTrashAlt 
                     className="text-red-500 cursor-pointer" 
-                    onClick={() => handleDeleteHsnCode(code)} 
+                    onClick={() => handleDeleteHsnCode(code.hsn)} 
                   />
                 </div>
               ))}
@@ -162,7 +324,9 @@ const UpdateBusiness = () => {
               />
             </div>
             <div className="flex space-x-4 mt-4">
-              <button className="bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 transition duration-200 w-full">
+               <button className="bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 transition duration-200 w-full"
+               onClick={()=>{handleAddHsnCode(hsnCode)}}
+               >
                 Add HSN
               </button>
               <button 
@@ -206,8 +370,8 @@ const UpdateBusiness = () => {
               <input
                 type="text"
                 className="w-full border border-[#4154f1] rounded-lg p-2"
-                value={shippingAddress1} // Update to the correct state variable
-                onChange={(e) => setShippingAddress1(e.target.value)} 
+                value={city} // Update to the correct state variable
+                onChange={(e) => setCity(e.target.value)} 
               />
             </div>
 
@@ -216,8 +380,8 @@ const UpdateBusiness = () => {
               <input
                 type="text"
                 className="w-full border border-[#4154f1] rounded-lg p-2"
-                value={shippingAddress1} // Update to the correct state variable
-                onChange={(e) => setShippingAddress1(e.target.value)} 
+                value={state} // Update to the correct state variable
+                onChange={(e) => setState(e.target.value)} 
               />
             </div>
 
@@ -226,13 +390,13 @@ const UpdateBusiness = () => {
               <input
                 type="text"
                 className="w-full border border-[#4154f1] rounded-lg p-2"
-                value={shippingAddress1} // Update to the correct state variable
-                onChange={(e) => setShippingAddress1(e.target.value)} 
+                value={pincode} // Update to the correct state variable
+                onChange={(e) => setPincode(e.target.value)} 
               />
             </div>
 
             <div className="flex space-x-4 mt-4">
-              <button className="bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 transition duration-200 w-full" onClick={() => setShowAddressPopup(false)}>
+              <button className="bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 transition duration-200 w-full" onClick={() => handleShippingAddress()}>
                 Save Address
               </button>
               <button className="bg-gray-300 text-black p-2 rounded-lg hover:bg-gray-400 transition duration-200 w-full" onClick={() => setShowAddressPopup(false)}>
@@ -253,8 +417,8 @@ const UpdateBusiness = () => {
               <input
                 type="text"
                 className="w-full border border-[#4154f1] rounded-lg p-2"
-                value={gstin}
-                onChange={(e) => setGstin(e.target.value)} 
+                value={skippedgstin}
+                onChange={(e) => setSkippedGstin(e.target.value)} 
               />
             </div>
 
@@ -279,7 +443,7 @@ const UpdateBusiness = () => {
             </div>
 
             <div className="flex space-x-4 mt-4">
-              <button className="bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 transition duration-200 w-full">
+              <button className="bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 transition duration-200 w-full" onClick={()=>handleSkippedBill()}>
                 Confirm
               </button>
               <button 
