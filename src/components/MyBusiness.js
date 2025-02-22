@@ -4,14 +4,12 @@ import {FaBriefcase, FaEdit, FaPlusCircle} from 'react-icons/fa';
 import { useNavigate} from 'react-router-dom';
 import {checkAndFetchBusinesses} from '../slices/businessSlice.js';
 
-const BusinessCard = ({ id,user,gstin, legalName, tradeName,shippingAddress1,shippingAddress2,hsns}) => {
-  const [isEditing, setIsEditing] = useState(false);
-  const [updatedLegalName, setUpdatedLegalName] = useState(legalName);
-  const [updatedTradeName, setUpdatedTradeName] = useState(tradeName);
+const BusinessCard = ({ id,gstin, legalName, tradeName}) => {
+
   const navigate = useNavigate();
 
   const handleClick = () => {
-     navigate(`/user-business?id=${id}&user=${user}&gstin=${gstin}&legalname=${legalName}&tradename=${tradeName}&shippingAddress1=${shippingAddress1}&shippingAddress2=${shippingAddress2}&hsns=${hsns}`);
+     navigate(`/user-business?id=${id}`);
   };
 
   return (
@@ -131,14 +129,10 @@ const MyBusiness = () => {
               {businesses.map((business, index) => (
                 <BusinessCard
                   key={index}
-                  id = {business.user_id}
-                  user={business.gst_username}
+                  id = {business._id}
                   gstin={business.gstin}
                   legalName={business.legal_name}
                   tradeName={business.trade_name}
-                  shippingAddress1={business.shipping_address.address1}
-                  shippingAddress2={business.shipping_address.address2}
-                  hsns={business.hsns}
                 />
               ))}
               <div className="bg-white shadow-xl border rounded-3xl p-6 w-full h-auto transform transition-all duration-300 hover:scale-105 flex items-center justify-center cursor-pointer" onClick={() => navigate('/add-business')}>
