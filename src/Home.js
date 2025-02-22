@@ -18,16 +18,12 @@ import Inventory from "./components/Inventory";
 import UrdInvoice from "./components/UrdInvoice";
 import UpdateBusiness from "./components/UpdateBusiness";
 import MyBusiness from "./components/MyBusiness";
-import EWayTransactions from "./components/EwayTransactions";
-import InvoicePage from "./components/GenerateInvoice";
 
 function Home() {
   return (
     <div className="flex">
-      <div className="fixed top-0 left-0 h-screen w-64 bg-[#F9FAFC] shadow-lg"> {/* Fixed Sidebar */}
-        <Sidebar /> {/* Sidebar visible for all protected pages */}
-      </div>
-      <div className="flex-grow ml-64"> {/* Right pane with scroll */}
+      <Sidebar /> 
+      <div className="flex-grow">
         <Routes>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/add-business" element={<AddBusiness />} />
@@ -36,12 +32,10 @@ function Home() {
           <Route path="/generate-bill" element={<GenerateBill />} />
           <Route path="/generated-bills" element={<GeneratedBills />} />
           <Route path="/gst-invoice" element={<GstInvoice />} />
-          <Route path='/generate-invoice' element={<InvoicePage/>}/>
           <Route path="/invoice" element={<UrdInvoice />} />
           <Route path="/inventory" element={<Inventory/>}></Route>
           <Route path="/eway-bills" element={<EwayBills />} />
           <Route path="/EWayBillRequest" element={<EWayBillRequest />} />
-          <Route path="/eway-transactions" element={<EWayTransactions/>}/>
           <Route path="/payments" element={<Payments />} />
           <Route path="/activity" element={<Activity />} />
           <Route path="/users" element={<Users />} />
