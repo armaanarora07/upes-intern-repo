@@ -182,7 +182,9 @@ const GeneratedBills = () => {
               <tr key={bill._id}>
                 <td className="border px-4 py-2">{bill.sn_no}</td>
                 <td className="border px-4 py-2">{bill.name}</td>
-                <td className="border px-4 py-2">{new Date(bill.created_at).toLocaleDateString()}</td>
+                <td className="border px-4 py-2"> 
+                  {new Date(bill.created_at).toLocaleString([], { hour12: true, timeStyle: 'short', dateStyle: 'medium' })}
+                </td>
                 <td className="border px-4 py-2">{bill.total_value || "N/A"}</td>
                 <td className="border px-4 py-2">
                   <span className={`${bill.generated ? "text-green-500" : "text-red-500"}`}>
@@ -190,13 +192,12 @@ const GeneratedBills = () => {
                   </span>
                 </td>
                 <td className="border px-4 py-2">
-                  <div className="flex space-x-2">
+                  <div className="flex justify-between items-center">
                     <a href={bill.downloadlink} target="_blank" rel="noopener noreferrer">
                       <FaEye className="text-gray-500 cursor-pointer" />
                     </a>
                     <FaEdit className="text-blue-500 cursor-pointer" />
                     <FaTrashAlt className="text-red-500 cursor-pointer" />
-            <h1>{bill._id}</h1>
                   </div>
                 </td>
               </tr>
