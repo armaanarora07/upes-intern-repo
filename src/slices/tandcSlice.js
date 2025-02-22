@@ -5,7 +5,7 @@ const loadGSTTandCDetailsFromLocalStorage = () => {
     const termsandConditions = localStorage.getItem('GSTTermsandConditions');
     return termsandConditions; // Return an empty array if storedBanks is null
   } catch (error) {
-    console.error("Failed to parse bank details from local storage:", error);
+    console.error("Failed to get data local storage:", error);
     return ''; // Return an empty array on error
   }
 };
@@ -15,7 +15,7 @@ const loadURDTandCDetailsFromLocalStorage = () => {
     const termsandConditions = localStorage.getItem('URDTermsandConditions');
     return termsandConditions; // Return an empty array if storedBanks is null
   } catch (error) {
-    console.error("Failed to parse bank details from local storage:", error);
+    console.error("Failed to get data local storage:", error);
     return ''; // Return an empty array on error
   }
 };
