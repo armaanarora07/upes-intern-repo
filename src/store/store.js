@@ -5,6 +5,7 @@ import  ewayReducer from '../slices/ewaySlice.js';
 import businessReducer from '../slices/businessSlice.js';
 import banksReducer from '../slices/bankSlice.js';
 import tandcReducer from  '../slices/tandcSlice.js';
+import signatureReducer from '../slices/signatureSlice.js';
 
 const store = configureStore({
   reducer: {
@@ -13,6 +14,7 @@ const store = configureStore({
     business:businessReducer,
     banks:banksReducer,
     tandc:tandcReducer,
+    signature:signatureReducer,
   },
 });
 
