@@ -2,14 +2,25 @@ import React, { useState, useEffect } from "react";
 import {useNavigate} from 'react-router-dom';
 import axios from "axios";
 import { FaEye, FaFileAlt } from "react-icons/fa"; 
-import { useSelector } from "react-redux";
+import { useSelector,useDispatch } from "react-redux";
+import { setTitle } from "../slices/navbarSlice";
 
 const EWayTransactions = () => {
   const [transactions, setTransactions] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
   const authToken = useSelector((state) => state.auth.authToken); // access from global auth state 
-  
+  const dispatch = useDispatch();
+
   const navigate = useNavigate();
+
+  useEffect(()=>{
+    const setNavTitle = () =>{
+      dispatch(setTitle('E-Way Transactions'));
+    }
+
+    setNavTitle();
+
+  },[setTitle,dispatch])
 
   useEffect(() => {
     const fetchTransactions = async () => {
@@ -45,11 +56,8 @@ const EWayTransactions = () => {
   }
 
   return (
-    <div className="p-6">
-      <div className="flex items-center space-x-3 text-[#4154f1] font-bold text-3xl mb-6">
-        <FaFileAlt className="text-4xl" />
-        <span>E-Way Transactions</span>
-      </div>
+    <div className="p-8 mt-10">
+      <div className="mt-5">
 
       {errorMessage && <p className="text-red-500">{errorMessage}</p>}
 
@@ -89,6 +97,7 @@ const EWayTransactions = () => {
           ))}
         </tbody>
       </table>
+      </div>
     </div>
   );
 };

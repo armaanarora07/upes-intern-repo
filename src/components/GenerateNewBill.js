@@ -1,53 +1,29 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import {FaReceipt, FaFileAlt } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { setTitle } from "../slices/navbarSlice";
 
-// Sample data for businesses
-const sampleBusinesses = [
-  { id: 1, name: "Business A" },
-  { id: 2, name: "Business B" },
-  { id: 3, name: "Business C" },
-];
 
 const GenerateNewBill = () => {
   const navigate = useNavigate();
-  const [selectedBusiness, setSelectedBusiness] = useState(sampleBusinesses[0].id); // Default to the first business
+  const dispatch = useDispatch();
 
-  const handleBusinessChange = (e) => {
-    setSelectedBusiness(e.target.value);
-  };
+  useEffect(()=>{
+    
+    const setNavTitle = () =>{
+      dispatch(setTitle('Generate New Bill'));
+    }
+
+    setNavTitle();
+  },[setTitle,dispatch])
+
 
   return (
-    <div className="p-6">
-      {/* Header */}
-      <div className="flex items-center space-x-3 text-[#4154f1] font-bold text-3xl mb-6">
-        <FaFileAlt className="text-4xl" />
-        <span>Generate New Bill</span>
-      </div>
-
-      {/* Dropdown for selecting a business */}
-      <div className="mb-4">
-        
-        <div className="text-xl sm:pl-4 sm:text-2xl mt-2 font-medium mb-3">
-         Select your Business
-        </div>
-
-        <select
-          id="business-select"
-          value={selectedBusiness}
-          onChange={handleBusinessChange}
-          className="border rounded-lg p-2 w-1/2 mb-4" // Added margin below the dropdown
-        >
-          {sampleBusinesses.map((business) => (
-            <option key={business.id} value={business.id}>
-              {business.name}
-            </option>
-          ))}
-        </select>
-      </div>
+    <div className="p-8 mt-10">
 
       {/* Bill Generation Options */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-5">
 
         {/* GST Bills */}
         <div className="bg-white shadow-lg border rounded-3xl p-6 flex flex-col items-center justify-center text-center transform transition-all duration-300 hover:scale-105 cursor-pointer hover:shadow-2xl"

@@ -2,7 +2,11 @@ import React, { useEffect, useState } from "react";
 import {useLocation} from 'react-router-dom';
 import {FaFileAlt} from 'react-icons/fa';
 import axios from "axios";
-import { useSelector } from "react-redux";
+import { useSelector,useDispatch } from "react-redux";
+import { clearGSTDetails } from '../slices/gstSlice';
+import { clearProducts } from '../slices/productSlice';
+import { clearUserDetails } from '../slices/userdetailsSlice';
+import { setTitle } from "../slices/navbarSlice";
 
 const EWayBillRequest = () => {
   const [vehicleNo, setVehicleNo] = useState("");
@@ -13,7 +17,16 @@ const EWayBillRequest = () => {
   const [loading, setLoading] = useState(false);
   const authToken = useSelector((state) => state.auth.authToken); // access from global auth state 
   const location = useLocation();
+  const dispatch = useDispatch();
 
+  useEffect(()=>{
+    const setNavTitle = () =>{
+      dispatch(setTitle('Generate E-Way Bill'));
+    }
+
+    setNavTitle();
+
+  })
 
   useEffect(()=>{
     const getQueryParams = () => {
@@ -69,12 +82,16 @@ const EWayBillRequest = () => {
     }
   };
 
+  const onDownloadbill = ()=>{
+    window.open(response.url, '_blank');
+    dispatch(clearGSTDetails());
+    dispatch(clearProducts());
+    dispatch(clearUserDetails());
+  }
+
   return (
-    <div className="p-6">
-        <div className="flex items-center space-x-3 text-[#4154f1] font-bold text-3xl mb-6">
-           <FaFileAlt className="text-4xl" />
-           <span>Generate E-Way Bill</span>
-        </div>
+    <div className="p-8 mt-10">
+       <div className="mt-5">
         <div className="flex flex-col items-center justify-center">
           <h2 className="text-xl font-bold mb-4">Request E-Way Bill</h2>
           
@@ -120,12 +137,17 @@ const EWayBillRequest = () => {
           </form>
 
           {response && (
-            <div className="mt-6 bg-white p-4 rounded shadow-md w-96">
-              <h3 className="font-semibold">Response:</h3>
-              <pre className="text-sm break-words">{JSON.stringify(response, null, 2)}</pre>
-            </div>
+            <div className="mt-5">
+            <button
+             className="bg-blue-500 text-white px-4 py-2 rounded-lg mb-2 transition duration-200 hover:bg-blue-600 shadow-md"
+             onClick={onDownloadbill}
+             >
+             Download Bill
+           </button>
+           </div>
           )}
         </div>
+      </div>
     </div>
   );
 };

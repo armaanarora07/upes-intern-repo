@@ -1,4 +1,5 @@
 import React, { useState ,useEffect } from "react";
+import {useLocation} from 'react-router-dom';
 import { FaFileAlt, FaCheckCircle, FaTimesCircle } from "react-icons/fa";
 import Additem from "../assets/Additem.png";
 import Share from "../assets/Share.png";
@@ -8,6 +9,13 @@ import Next from "../assets/Next.png";
 import TemplateModal from "./TemplateModal";
 import { useSelector } from "react-redux";
 import axios from 'axios';
+import TopAlert from './TopAlert';
+import ActionModal from './ActionModal';
+import BankDetails from "./BankDetails";
+import TermsAndConditions from "./TermsAndConditions";
+import Signature from "./Signature";
+import Stamp from "./Stamp";
+import Products from "./Products";
 
 const createRow = (id) => ({
   id: id,
@@ -27,7 +35,10 @@ const createRow = (id) => ({
 
 const GstInvoice = () => {
   const [GST, setGST] = useState('');
+  const [serialNo,setSerialNo] = useState(null);
+  const [date,setDate] = useState(null);
   const [status, setStatus] = useState(false);
+  const [skippedbill,setSkippedbill] = useState(false);
   const [isVerified, setIsVerified] = useState(false);
   const [rows, setRows] = useState([createRow(1)]);
   const [showModal, setShowModal] = useState(false);
@@ -48,53 +59,51 @@ const GstInvoice = () => {
   const [sstate, setSState] = useState("");
   const [scity, setScity] = useState("");
   const [scountry, setScountry] = useState("");
-  const [billNo, setBillNo] = useState([]); // State for the bill number
   const authToken = useSelector((state) => state.auth.authToken); // access from global auth state 
+  const location = useLocation();
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertType,setAlertType] = useState('');
+  const [alertMessage,setAlertMessage] = useState('');
+  const [showPdfModal, setShowPdfModal] = useState(false);
+  const [downloadUrl, setDownloadUrl] = useState(''); // State for download URL
+  const [bankDetails, setBankDetails] = useState('');
+  const [termsConditions, setTermsConditions] = useState('');
+  const [signature, setSignature] = useState(null);
+
+
+  // Add this function to format GST number
+  const formatGSTNumber = (gst) => {
+    return gst.toUpperCase().trim(); // Convert to uppercase and trim whitespace
+  };
+
 
   useEffect(() => {
-    const fetchBillNumber = async () => {
-  
-      if (!authToken) {
-        alert("Authorization token is missing. Please log in again.");
-        return;
-      }
 
-      try {
-        const response = await fetch(
-          "/user/mySnNo?gstin=09CYLPR6774F1ZN", 
-          {
-            headers: {
-              Authorization: `Bearer ${authToken}`,
-            },
-          }
-        );
-
-        if (response.ok) {
-          
-          const data = await response.json();
-          console.log(data);
-          // setBillNo(data.bill_no || data.serial_no || ""); 
-          const fetchedBillNumbers = Array.isArray(data.sn_no)
-            ? data.sn_no
-            : data.sn_no
-            ? [data.sn_no] // Wrap single value in an array
-            : [];
-          console.log(fetchedBillNumbers)
-          setBillNo(fetchedBillNumbers)
-        } else {
-          alert("Failed to fetch bill number.");
-          
-        }
-        
-      } catch (error) {
-
-        console.error("Error fetching bill number:", error);
-        alert("An error occurred while fetching the bill number.");
-      }
+    const getQueryParams = () => {
+      return new URLSearchParams(location.search);
     };
 
-    fetchBillNumber();
-  }, []); 
+    const fetchQueryparameter = () =>{
+
+      const queryParams = getQueryParams();
+      
+      if(queryParams.size > 0){
+         setSkippedbill(true);
+         setSerialNo(queryParams.get('s.no'));
+         setDate(queryParams.get('date'));
+         handleVerify(queryParams.get('gstin'));
+         const formattedGST = formatGSTNumber(queryParams.get('gstin'));
+         setGST(formattedGST);
+         // Automatically verify if the GST number is 15 digits
+         if (formattedGST.length === 15) {
+            handleVerify(formattedGST); // Call the verification function
+         } 
+      }
+    }
+
+    fetchQueryparameter();
+
+  }, [location]); 
 
   const addRow = () => {
     setRows([...rows, createRow(rows.length + 1)]);
@@ -154,13 +163,51 @@ const GstInvoice = () => {
     setIsModalOpen(false);
   };
 
+  const handleOpenAlert = (type, message) => {
+    setAlertType(type);
+    setAlertMessage(message);
+    setShowAlert(true);
+  };
+
+  const handleCloseAlert = () => {
+    setShowAlert(false); // Close the alert
+    setAlertType('');
+    setAlertMessage('');
+  };
+
+  const handleCloseModal = () => {
+    setShowPdfModal(false); // Close the modal
+  };
+
+  const handleCreateNewBill = () => {
+    handleCloseModal();
+    window.location.reload();
+  };
+
+  const handleGenerateEway = () => {
+    // Logic to generate E-way
+    console.log('Generating E-way...');
+    handleCloseModal(); // Close the modal after action
+  };
+
+
   const downloadPDF = async () => {
-    
-    if (!authToken) {
-      alert("Authorization token is missing. Please log in again.");
+
+    if (!GST) {
+      handleOpenAlert('error','Enter a Valid GST Number');
       return;
     }
   
+    if(skippedbill){
+      handleSkippedBill();
+    }else{
+      handleNormalBill();
+    }
+   
+  };
+
+  const handleNormalBill = async () =>{
+
     // Check your rows structure
     console.log("Rows data:", rows);
   
@@ -202,48 +249,119 @@ const GstInvoice = () => {
     };
   
     try {
-      const response = await fetch(
+      handleOpenAlert('success', 'PDF is downloading...');
+      const response = await axios.put(
         "/user/bill",
+        body,
         {
-          method: "PUT",
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${authToken}`,
           },
-          body: JSON.stringify(body),
         }
       );
   
-      if (response.ok) {
-        const result = await response.json();
-        const downloadUrl = result.url;
-        if (downloadUrl) {
-          const link = document.createElement("a");
-          link.href = downloadUrl;
-          link.download = "invoice.pdf";
-          link.click();
-          alert("PDF is downloading...");
+      if (response.status === 200) {
+        const Url = response.data.url; // Access the URL from the response data
+        if (Url) {
+          setDownloadUrl(Url); // Set the download URL for the modal
+          handleCloseAlert();
+          setShowPdfModal(true); // Show the modal after downloading
         } else {
-          alert("Download URL is missing in the response.");
+          handleOpenAlert('error','Download URL is missing in the response.');
         }
       } else {
-        alert("Failed to generate PDF. Please try again.");
+        handleOpenAlert('error','Failed to generate PDF. Please try again.');
         console.error(`Error: ${response.status} ${response.statusText}`);
       }
     } catch (error) {
-      alert("An error occurred while downloading the PDF.");
+      handleOpenAlert('error','An error occurred while downloading the PDF.');
       console.error(error);
     }
   };
 
+  const handleSkippedBill = async()=>{
+     // Check your rows structure
+    console.log("Rows data:", rows);
+  
+    const body = {
+      party: {
+        gstin: GST,
+        legal_name: legalName,
+        trade_name: tradeName,
+        principal_address: {
+          address1: paddress1,
+          address2: paddress2,
+          pincode: pincode,
+          city: city,
+          state: state,
+          country: country,
+        },
+        shipping_address: {
+          address1: saddress1,
+          address2: saddress2,
+          pincode: spincode,
+          city: scity,
+          state: sstate,
+          country: scountry,
+        },
+      },
+      quantities: rows.map((row) => row.quantity),
+      sn_no:serialNo,
+      hsn_details: rows.map((row) => {
+        console.log("Row details:", row); // Debugging line
+        return {
+          hsn_code: row.hsn_code,           // Ensure this field exists in your row
+          product_info: row.product_info,   // Ensure this field exists in your row
+          cgst: row.cgst,                   // Ensure this field exists in your row
+          sgst: row.sgst,
+          igst: row.igst,                   // Ensure this field exists in your row
+          unit: row.unit                     // Ensure this field exists in your row
+        };
+      }),
+      rates: rows.map((row) => row.price),
+      bill_date: new Date(date).toISOString(), // Format the date as required
+    };
+  
+    try {
+      const response = await axios.put(
+        "/user/skippedbill",
+        body,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${authToken}`,
+          },
+        }
+      );
+  
+      if (response.status === 200) {
+        const Url = response.data.url; // Access the URL from the response data
+        if (Url) {
+          setDownloadUrl(Url); // Set the download URL for the modal
+          handleCloseAlert();
+          setShowPdfModal(true); // Show the modal after downloading
+        } else {
+          handleOpenAlert('error','Download URL is missing in the response.');
+        }
+      } else {
+        handleOpenAlert('error','Failed to generate PDF. Please try again.');
+        console.error(`Error: ${response.status} ${response.statusText}`);
+      }
+    } catch (error) {
+      handleOpenAlert('error','An error occurred while downloading the PDF.');
+      console.error(error);
+    }
+  }
+
   const handleVerify = async (gstNumber) => {
+
     if (!gstNumber) {
-      alert('Enter a Valid GST Number');  // Alerting the user to enter the valid gst number before verifying
+      handleOpenAlert('error','Enter a Valid GST Number');
       return;
     }
-
     try {
-      const response = await axios.get(`https://fyntl.sangrahinnovations.com/user/validategst?gst=${gstNumber}`, {
+      const response = await axios.get(`/user/validategst?gst=${gstNumber}`, {
         headers: {
           Authorization: `Bearer ${authToken}`,
           "Content-Type": "application/json",
@@ -274,25 +392,66 @@ const GstInvoice = () => {
         console.error('Status:', response.status);
         console.error('Status Text:', response.statusText);
         setIsVerified(false);
+        setlegalName('');
+        setTradeName('');
+        setpAddress1('');
+        setpAddress2('');
+        setPincode('');
+        setState('');
+        setcity('');
+        setcountry('');
+        setsAddress1('');
+        setsAddress2('');
+        setSPincode('');
+        setSState('');
+        setScity('');
+        setScountry('');
         setStatus(true);
       }
     } catch (error) {
       console.error('Error during verification:', error);
       setIsVerified(false);
+      setlegalName('');
+      setTradeName('');
+      setpAddress1('');
+      setpAddress2('');
+      setPincode('');
+      setState('');
+      setcity('');
+      setcountry('');
+      setsAddress1('');
+      setsAddress2('');
+      setSPincode('');
+      setSState('');
+      setScity('');
+      setScountry('');
       setStatus(true);
     }
   };
 
   const handleSameAsShipping = () => {
-    setIsRightEnabled(true);
-    setsAddress1(paddress1);
-    setSPincode(pincode);
-    setSState(state);
+    if(!isRightEnabled){
+      setIsRightEnabled(true);
+      setsAddress1(paddress1);
+      setSPincode(pincode);
+      setSState(state);
+    }else{
+      setIsRightEnabled(false);
+      setsAddress1('');
+      setSPincode('');
+      setSState('');
+    }
   };
 
-  // Add this function to format GST number
-  const formatGSTNumber = (gst) => {
-    return gst.toUpperCase().trim(); // Convert to uppercase and trim whitespace
+  const handleSignatureUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setSignature(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   return (
@@ -427,7 +586,7 @@ const GstInvoice = () => {
               type="radio"
               name="section"
               className="mr-2 text-black accent-blue-500"
-              onChange={handleSameAsShipping}
+              onClick={handleSameAsShipping}
             />
             <span>Same as shipping address</span>
           </label>
@@ -471,10 +630,11 @@ const GstInvoice = () => {
             </div>
           </div>
         </div>
+        
       </div>
       <div className="p-5 text-[#3D3F4B] ">
       <div className="flex justify-between">
-        <h2 className="text-[1.6rem] text-black font-medium mb-4 ">Items Details</h2>
+  <h2 className="text-[1.6rem] text-black font-medium mb-4 ">Items Details</h2>
         {/* Edit/Add Items Button */}
         <button
           onClick={addRow}
@@ -603,35 +763,6 @@ const GstInvoice = () => {
       </table>
 
         </div>
-        <div className="flex items-start justify-end">
-          {/* Next Button to open the modal */}
-          {/* <button
-            className="flex items-center font-medium text-lg px-4 py-2 bg-[#4154f1] rounded-lg mr-6 mt-8 text-white"
-            onClick={() => setIsModalOpen(true)}
-          >
-            <i className="fas fa-arrow-right"></i>
-            Select Template
-            <img src={Select} alt="logo" className="ml-2 w-[1.2rem]"></img>
-          </button> */}
-
-          {/* Next Button to open the modal */}
-          <button
-            onClick={() => setShowModal(true)}
-            className="flex items-center font-semibold text-xl  border border-[#4154f1] px-4 py-2 bg- rounded-[10px] mr-6 mt-4 text-[#4154f1]"
-          >
-            <i className="fas fa-arrow-right"></i>
-            Next
-            <img src={Next} alt="logo" className="ml-2 w-5"></img>
-          </button>
-           <div className="text-right">
-          <button
-            onClick={downloadPDF}
-            className="bg-[#4154f1] text-white text-xl px-4 py-2 rounded-lg mt-4"
-          >
-            Generate PDF
-          </button>
-        </div> 
-        </div>
 
         <TemplateModal
           isOpen={isModalOpen}
@@ -679,7 +810,7 @@ const GstInvoice = () => {
                     className="mr-3 w-9 h-9 mt-[0.1rem]"
                   />
                   <button
-                    onClick={downloadPDF}
+                    onClick={()=>downloadPDF()}
                     className="flex items-center gap-2 px-4 py-2 text-[#1436FF] bg-[#EFF2FF] rounded-full hover:bg-[#DDE6FF] transition-all"
                   >
                     Download as PDF
@@ -704,24 +835,68 @@ const GstInvoice = () => {
           </div>
         )}
 
-        {/* Generate Bill Section */}
-        {/* <div className="text-right">
-          <button
-            onClick={downloadPDF}
-            className="bg-[#4154f1] text-white text-xl px-4 py-2 rounded-lg mt-4"
-          >
-            Generate PDF
-          </button>
-        </div> */}
-        {/* Template Modal Section */}
-        {isModalOpen && (
+       {showAlert && (
+        <TopAlert
+          type={alertType}
+          message={alertMessage}
+          onClose={handleCloseAlert}
+        />
+      )}
+       
+       <ActionModal
+        isOpen={showPdfModal}
+        onClose={handleCloseModal}
+        onGenerateEway={handleGenerateEway}
+        onCreateNewBill={handleCreateNewBill}
+        downloadUrl={downloadUrl} // Pass the download URL to the modal
+      />
+
+      {isModalOpen && (
           <TemplateModal
             isOpen={isModalOpen}
             onClose={() => setIsModalOpen(false)}
             onSelect={handleTemplateSelect}
           />
-        )}
+      )}
+    </div>
+      <Products/>
+      <BankDetails/>
+      <TermsAndConditions/>
+      <div className="p-6 bg-white rounded-lg shadow-xl mt-5 flex flex-col sm:flex-row justify-between">
+      <Signature/>
+      <Stamp/>
       </div>
+
+
+      <div className="flex items-start justify-end">
+            {/* Next Button to open the modal */}
+            {/* <button
+              className="flex items-center font-medium text-lg px-4 py-2 bg-[#4154f1] rounded-lg mr-6 mt-8 text-white"
+              onClick={() => setIsModalOpen(true)}
+            >
+              <i className="fas fa-arrow-right"></i>
+              Select Template
+              <img src={Select} alt="logo" className="ml-2 w-[1.2rem]"></img>
+            </button> */}
+
+            {/* Next Button to open the modal */}
+            <button
+              onClick={() => setShowModal(true)}
+              className="flex items-center font-semibold text-xl  border border-[#4154f1] px-4 py-2 bg- rounded-[10px] mr-6 mt-4 text-[#4154f1]"
+            >
+              <i className="fas fa-arrow-right"></i>
+              Next
+              <img src={Next} alt="logo" className="ml-2 w-5"></img>
+            </button>
+          <div className="text-right">
+            <button
+              onClick={()=>downloadPDF()}
+              className="bg-[#4154f1] text-white text-xl px-4 py-2 rounded-lg mt-4"
+            >
+              Generate PDF
+            </button>
+           </div> 
+        </div>
     </div>
   );
 };

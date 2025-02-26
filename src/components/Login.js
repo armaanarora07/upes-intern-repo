@@ -28,7 +28,7 @@ const Login = () => {
     }
 
     try {
-      const response = await axios.post("/user/login", {
+      const response = await axios.post("https://fyntl.sangrahinnovations.com/user/login", {
         contact: `+91${phone}`,
       });
 

@@ -4,6 +4,7 @@ import {FaFileAlt} from 'react-icons/fa';
 import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
 import { setEway } from "../slices/ewaySlice";
+import { setTitle } from "../slices/navbarSlice";
 
 const EWayBillSystem = () => {
   const [serviceEnabled, setServiceEnabled] = useState(false);
@@ -12,7 +13,7 @@ const EWayBillSystem = () => {
   const dispatch = useDispatch();
   const authToken = useSelector((state) => state.auth.authToken); // access from global auth state 
   const ewayEnabled = useSelector((state) => state.eway.eway_enabled); // access from global eway state 
-
+  
   // Redirect to another page when service is enabled
   useEffect(() => {
     console.log(ewayEnabled);
@@ -21,7 +22,12 @@ const EWayBillSystem = () => {
       console.log("Service Enabled:", ewayEnabled);
 
     }
-  }, [ewayEnabled, navigate]);
+    const setNavTitle = () =>{
+      dispatch(setTitle('Activate E-Way Services'));
+    }
+
+    setNavTitle();
+  }, [setTitle, dispatch, ewayEnabled, navigate]);
 
   const handleEnableService = async (e) => {
     e.preventDefault();
@@ -53,12 +59,8 @@ const EWayBillSystem = () => {
   };
 
   return (
-    <div className="p-6">
-          <div className="flex items-center space-x-3 text-[#4154f1] font-bold text-3xl mb-6">
-              <FaFileAlt className="text-4xl" />
-              <span>Generate E-Way Bill</span>
-          </div>
-          <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+    <div className="p-8 mt-10">
+          <div className="flex flex-col items-center justify-center mt-10">
               {serviceEnabled ? (
                 <div>Loading...</div> // Show loading state until redirected
               ) : (
