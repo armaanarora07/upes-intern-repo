@@ -1,0 +1,167 @@
+// Products.js
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { FaEdit, FaTrash } from 'react-icons/fa';
+import { addRow, removeRow, updateRow } from '../slices/productSlice';
+
+const Products = () => {
+  const dispatch = useDispatch();
+  const { rows } = useSelector((state) => state.products);
+
+  const handleInputChange = (index, field, value) => {
+    dispatch(updateRow({ index, field, value }));
+  };
+
+  const totalQuantity = rows.reduce(
+    (sum, row) => sum + (Number(row.quantity) || 0),
+    0
+  );
+
+  const totalTax = rows.reduce(
+    (sum, row) => sum + (Number(row.taxAmount) || 0),
+    0
+  );
+
+  const totalAmount = rows.reduce(
+    (sum, row) => sum + (Number(row.amount) || 0),
+    0
+  );
+
+  return (
+    <div className="p-6 bg-white rounded-lg shadow-xl mt-5">
+      <div className="mt-4 flex justify-between">
+        <h2 className="text-2xl font-bold text-gray-800">Items Details</h2>
+        <button
+          onClick={() => dispatch(addRow())}
+          className="flex items-center bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 transition duration-200 mb-4"
+        >
+          <FaEdit className="mr-1 text-white" /> Add item
+        </button>
+      </div>
+      <div className="w-full">
+        <table className="min-w-full bg-[#F9FAFC] shadow-md">
+          <thead className="bg-gray-100 text-[#51535e]">
+            <tr>
+              <th className="border-b-2 border-r-2 border-black text-black font-medium text-lg w-16" rowSpan="2">S No.</th>
+              <th className="border-b-2 border-r-2 border-black text-black font-medium text-lg w-80" rowSpan="2">Item Name</th>
+              <th className="border-b-2 border-r-2 border-black text-black font-medium text-lg w-28" rowSpan="2">HSN Code</th>
+              <th className="border-b-2 border-r-2 border-black text-black font-medium text-lg w-28" rowSpan="2">Quantity</th>
+              <th className="border-b-2 border-r-2 border-black text-black font-medium text-lg w-28" rowSpan="2">Unit</th>
+              <th className="border-b-2 border-r-2 border-black text-black font-medium text-lg w-40" rowSpan="2">Price</th>
+              <th className="border-b-2 border-r-2 border-black text-black font-medium text-lg w-36" colSpan="2">Tax (%)</th>
+              <th className="border-b-2 border-black font-medium text-black text-lg w-36" rowSpan="2">Amount</th>
+            </tr>
+            <tr>
+              <th className="border-b-2 border-r-2 border-black text-black font-normal text-lg">Percent (%)</th>
+              <th className="border-b-2 border-r-2 border-black text-black font-normal text-lg">Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((row, index) => (
+              <tr key={row.id} className="border-t">
+                <td className="p-1 border-r-2 border-black text-center">{index + 1}</td>
+                <td className="p-1 border-r-2 border-black">
+                  <input
+                    type="text"
+                    className="border-2 border-[#EFF0F4] p-2 w-full rounded-md"
+                    placeholder="Item Name"
+                    value={row.product_info}
+                    onChange={(e) => handleInputChange(index, "product_info", e.target.value)}
+                  />
+                </td>
+                <td className="p-1 border-r-2 border-black">
+                  <input
+                    type="text"
+                    className="border-2 border-[#EFF0F4] p-2 w-full rounded-md"
+                    placeholder="HSN Code"
+                    value={row.hsn_code}
+                    onChange={(e) => handleInputChange(index, "hsn_code", e.target.value)}
+                  />
+                </td>
+                <td className="p-1 border-r-2 border-black">
+                  <input
+                    type="number"
+                    className="border-2 border-[#EFF0F4] p-2 w-full rounded-md"
+                    placeholder="Qty"
+                    value={row.quantity}
+                    onChange={(e) => handleInputChange(index, "quantity", Number(e.target.value))}
+                  />
+                </td>
+                <td className="p-1 border-r-2 border-black">
+                  <select
+                    className="border-2 border-[#EFF0F4] p-2 w-full rounded-md"
+                    value={row.unit}
+                    onChange={(e) => handleInputChange(index, "unit", e.target.value)}
+                  >
+                    <option value="KG">KG</option>
+                    <option value="L">L</option>
+                    <option value="PCS">PCS</option>
+                  </select>
+                </td>
+                <td className="p-1 border-r-2 border-black">
+                  <input
+                    type="number"
+                    className="border-2 border-[#EFF0F4] p-2 w-full rounded-md"
+                    placeholder="Price"
+                    value={row.price}
+                    onChange={(e) => handleInputChange(index, "price", Number(e.target.value))}
+                  />
+                </td>
+                <td className="p-1 border-r-2 border-black">
+                  <input
+                    type="number"
+                    className="border-2 border-[#EFF0F4] p-2 w-full rounded-md"
+                    placeholder="Tax %"
+                    value={row.taxPercent}
+                    onChange={(e) => handleInputChange(index, "taxPercent", Number(e.target.value))}
+                  />
+                </td>
+                <td className="p-1 border-r-2 border-black">
+                  <input
+                    type="number"
+                    className="border-2 border-[#EFF0F4] p-2 w-full rounded-md"
+                    placeholder="Tax Amount"
+                    value={row.taxAmount}
+                    readOnly
+                  />
+                </td>
+                <td className="p-1 flex justify-between items-center">
+                  <input
+                    type="number"
+                    className="border-2 border-[#EFF0F4] p-2 w-full rounded-md"
+                    placeholder="Amount"
+                    value={row.amount}
+                    readOnly
+                  />
+                  <button 
+                    onClick={() => dispatch(removeRow(index))} 
+                    className="text-black hover:text-gray-700 flex items-center ml-2"
+                  >
+                    <FaTrash className="mr-1" />
+                  </button>
+                </td>
+              </tr>
+            ))}
+            <tr className="font-semibold bg-[#989baaa7] text-black">
+              <td colSpan="3" className="p-3 text-right border-r-2 border-black">
+                TOTAL
+              </td>
+              <td className="p-3 border-r-2 border-black text-right">
+                {totalQuantity}
+              </td>
+              <td className="p-3 border-r-2 border-black text-right"></td>
+              <td className="p-3 border-r-2 border-black text-right"></td>
+              <td className="p-3 border-r-2 border-black text-right"></td>
+              <td className="p-3 border-r-2 border-black text-right">
+                {totalTax.toFixed(2)}
+              </td>
+              <td className="p-3 text-right">{totalAmount}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+};
+
+export default Products;
