@@ -15,6 +15,7 @@ const signatureSlice = createSlice({
   name: 'signature',
   initialState:{
     signature:loadSignatureFromLocalStorage(),
+    enabled: JSON.parse(localStorage.getItem("Signature-Invoice")) || false,
   },
   reducers: {
     setSignature: (state, action) => {
@@ -24,8 +25,12 @@ const signatureSlice = createSlice({
     removeSignature: () => {
         localStorage.removeItem('Signature');
     },
+    toggle:(state)=>{
+        state.enabled = !state.enabled;
+        localStorage.setItem("Signature-Invoice", JSON.stringify(state.enabled));
+    }
   },
 });
 
-export const { setSignature, removeSignature} = signatureSlice.actions;
+export const { setSignature, removeSignature, toggle} = signatureSlice.actions;
 export default signatureSlice.reducer;
