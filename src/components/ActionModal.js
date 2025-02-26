@@ -1,7 +1,7 @@
 import React from 'react';
 import { FaTimes } from 'react-icons/fa';
 
-const ActionModal = ({ isOpen, onClose, onGenerateEway,onCreateNewBill, downloadUrl }) => {
+const ActionModal = ({ isOpen, onClose, onGenerateEway,onCreateNewBill, downloadUrl, onDownloadbill }) => {
   if (!isOpen) return null;
 
   const handleViewBill = () => {
@@ -15,9 +15,9 @@ const ActionModal = ({ isOpen, onClose, onGenerateEway,onCreateNewBill, download
         <div className="flex flex-col mb-4">
           <button
             className="bg-blue-500 text-white px-4 py-2 rounded-lg mb-2 transition duration-200 hover:bg-blue-600 shadow-md"
-            onClick={handleViewBill}
+            onClick={onDownloadbill}
           >
-            View Bill
+            Download Bill
           </button>
           <button
             className="bg-blue-500 text-white px-4 py-2 rounded-lg mb-2 transition duration-200 hover:bg-blue-600 shadow-md"
