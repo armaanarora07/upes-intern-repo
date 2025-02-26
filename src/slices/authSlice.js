@@ -21,6 +21,14 @@ const authSlice = createSlice({
       state.authToken = null;
       state.otp = false;
       localStorage.removeItem("authToken");
+      localStorage.removeItem('bankDetails');
+      localStorage.removeItem('selectedBankDetails');
+      localStorage.removeItem("businesses");
+      localStorage.removeItem("eway");
+      localStorage.removeItem('Signature');
+      localStorage.removeItem('Stamp');
+      localStorage.removeItem('GSTTermsandConditions');
+      localStorage.removeItem('URDTermsandConditions');
     },
     verifyotp: (state) => {
       state.otp = true;

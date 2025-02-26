@@ -25,6 +25,7 @@ const bankSlice = createSlice({
   initialState: {
     bankDetails: loadBankDetailsFromLocalStorage(),
     selectedGBank: loadSelectedBankDetailsFromLocalStorage(),
+    enabled: JSON.parse(localStorage.getItem("Bank-Invoice")) || false, 
   },
   reducers: {
     addBankDetails: (state, action) => {
@@ -46,10 +47,14 @@ const bankSlice = createSlice({
       localStorage.setItem('bankDetails', JSON.stringify(state.bankDetails));
     },
     deleteBankDetails:(state) =>{
-      localStorage.setItem('bankDetails', []);
+      localStorage.removeItem('bankDetails');
+    },
+    setEnabled:(state)=>{
+      state.enabled = !state.enabled;
+      localStorage.setItem("Bank-Invoice", JSON.stringify(state.enabled));
     }
   },
 });
 
-export const { addBankDetails, SelectedBank, clearSelectedBank, editBankDetails, deleteBankDetails } = bankSlice.actions;
+export const { addBankDetails, SelectedBank, clearSelectedBank, editBankDetails, deleteBankDetails, setEnabled } = bankSlice.actions;
 export default bankSlice.reducer;

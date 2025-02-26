@@ -2,21 +2,21 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const loadGSTTandCDetailsFromLocalStorage = () => {
   try {
-    const termsandConditions = localStorage.getItem('GSTTermsandConditions');
-    return termsandConditions; // Return an empty array if storedBanks is null
+    const termsandConditions = localStorage.getItem('GSTTermsandConditions') || '';
+    return termsandConditions; 
   } catch (error) {
     console.error("Failed to get data local storage:", error);
-    return ''; // Return an empty array on error
+    return '';
   }
 };
 
 const loadURDTandCDetailsFromLocalStorage = () => {
   try {
-    const termsandConditions = localStorage.getItem('URDTermsandConditions');
-    return termsandConditions; // Return an empty array if storedBanks is null
+    const termsandConditions = localStorage.getItem('URDTermsandConditions') || '';
+    return termsandConditions; 
   } catch (error) {
     console.error("Failed to get data local storage:", error);
-    return ''; // Return an empty array on error
+    return ''; 
   }
 };
 

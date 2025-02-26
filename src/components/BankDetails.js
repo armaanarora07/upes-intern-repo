@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { addBankDetails, clearSelectedBank, editBankDetails, SelectedBank} from '../slices/bankSlice';
+import { addBankDetails, clearSelectedBank, editBankDetails, SelectedBank, setEnabled} from '../slices/bankSlice';
 import { FaEdit, FaTrash, FaTimes } from 'react-icons/fa';
 
 const BankDetails = () => {
   const dispatch = useDispatch();
-  const { bankDetails, selectedGBank } = useSelector((state) => state.banks);
+  const { bankDetails, selectedGBank, enabled } = useSelector((state) => state.banks);
   const [selectedBank, setSelectedBank] = useState(selectedGBank);
   const [activeModal, setActiveModal] = useState(null);
   const [accountNumber, setAccountNumber] = useState('');
@@ -65,10 +65,28 @@ const BankDetails = () => {
     }
   };
 
+  const handleToggle = () => {
+     dispatch(setEnabled());
+  };
+
+
   return (
-    <div className="p-6 bg-white rounded-lg shadow-xl">
+    <div className="p-6 bg-white rounded-lg shadow-xl mt-5">
       <div className="mt-4 flex justify-between">
+
+        <div className='flex space-x-3'>
         <h2 className="text-2xl font-bold text-gray-800">Bank Details</h2>
+        <label className="flex items-center cursor-pointer">
+          <input type="checkbox" className="hidden" checked={enabled} onChange={handleToggle} />
+          <div 
+            className="w-12 h-6 flex items-center rounded-full p-1 transition" 
+            style={{ backgroundColor: enabled ? '#3B82F6' : '#6B7280' }} // Blue when enabled, Gray when disabled
+          >
+            <div className={`bg-white w-5 h-5 rounded-full shadow-md transform transition ${enabled ? 'translate-x-6' : 'translate-x-0'}`}></div>
+          </div>
+        </label>
+        </div>
+
         <div className="flex space-x-3">
           <button onClick={() => setActiveModal('add')} className="bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 transition duration-200">
             Add new Bank details
@@ -77,6 +95,7 @@ const BankDetails = () => {
             Select Bank
           </button>
         </div>
+
       </div>
       
       {selectedBank ? (
