@@ -6,6 +6,12 @@ import businessReducer from '../slices/businessSlice.js';
 import banksReducer from '../slices/bankSlice.js';
 import tandcReducer from  '../slices/tandcSlice.js';
 import signatureReducer from '../slices/signatureSlice.js';
+import stampReducer from '../slices/stampSlice.js';
+import productsReducer from '../slices/productSlice.js';
+import gstReducer from '../slices/gstSlice.js';
+import userDetailsReducer from '../slices/userdetailsSlice.js';
+import navbarReducer from '../slices/navbarSlice.js';
+import logoReducer from '../slices/logoSlice.js';
 
 const store = configureStore({
   reducer: {
@@ -15,6 +21,12 @@ const store = configureStore({
     banks:banksReducer,
     tandc:tandcReducer,
     signature:signatureReducer,
+    stamp:stampReducer,
+    products:productsReducer,
+    gst:gstReducer,
+    userDetails:userDetailsReducer,
+    navbar:navbarReducer,
+    logo:logoReducer,
   },
 });
 
