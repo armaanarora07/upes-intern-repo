@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState , useEffect} from 'react';
 import axios from 'axios';
 import { FaBriefcase,FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
-import { useSelector } from "react-redux";
+import { useSelector,useDispatch } from "react-redux";
+import { setTitle } from '../slices/navbarSlice';
 
 const AddBusiness = () => {
   const [gstin, setGstin] = useState('');
@@ -13,6 +14,7 @@ const AddBusiness = () => {
   const [hsnCode, setHsnCode] = useState('');
   const [isVerified, setIsVerified] = useState(false);
   const authToken = useSelector((state) => state.auth.authToken); // access from global auth state 
+  const dispatch = useDispatch();
 
   const handleGstinChange = async (e) => {
     const formattedGST = formatGSTNumber(e.target.value);
@@ -23,6 +25,15 @@ const AddBusiness = () => {
     }
 
   };
+
+  useEffect(()=>{
+    
+    const setNavTitle = () =>{
+      dispatch(setTitle('Add Business'));
+    }
+
+    setNavTitle();
+  },[setTitle,dispatch])
 
   const handleAddBusiness = async () => {
 
@@ -97,14 +108,9 @@ const AddBusiness = () => {
   };
 
   return (
-    <div className='p-6'>
+    <div className='p-8 mt-10'>
 
-      <div className="flex items-center space-x-3 text-[#4154f1] font-bold text-3xl mb-6">
-        <FaBriefcase className="text-4xl" />
-        <span>Add Business</span>
-      </div>
-
-      <div className="text-xl sm:pl-4 sm:text-2xl mt-2 font-medium">
+      <div className="text-2xl font-bold text-gray-800 mt-3">
         Enter your Business Details 
       </div>
   

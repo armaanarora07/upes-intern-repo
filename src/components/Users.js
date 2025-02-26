@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import {FaMoneyCheckAlt} from 'react-icons/fa';
+import { useDispatch } from 'react-redux';
+import { setTitle } from '../slices/navbarSlice';
 
 const Users = () => {
   const [data, setData] = useState([]);
@@ -7,6 +9,17 @@ const Users = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+
+    const setNavTitle = () =>{
+      dispatch(setTitle('Users Transactions'));
+    }
+
+    setNavTitle();
+
+  }, [setTitle,dispatch]);
 
   useEffect(() => {
     const authToken = localStorage.getItem("authToken");
@@ -60,12 +73,8 @@ const Users = () => {
   if (error) return <div>Error: {error}</div>;
 
   return (
-    <div className="p-6">
-
-      <div className="flex items-center space-x-3 text-[#4154f1] font-bold text-3xl mb-6">
-        <FaMoneyCheckAlt className="text-4xl" />
-        <span>Users Transactions</span>
-      </div>
+    <div className="p-8 mt-10">
+    <div className='mt-5'>
       
       <input
         type="text"
@@ -113,6 +122,7 @@ const Users = () => {
           ))}
         </tbody>
       </table>
+      </div>
       </div>
     </div>
   );

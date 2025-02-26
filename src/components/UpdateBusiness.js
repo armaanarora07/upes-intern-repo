@@ -4,6 +4,7 @@ import axios from 'axios';
 import { FaBriefcase,FaCheckCircle, FaTrashAlt, FaPlus, FaMapMarkerAlt, FaEdit } from 'react-icons/fa';
 import { useSelector, useDispatch } from "react-redux";
 import {fetchBusinesses} from '../slices/businessSlice.js';
+import { setTitle } from '../slices/navbarSlice.js';
 
 const UpdateBusiness = () => {
   const [gstin, setGstin] = useState(''); 
@@ -34,6 +35,12 @@ const UpdateBusiness = () => {
    useEffect(()=>{
 
    dispatch(fetchBusinesses());
+
+   const setNavTitle = () =>{
+    dispatch(setTitle('My Business'));
+  }
+
+  setNavTitle();
 
    const getQueryParams = () => {
     return new URLSearchParams(location.search);
@@ -214,14 +221,9 @@ const UpdateBusiness = () => {
 
 
   return (
-    <div className='p-6'>
+    <div className='p-8 mt-10'>
 
-      <div className="flex items-center space-x-3 text-[#4154f1] font-bold text-3xl mb-6">
-        <FaBriefcase className="text-4xl" />
-        <span>My Business</span>
-      </div>
-
-      <div className="text-xl sm:pl-4 sm:text-2xl space-x-3 mt-2 font-medium">
+      <div className="text-2xl font-bold text-gray-800 mt-3">
         My Business Details 
       </div>
   

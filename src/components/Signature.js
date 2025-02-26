@@ -1,11 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {setSignature, removeSignature} from '../slices/signatureSlice';
+import {setSignature, removeSignature, toggle} from '../slices/signatureSlice';
 import { FaTrash} from 'react-icons/fa';
 
 const Signature = () => {
   const dispatch = useDispatch();
-  const {signature} = useSelector((state)=> state.signature);
+  const {signature, enabled} = useSelector((state)=> state.signature);
   const [imagePreview, setImagePreview] = useState(signature); // State to hold the image preview
   const fileInputRef = useRef(null); // Reference to the file input
 
@@ -31,9 +31,25 @@ const Signature = () => {
     dispatch(removeSignature());
   };
 
+  const handleToggle = () =>{
+     dispatch(toggle());
+  }
+
   return (
-    <div className="p-6 bg-white rounded-lg shadow-xl mt-5">
-       <h2 className="text-2xl font-bold text-gray-800">Signature</h2>
+    <div className='w-1/2'>
+       <div className='flex space-x-3'>
+        <h2 className="text-2xl font-bold text-gray-800">Signature</h2>
+        <label className="flex items-center cursor-pointer">
+          <input type="checkbox" className="hidden" checked={enabled} onChange={handleToggle} />
+          <div 
+            className="w-12 h-6 flex items-center rounded-full p-1 transition" 
+            style={{ backgroundColor: enabled ? '#3B82F6' : '#6B7280' }} // Blue when enabled, Gray when disabled
+          >
+            <div className={`bg-white w-5 h-5 rounded-full shadow-md transform transition ${enabled ? 'translate-x-6' : 'translate-x-0'}`}></div>
+          </div>
+        </label>
+        </div>
+
        <div className="flex items-center p-2">
         <div className="w-1/3 border border-gray-300 rounded-lg p-4 h-32 flex items-center justify-center">
             {imagePreview ? (

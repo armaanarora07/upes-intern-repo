@@ -1,21 +1,23 @@
-import React from 'react';
+import React,{useState} from 'react';
 import { NavLink } from 'react-router-dom';
 import {
   FaTachometerAlt, FaBusinessTime, FaFileInvoice, FaFileAlt,
   FaMoneyBillWave, FaChartLine, FaUsers, FaEnvelope, FaQuestionCircle,
-  FaCog, FaSignOutAlt
+  FaCog, FaSignOutAlt,FaChevronDown, FaChevronUp
 } from 'react-icons/fa';
 
 const Sidebar = () => {
+  const [isOpen, setIsOpen] = useState(false);
+
   return (
     <div className="bg-[#F9FAFC] w-64 h-screen flex flex-col px-6 py-4 shadow-lg">
       <div>
         <div>
-          <h1 className="text-[#4154f1] text-2xl font-bold mb-2">SCAN T</h1>
-          <p className="text-black text-sm mb-8">Billing Software</p>
+          <h1 className="text-[#4154f1] font-bold text-3xl">SCAN T</h1>
+          <p className="text-black font-medium mb-8">Billing Software</p>
         </div>
         <div>
-          <p className="text-black uppercase font-semibold text-xs mb-4">Main Menu</p>
+          <p className="text-black uppercase font-medium text-xs mb-4">Main Menu</p>
           <ul>
             <li className="mb-4 flex items-center">
               <FaTachometerAlt className="text-[#4154f1] mr-4" />
@@ -27,7 +29,7 @@ const Sidebar = () => {
                 Dashboard
               </NavLink>
             </li>
-            <li className="mb-4 flex items-center">
+            {/*<li className="mb-4 flex items-center">
               <FaBusinessTime className="text-[#4154f1] mr-4" />
               <NavLink
                 to="/add-business"
@@ -36,7 +38,7 @@ const Sidebar = () => {
               >
                 Add Business
               </NavLink>
-            </li>
+            </li>*/}
             <li className="mb-4 flex items-center">
               <FaFileAlt className="text-[#4154f1] mr-4" />
               <NavLink
@@ -47,7 +49,7 @@ const Sidebar = () => {
                 My Business
               </NavLink>
             </li>
-            <li className="mb-4 flex items-center">
+            {/*<li className="mb-4 flex items-center">
               <FaFileInvoice className="text-[#4154f1] mr-4" />
               <NavLink
                 to="/generate-bill"
@@ -56,6 +58,49 @@ const Sidebar = () => {
               >
                 Generate New Bill
               </NavLink>
+            </li>*/}
+             <li className="mb-4">
+                  <div 
+                  className="flex items-center justify-between cursor-pointer" 
+                  onClick={() => setIsOpen(!isOpen)}
+                  >
+                  <div className="flex items-center">
+                    <FaFileInvoice className="text-[#4154f1] mr-4" />
+                    <span className="text-black font-medium">Generate New Bill</span>
+                  </div>
+                  {/* Arrow Icon Toggle */}
+                  {isOpen ? (
+                    <FaChevronUp className="text-gray-600 ml-2 transition-transform duration-300" />
+                  ) : (
+                    <FaChevronDown className="text-gray-600 ml-2 transition-transform duration-300" />
+                  )}
+                </div>
+
+                {/* Dropdown Links */}
+                <div className={`overflow-hidden transition-all duration-300 ${isOpen ? "max-h-40" : "max-h-0"}`}>
+                  <ul className="mt-2 ml-8 space-y-2">
+                    <li>
+                      <NavLink
+                        to="/gst-invoice"
+                        className={({ isActive }) =>
+                          isActive ? "text-[#4154f1] font-semibold" : "text-black font-medium"
+                        }
+                      >
+                        GST Invoice
+                      </NavLink>
+                    </li>
+                    <li>
+                      <NavLink
+                        to="/invoice"
+                        className={({ isActive }) =>
+                          isActive ? "text-[#4154f1] font-semibold" : "text-black font-medium"
+                        }
+                      >
+                        Invoice
+                      </NavLink>
+                    </li>
+                  </ul>
+                </div>
             </li>
             <li className="mb-4 flex items-center">
               <FaFileAlt className="text-[#4154f1] mr-4" />
@@ -100,7 +145,7 @@ const Sidebar = () => {
           </ul>
         </div>
         <div>
-          <p className="text-black uppercase font-semibold text-xs mb-4">Support</p>
+          <p className="text-black uppercase font-medium text-xs mb-4">Support</p>
           <ul>
             <li className="mb-4 flex items-center">
               <FaEnvelope className="text-[#4154f1] mr-4" />
@@ -114,7 +159,7 @@ const Sidebar = () => {
             </li>
             <li className="mb-4 flex items-center ">
               <FaQuestionCircle className="text-[#4154f1] mr-4" />
-              <NavLink to="/helps" className={({ isActive }) => isActive ? 'text-[#4154f1] font-semibold' : 'text-black font-medium'} > Help </NavLink>
+              <NavLink to="/help" className={({ isActive }) => isActive ? 'text-[#4154f1] font-semibold' : 'text-black font-medium'} > Help </NavLink>
             </li>
           </ul>
         </div>
@@ -139,7 +184,7 @@ const Sidebar = () => {
           </li>
         </ul>
       </div>
-      <p className="text-gray-400 text-xs">version 1.0.0</p>
+      <p className="text-gray-400 text-xs">Version 1.0.0</p>
     </div>
   );
 };

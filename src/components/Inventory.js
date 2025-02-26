@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { FaBox } from "react-icons/fa";
 import axios from "axios";
 import { Edit, Trash2, Plus, Search } from "lucide-react";
+import { useDispatch } from "react-redux";
+import { setTitle } from "../slices/navbarSlice";
 
 const Inventory = () => {
   const [products, setProducts] = useState([]);
@@ -10,11 +12,15 @@ const Inventory = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
-
+  const dispatch = useDispatch();
   const token = localStorage.getItem('authToken');
 
   useEffect(() => {
     loadData();
+    const setNavTitle = () =>{
+      dispatch(setTitle('Inventory Management'));
+    }
+    setNavTitle();
   }, []);
 
   const loadData = async () => {
@@ -134,14 +140,9 @@ const Inventory = () => {
 
   return (
   
-    <div className="container mx-auto p-6">
+    <div className="p-8 mt-10">
 
-      <div className="flex items-center space-x-3 text-[#4154f1] font-bold text-3xl mb-6">
-        <FaBox className="text-4xl" />
-        <span>Inventory Management</span>
-      </div>
-
-      <div className="flex justify-between items-center mb-4">
+      <div className="flex justify-between items-center mb-4 mt-5">
         <div className="flex items-center gap-4">
           <div className="relative">
             <Search

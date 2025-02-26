@@ -3,6 +3,7 @@ import {useDispatch,useSelector} from 'react-redux';
 import {FaBriefcase, FaEdit, FaPlusCircle} from 'react-icons/fa';
 import { useNavigate} from 'react-router-dom';
 import {checkAndFetchBusinesses} from '../slices/businessSlice.js';
+import { setTitle } from '../slices/navbarSlice.js';
 
 const BusinessCard = ({ id,gstin, legalName, tradeName}) => {
 
@@ -35,95 +36,28 @@ const BusinessCard = ({ id,gstin, legalName, tradeName}) => {
 const MyBusiness = () => {
   const dispatch = useDispatch();
   const { businesses, loading, error } = useSelector((state) => state.business);
-  //const [businesses, setBusinesses] = useState([]);
-  //const [loading, setLoading] = useState(true);
-  //const [error, setError] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    /*
-    const fetchBusinesses = async () => {
-      const authToken = localStorage.getItem('authToken');
-      console.log(authToken);  // Debug to check token
 
-      try {
-        const response = await fetch('/user/myBusiness', {
-          method: 'GET',
-          headers: {
-            Authorization: `Bearer ${authToken}`,
-          },
-        });
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const data = await response.json();
-        if (data && data.data) {
-          setBusinesses(data.data);
-        } else {
-          //setBusinesses([]);
-        }
-      } catch (error) {
-       // setError(error.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-    */
     dispatch(checkAndFetchBusinesses()); 
-    //fetchBusinesses();
-  }, [dispatch]);
-
-  /*
-  const handleSave = async (updatedBusiness) => {
-    const authToken = localStorage.getItem('authToken');
-    console.log('Sending updated business data:', updatedBusiness);  // Debug payload
-
-    try {
-      const response = await fetch('/user/business', {
-        method: 'PUT',
-        headers: {
-          'Authorization': `Bearer ${authToken}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          gstin: updatedBusiness.gstin,
-          legal_name: updatedBusiness.legalName,
-          trade_name: updatedBusiness.tradeName,
-        }),
-      });
-
-      if (!response.ok) {
-        console.error('Failed to update, status:', response.status);  // Log status
-        throw new Error('Failed to update business');
-      }
-
-      const updatedData = businesses.map((business) =>
-        business.gstin === updatedBusiness.gstin ? updatedBusiness : business
-      );
-     // setBusinesses(updatedData);
-    } catch (error) {
-      console.error('Error:', error);  // Log the error
-      //setError(error.message);
+    const setNavTitle = () =>{
+      dispatch(setTitle('My Business'));
     }
-  };
-  */
+
+    setNavTitle();
+
+  }, [setTitle,dispatch]);
 
   return (
-    <div className="p-6">
-
-      <div className="flex items-center space-x-3 text-[#4154f1] font-bold text-3xl mb-6">
-        <FaBriefcase className="text-4xl" />
-        <span>My Business</span>
-      </div>
+    <div className="p-8 mt-10">
 
       {loading ? (
         <p>Loading...</p>
       ) : error ? (
         <p className="text-red-500">{error}</p>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mt-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mt-5">
           {businesses.length > 0 ? (
             <>
               {businesses.map((business, index) => (

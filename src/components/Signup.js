@@ -66,7 +66,7 @@ const SignUp = () => {
         dispatch(verifyotp(true));
         setSuccessMessage("OTP verified successfully.");
         setErrorMessage("");
-        navigate("/dashboard");
+        navigate("/add-business");
       } else {
         setErrorMessage("OTP verification failed. Please try again.");
       }

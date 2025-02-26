@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { Line } from "react-chartjs-2";
-import { useSelector } from "react-redux";
+import { useSelector,useDispatch } from "react-redux";
+import { setTitle } from '../slices/navbarSlice';
 
 import {
   Chart as ChartJS,
@@ -24,6 +25,16 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const [legal_name, setLegalName] = useState(""); // State for legal_name
   const authToken = useSelector((state) => state.auth.authToken); // access from global auth state 
+  const dispatch = useDispatch();
+
+  useEffect(()=>{
+    
+    const setNavTitle = () =>{
+      dispatch(setTitle('Dashboard'));
+    }
+
+    setNavTitle();
+  },[setTitle,dispatch])
 
   useEffect(() => {
     const fetchData = async () => {
@@ -98,19 +109,17 @@ const Dashboard = () => {
 
   if (loading) {
     return (
-      <div className="p-4">
-        <h1 className="text-3xl font-bold text-[#4154f1]">Dashboard</h1>
+      <div className="p-8 mt-10">
         <p>Loading data...</p>
       </div>
     );
   }
 
   return (
-    <div className="p-4">
-      <div className="flex justify-between items-center mx-10">
-      <h1 className="text-3xl font-bold text-[#4154f1]">Dashboard</h1>
-
-        <p className="text-xl font-bold text-[#4154f1]">{legal_name}</p>
+    <div className="p-8 mt-10">
+    
+      <div className="text-2xl font-bold text-gray-800 mt-3">
+        {legal_name} 
       </div>
 
       {errorMessage && <p className="text-red-500">{errorMessage}</p>}
@@ -118,7 +127,7 @@ const Dashboard = () => {
       {/* <div className="mb-6 p-4 border rounded shadow-sm bg-white">
         <h2 className="text-lg font-semibold">Business Name</h2>
       </div> */}
-
+      <div className="flex space-x-12">
       {transactions.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 py-8 px-5 gap-4">
           <div className="border p-4 rounded shadow-sm">
@@ -145,7 +154,7 @@ const Dashboard = () => {
                 ))}
               </tbody>
             </table>
-            <Link to="/trans" className="text-[#4154f1] hover:underline mt-2 block">
+            <Link to="/generated-bills" className="text-[#4154f1] hover:underline mt-2 block">
               See All Transactions
             </Link>
           </div>
@@ -178,6 +187,7 @@ const Dashboard = () => {
       ) : (
         <p>No recent transactions available.</p>
       )}
+      </div>
     </div>
   );
 };
