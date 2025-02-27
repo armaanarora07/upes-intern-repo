@@ -20,8 +20,9 @@ const URDInvoice = () => {
   const userDetails = useSelector(selectUserDetails);
 
   const handleBillGeneration = ()=>{
-    if(userDetails.tradeName.length > 0 && rows[0].hsn_code.length > 0 ){
+    if(userDetails.tradeName.length > 0 && rows.length > 0 && rows[0].hsn_code.length > 0 ){
       navigate('/generate-invoice?type=invoice');
+      return;
     }
     alert('Enter the Required Details');
   }

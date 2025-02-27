@@ -5,9 +5,19 @@ import {
   FaMoneyBillWave, FaChartLine, FaUsers, FaEnvelope, FaQuestionCircle,
   FaCog, FaSignOutAlt,FaChevronDown, FaChevronUp
 } from 'react-icons/fa';
+import {useSelector} from 'react-redux';
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const {businesses} = useSelector((state)=> state.business);
+
+  const handleDropdown = () =>{
+      if(businesses.length === 0){
+         alert('Add a Business to generate the Bill');
+         return;
+      }
+      setIsOpen(!isOpen);
+  }
 
   return (
     <div className="bg-[#F9FAFC] w-64 h-screen flex flex-col px-6 py-4 shadow-lg">
@@ -62,7 +72,7 @@ const Sidebar = () => {
              <li className="mb-4">
                   <div 
                   className="flex items-center justify-between cursor-pointer" 
-                  onClick={() => setIsOpen(!isOpen)}
+                  onClick={() => handleDropdown()}
                   >
                   <div className="flex items-center">
                     <FaFileInvoice className="text-[#4154f1] mr-4" />

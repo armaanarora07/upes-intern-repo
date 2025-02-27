@@ -23,8 +23,9 @@ const GSTInvoice = () => {
   console.log();
 
   const handleBillGeneration = ()=>{
-      if(gstDetails && userDetails.tradeName.length > 0 && rows[0].hsn_code.length > 0 ){
+      if(gstDetails && userDetails.tradeName.length > 0 && rows.length > 0 && rows[0].hsn_code.length > 0 ){
         navigate('/generate-invoice?type=gstinvoice');
+        return;
       }
       alert('Enter the Required Details');
   }
