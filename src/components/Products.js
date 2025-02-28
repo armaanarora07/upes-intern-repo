@@ -1,5 +1,6 @@
 // Products.js
-import React from 'react';
+import React, { useState } from 'react';
+import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { FaEdit, FaTrash } from 'react-icons/fa';
 import { addRow, removeRow, updateRow } from '../slices/productSlice';
@@ -7,10 +8,52 @@ import { addRow, removeRow, updateRow } from '../slices/productSlice';
 const Products = () => {
   const dispatch = useDispatch();
   const { rows } = useSelector((state) => state.products);
+  const { businesses,selectedBusiness } = useSelector((state) => state.business);
+  const authToken = useSelector((state) => state.auth.authToken); // access from global auth state 
+  const business = businesses?.find((b)=> b._id === selectedBusiness) || {};
+  const hsnCodes = business.hsns;
 
   const handleInputChange = (index, field, value) => {
     dispatch(updateRow({ index, field, value }));
   };
+
+  const handleHSNCode = async (index, field, value) =>{
+
+    dispatch(updateRow({ index, field, value }));
+
+    if(value === "Select HSN Code" || value === "other"){
+      handleInputChange(index, "product_info", '');
+    }
+
+    if (field === "hsn_code" && value !== "other" && value !== "Select HSN Code") {
+      try {
+        const response = await axios.get(`/user/hsn?hsn_code=${value}`, 
+          {
+            headers: {
+              Authorization: `Bearer ${authToken}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        const productInfo = response.data?.product_info?.[0] || "No product info available";
+
+        // Split by "OR" first, then take the first option
+        let parts = productInfo.split(/\s+OR\s+/);
+    
+        // Split the first part by comma and take the first meaningful chunk
+        let shortProductInfo = parts[0].split(",")[0].trim();
+
+        handleInputChange(index, "product_info", shortProductInfo);
+
+        console.log(shortProductInfo);
+
+      } catch (error) {
+        console.error("Error fetching product info:", error);
+        handleInputChange(index, "product_info", '');
+      }
+   }
+
+  }
 
   const totalQuantity = rows.reduce(
     (sum, row) => sum + (Number(row.quantity) || 0),
@@ -69,7 +112,7 @@ const Products = () => {
                     onChange={(e) => handleInputChange(index, "product_info", e.target.value)}
                   />
                 </td>
-                <td className="p-1 border-r-2 border-black">
+                {/*<td className="p-1 border-r-2 border-black">
                   <input
                     type="text"
                     className="border-2 border-[#EFF0F4] p-2 w-full rounded-md"
@@ -77,7 +120,35 @@ const Products = () => {
                     value={row.hsn_code}
                     onChange={(e) => handleInputChange(index, "hsn_code", e.target.value)}
                   />
+                </td>*/}
+
+                 {/* DropDown to Select HSN Codes*/}
+                 <td className="p-1 border-r-2 border-black">
+                  <select
+                    className="border-2 border-[#EFF0F4] p-2 w-full rounded-md"
+                    value={row.hsn_code}
+                    onChange={(e) => handleHSNCode(index, "hsn_code", e.target.value)}
+                  >
+                    <option value="Select HSN Code">Select HSN Code</option>
+                    {hsnCodes.map((codeObj) => (
+                      <option key={codeObj.hsn} value={codeObj.hsn}>
+                        {codeObj.hsn}
+                      </option>
+                    ))}
+                    <option value="other">Other</option>
+                  </select>
+
+                  {row.hsn_code === "other" && (
+                    <input
+                      type="text"
+                      className="border-2 border-[#EFF0F4] p-2 w-full rounded-md mt-2"
+                      placeholder="Enter HSN Code"
+                      value={row.custom_hsn || ""}
+                      onChange={(e) => handleInputChange(index, "hsn_code", e.target.value)}
+                    />
+                  )}
                 </td>
+
                 <td className="p-1 border-r-2 border-black">
                   <input
                     type="number"
