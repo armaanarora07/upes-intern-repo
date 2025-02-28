@@ -19,7 +19,7 @@ const InvoicePage = () => {
   const [selectedTemplate, setSelectedTemplate] = useState('template1');
   const [showPdfModal, setShowPdfModal] = useState(false);
   const [billId,setBillId] = useState('');
-   const location = useLocation();
+  const location = useLocation();
   const authToken = useSelector((state) => state.auth.authToken); 
   
   const templates = {
@@ -225,7 +225,7 @@ const InvoicePage = () => {
 
   const addBill = async () =>{
 
-    const body = {
+    const body = { 
       party: {
         gstin: gstDetails.gstin,
         legal_name: gstDetails.legalName,
@@ -247,16 +247,18 @@ const InvoicePage = () => {
           country: gstDetails.shippingAddress.country,
         },
       },
-      quantities: rows.map((row) => row.quantity),
+      quantities: rows.map((row) => parseFloat(row.quantity)),
       hsn_details: rows.map((row) => ({
         hsn_code: row.hsn_code,
         product_info: row.product_info,
-        cgst: row.cgst,
-        sgst: row.sgst,
+        cgst: parseFloat(row.cgst).toString(), // Convert to number and back to string
+        sgst: parseFloat(row.sgst).toString(), // Convert to number and back to string
         unit: row.unit,
       })),
       rates: rows.map((row) => row.price),
     };
+
+    console.log(body);
   
     try {
       //handleOpenAlert('success', 'PDF is downloading...');
