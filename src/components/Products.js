@@ -164,9 +164,9 @@ const Products = () => {
                     value={row.unit}
                     onChange={(e) => handleInputChange(index, "unit", e.target.value)}
                   >
-                    <option value="KG">KG</option>
+                    <option value="Kgs">Kgs</option>
                     <option value="L">L</option>
-                    <option value="PCS">PCS</option>
+                    <option value="Pcs">Pcs</option>
                   </select>
                 </td>
                 <td className="p-1 border-r-2 border-black">
