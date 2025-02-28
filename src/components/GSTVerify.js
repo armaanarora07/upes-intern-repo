@@ -3,7 +3,7 @@ import TopAlert from "./TopAlert";
 import { FaCheckCircle, FaTimesCircle } from "react-icons/fa";
 import { useSelector, useDispatch } from "react-redux";
 import { setGSTDetails, setGSTError } from '../slices/gstSlice';
-import { setTradeName, setPhoneNo, updatePrimaryAddress , toggleShippingSameAsPrimary} from '../slices/userdetailsSlice';
+import { setTradeName, setPhoneNo, updatePrimaryAddress , toggleShippingSameAsPrimary, setInvoiceNo} from '../slices/userdetailsSlice';
 import axios from 'axios';
 
 const GSTVerify = ({ gstNumber }) => {
@@ -37,10 +37,9 @@ const GSTVerify = ({ gstNumber }) => {
     dispatch(updatePrimaryAddress({ 'pincode':  '' }));
     dispatch(updatePrimaryAddress({ 'state': ''}));
     dispatch(setPhoneNo(''));
+    dispatch(setInvoiceNo(''));
     dispatch(toggleShippingSameAsPrimary());
     setIsVerified(false);
-    setStatus(true);
-    handleOpenAlert('error', 'Verification failed');
   }
 
   const formatGSTNumber = (gst) => {
@@ -86,10 +85,14 @@ const GSTVerify = ({ gstNumber }) => {
         setStatus(true);
       } else {
         dispatch(setGSTError('Verification failed'));
+        handleOpenAlert('error', 'Verification failed');
+        setStatus(true);
         clearUserDetails();
       }
     } catch (error) {
       dispatch(setGSTError(error.message));
+      handleOpenAlert('error', 'Verification failed');
+      setStatus(true);
       clearUserDetails();
     }
   };

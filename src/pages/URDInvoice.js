@@ -11,6 +11,7 @@ import { useDispatch,useSelector } from 'react-redux';
 import { selectUserDetails } from '../slices/userdetailsSlice';
 import {setTitle} from '../slices/navbarSlice';
 import FloatingButton from '../components/FloatingButton';
+import SignatureSelection from '../components/SignatureSelection';
 
 const URDInvoice = () => {
 
@@ -42,10 +43,7 @@ const URDInvoice = () => {
       <Products/>
       <BankDetails/>
       <TermsAndConditions/>
-      <div className="p-6 bg-white rounded-lg shadow-xl mt-5 flex flex-col sm:flex-row justify-between">
-      <Signature/>
-      <Stamp/>
-      </div>
+      <SignatureSelection/>
       <FloatingButton onClick={handleBillGeneration}/>
     </div>
   )

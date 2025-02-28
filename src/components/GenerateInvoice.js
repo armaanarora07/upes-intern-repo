@@ -34,19 +34,26 @@ const InvoicePage = () => {
   const { gstDetails } = useSelector((state) => state.gst);
   const userDetails = useSelector(selectUserDetails);
   const { GSTtandcDetails } = useSelector((state) => state.tandc);
-  const { businesses } = useSelector((state) => state.business);
+  const { businesses,selectedBusiness } = useSelector((state) => state.business);
   const { signature } = useSelector((state) => state.signature);
   const signatureEnabled = useSelector((state)=> state.signature.enabled);
   const { stamp } = useSelector((state) => state.stamp);
   const stampEnabled = useSelector((state)=> state.stamp.enabled);
   const {logo} = useSelector((state)=> state.logo);
+  const {qr} = useSelector((state)=> state.qr);
   const { selectedGBank } = useSelector((state) => state.banks);
   const bankEnabled = useSelector((state)=> state.banks.enabled);
+  const attestationSelection = useSelector((state) => state.toggle.enabled);
+
+   const [business, setSelectedBusiness] = useState(
+      () => businesses?.find((b) => b._id === selectedBusiness) || {}
+    );
 
   const getQueryParams = () => {
     return new URLSearchParams(location.search);
   };
 
+  
   useEffect(()=>{
 
     const fetchQueryparameter = () =>{
@@ -144,11 +151,11 @@ const InvoicePage = () => {
     if (gstDetails && rows && rows.length > 0) {
       const invoiceDataFromGlobal = {
         firstParty: {
-          gstin: businesses ? businesses[0].gstin : '',
-          legal_name: businesses ? businesses[0].legal_name: '',
-          trade_name: businesses ? businesses[0].trade_name: '',
-          principal_address: businesses ? businesses[0].principal_address: '',
-          shipping_address: businesses ? businesses[0].shipping_address: ''
+          gstin: business ? business.gstin : '',
+          legal_name: business ? business.legal_name: '',
+          trade_name: business ? business.trade_name: '',
+          principal_address: business ? business.principal_address: '',
+          shipping_address: business ? business.shipping_address: ''
         },
         party: {
           gstin: gstDetails.gstin,
@@ -173,17 +180,19 @@ const InvoicePage = () => {
         signature: signature,
         stamp: stamp,
         logo:logo,
+        qr:qr,
         bank: selectedGBank,
         signatureEnabled:signatureEnabled,
         stampEnabled:stampEnabled,
         bankEnabled:bankEnabled,
+        attestationSelection:attestationSelection
       };
 
       const calculatedInvoice = calculateInvoiceTotals(invoiceDataFromGlobal);
       setInvoiceData(calculatedInvoice);
       generatePreview(calculatedInvoice);
     }
-  }, [rows, gstDetails, businesses, userDetails, GSTtandcDetails, signature, stamp, selectedGBank, dispatch, selectedTemplate]);
+  }, [rows, gstDetails,selectedBusiness, userDetails, GSTtandcDetails, signature, stamp, selectedGBank, dispatch, selectedTemplate]);
 
   const handleTemplateChange = (e) => {
     setSelectedTemplate(e.target.value);

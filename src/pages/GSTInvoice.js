@@ -11,6 +11,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import {setTitle} from '../slices/navbarSlice';
 import FloatingButton from '../components/FloatingButton';
 import { selectUserDetails } from '../slices/userdetailsSlice';
+import SignatureSelection from '../components/SignatureSelection';
 
 const GSTInvoice = () => {
 
@@ -46,10 +47,7 @@ const GSTInvoice = () => {
       <Products/>
       <BankDetails/>
       <TermsAndConditions/>
-      <div className="p-6 bg-white rounded-lg shadow-xl mt-5 flex flex-col sm:flex-row justify-between">
-      <Signature/>
-      <Stamp/>
-      </div>
+      <SignatureSelection/>
       <FloatingButton onClick={handleBillGeneration}/>
     </div>
   )
