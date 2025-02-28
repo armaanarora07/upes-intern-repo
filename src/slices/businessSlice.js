@@ -24,6 +24,7 @@ export const fetchBusinesses = createAsyncThunk(
 
 const initialState = {
   businesses: JSON.parse(localStorage.getItem("businesses")) || [],
+  selectedBusiness:JSON.parse(localStorage.getItem("selectedBusiness")) || '',
   loading: false,
   error: null,
 };
@@ -31,7 +32,12 @@ const initialState = {
 const businessSlice = createSlice({
   name: "business",
   initialState,
-  reducers: {},
+  reducers: {
+    setBusiness:(state,action)=>{
+       state.selectedBusiness = action.payload;
+       localStorage.setItem("selectedBusiness",JSON.stringify(state.selectedBusiness));
+    }
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchBusinesses.pending, (state) => {
@@ -56,5 +62,5 @@ export const checkAndFetchBusinesses = () => async (dispatch) => {
     dispatch(fetchBusinesses());
   }
 };
-
+export const {setBusiness} = businessSlice.actions;
 export default businessSlice.reducer;
