@@ -14,8 +14,10 @@ class Template1 {
   }
 
   generateFullHeader(invoiceData) {
-
-    this.doc.addImage(invoiceData.logo, "PNG", 15,10, 15, 15);
+    
+    if(invoiceData.logo){
+      this.doc.addImage(invoiceData.logo, "PNG", 15,10, 15, 15);
+    }
 
     this.doc.setFont("helvetica");
     this.doc.setFontSize(14);
