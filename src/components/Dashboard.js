@@ -3,6 +3,7 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import { Line } from "react-chartjs-2";
 import { useSelector,useDispatch } from "react-redux";
+import {checkAndFetchBusinesses,setBusiness} from '../slices/businessSlice';
 import { setTitle } from '../slices/navbarSlice';
 
 import {
@@ -23,18 +24,37 @@ const Dashboard = () => {
   const [salesData, setSalesData] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(true);
-  const [legal_name, setLegalName] = useState(""); // State for legal_name
   const authToken = useSelector((state) => state.auth.authToken); // access from global auth state 
+  const {businesses,selectedBusiness} = useSelector((state)=> state.business);
+  const [business, setSelectedBusiness] = useState(
+    () => businesses?.find((b) => b._id === selectedBusiness) || {}
+  );
+  const [legal_name, setLegalName] = useState(business ? business.legal_name : ''); // State for legal_name
+
   const dispatch = useDispatch();
 
+  useEffect(() => {
+
+    setSelectedBusiness(businesses?.find((b) => b._id === selectedBusiness) || {});
+
+    setLegalName(business ? business.legal_name : '');
+
+  }, [businesses, selectedBusiness,business]);
+
   useEffect(()=>{
-    
+
+    dispatch(checkAndFetchBusinesses());
+
+    if (businesses.length === 1) {
+      handleDropdown(businesses[0]._id);
+    } 
+
     const setNavTitle = () =>{
       dispatch(setTitle('Dashboard'));
     }
 
     setNavTitle();
-  },[setTitle,dispatch])
+  },[setTitle,dispatch,businesses])
 
   useEffect(() => {
     const fetchData = async () => {
@@ -63,19 +83,6 @@ const Dashboard = () => {
 
         setSalesData(sales);
 
-        // Fetch business legal name
-        const businessResponse = await axios.get("/user/myBusiness", {
-          headers: {
-            Authorization: `Bearer ${authToken}`,
-            "Content-Type": "application/json",
-          },
-        });
-        const businessData = businessResponse.data?.data || [];
-        if (businessData.length > 0) {
-          setLegalName(businessData[0]?.legal_name || "N/A");
-        } else {
-          setLegalName("No businesses found");
-        }
       } catch (error) {
         if (error.response) {
           setErrorMessage(error.response.data.message || "An error occurred on the server.");
@@ -91,6 +98,10 @@ const Dashboard = () => {
         
     fetchData();
   }, []);
+
+  const handleDropdown = (value) =>{
+     dispatch(setBusiness(value));
+  }
 
   const chartData = salesData
     ? {
@@ -118,15 +129,30 @@ const Dashboard = () => {
   return (
     <div className="p-8 mt-10">
     
-      <div className="text-2xl font-bold text-gray-800 mt-3">
-        {legal_name} 
+      <div className="flex items-center justify-between mt-3">
+        {/* Business Name */}
+        <div className="text-2xl font-bold text-gray-800">
+          {`${legal_name}`} 
+        </div>
+
+        {/* Dropdown Section */}
+        <div className="flex items-center space-x-2 ml-auto">
+          <span className="text-gray-800 font-bold">Select Business</span>
+          <select 
+            className="border rounded px-3 py-1" 
+            onChange={(e) => handleDropdown(e.target.value)}
+          >
+              {businesses.map((business, key) => (
+                <option key={key} value={business._id}>
+                  {business.legal_name}
+                </option>
+              ))}
+          </select>
+        </div>
       </div>
 
       {errorMessage && <p className="text-red-500">{errorMessage}</p>}
 
-      {/* <div className="mb-6 p-4 border rounded shadow-sm bg-white">
-        <h2 className="text-lg font-semibold">Business Name</h2>
-      </div> */}
       <div className="flex space-x-12">
       {transactions.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 py-8 px-5 gap-4">
