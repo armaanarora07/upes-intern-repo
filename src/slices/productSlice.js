@@ -6,7 +6,7 @@ const createRow = (id) => ({
   product_info: "",
   hsn_code: "",
   quantity: "",
-  unit: "KG",
+  unit: "Kgs",
   price: "",
   taxPercent: "",
   taxAmount: 0,
