@@ -215,23 +215,37 @@ class Template1 {
   }
 
   drawSignatureAndStamp(invoiceData, finalY) {
-    // Stamp section
+        
+    // Signature and  Stamp  section
+    this.doc.rect(100, finalY + 60, 95, 40, "S");
+    this.doc.setFont("helvetica", "bold");
+    if(invoiceData.attestationSelection) {
+       // Stamp section
+       if(invoiceData.stampEnabled && invoiceData.stamp){
+       this.doc.text("Stamp :", 102, finalY + 70);
+       const stX = 150 - 20;
+       const stY = finalY + 71.5;
+       this.doc.addImage(invoiceData.stamp, "PNG", stX, stY, 20, 20);
+       }
+    } else{
+        // Signature section
+        if(invoiceData.signatureEnabled && invoiceData.signature){
+          this.doc.text("Signature :", 102, finalY + 70);
+          const sigX = 150 - 20;
+          const sigY = finalY + 71.5;
+          this.doc.addImage(invoiceData.signature, "PNG", sigX, sigY, 20, 20);
+        }
+    }
+    //Payment QR
     this.doc.rect(15, finalY + 60, 85, 40, "S");
     this.doc.setFont("helvetica", "bold");
-    if(invoiceData.stampEnabled && invoiceData.stamp){
-    this.doc.text("Stamp :", 17, finalY + 70);
-    const stX = 150 - 110;
-    const stY = finalY + 71.5;
-    this.doc.addImage(invoiceData.stamp, "PNG", stX, stY, 20, 20);
+    if(invoiceData.qr){
+      this.doc.text("Payment QR :", 17, finalY + 70);
+      const stX = 150 - 110;
+      const stY = finalY + 71.5;
+      this.doc.addImage(invoiceData.qr, "PNG", stX, stY, 20, 20);
     }
-    // Signature section
-    this.doc.rect(100, finalY + 60, 95, 40, "S");
-    if(invoiceData.signatureEnabled && invoiceData.signature){
-    this.doc.text("Signature :", 102, finalY + 70);
-    const sigX = 150 - 20;
-    const sigY = finalY + 71.5;
-    this.doc.addImage(invoiceData.signature, "PNG", sigX, sigY, 20, 20);
-    }
+    
     // Company name
     const tradeName = invoiceData.firstParty.trade_name.replace(/^M\/S\s+/i, "");
     this.doc.text(`for ${tradeName}`, 170, finalY + 95, { align: "center" });
