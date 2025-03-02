@@ -74,7 +74,7 @@ const UpdateBusiness = () => {
 
     const fetchSnNo = async () => {
       try {
-        const response = await axios.get(`https://fyntl.sangrahinnovations.com/user/mySnNo?gstin=${gstin}`, {
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/user/mySnNo?gstin=${gstin}`, {
           headers: {
             Authorization: `Bearer ${authToken}`, // Include the auth token if required
           },
@@ -115,7 +115,7 @@ const UpdateBusiness = () => {
     };
 
     try {
-      const response = await axios.put('https://fyntl.sangrahinnovations.com/user/hsn', requestBody, {
+      const response = await axios.put(`${process.env.REACT_APP_API_URL}/user/hsn`, requestBody, {
         headers: {
           Authorization: `Bearer ${authToken}`, // Include the auth token if required
           "Content-Type": "application/json",
@@ -139,7 +139,7 @@ const UpdateBusiness = () => {
     };
    
     try {
-      const response = await axios.delete('https://fyntl.sangrahinnovations.com/user/hsn', {
+      const response = await axios.delete(`${process.env.REACT_APP_API_URL}/user/hsn`, {
         headers: {
           Authorization: `Bearer ${authToken}`, // Include the auth token if required
           "Content-Type": "application/json",
@@ -162,7 +162,7 @@ const UpdateBusiness = () => {
     };
 
     try {
-      const response = await axios.post('https://fyntl.sangrahinnovations.com/user/mySnNo', requestBody, {
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}/user/mySnNo`, requestBody, {
         headers: {
           Authorization: `Bearer ${authToken}`, // Include the auth token if required
           "Content-Type": "application/json",
@@ -196,7 +196,7 @@ const UpdateBusiness = () => {
     };
 
     try {
-      const response = await axios.put('https://fyntl.sangrahinnovations.com/user/address', requestBody, {
+      const response = await axios.put(`${process.env.REACT_APP_API_URL}/user/address`, requestBody, {
         headers: {
           Authorization: `Bearer ${authToken}`, // Include the auth token if required
           "Content-Type": "application/json",

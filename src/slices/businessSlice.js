@@ -9,7 +9,7 @@ export const fetchBusinesses = createAsyncThunk(
     const authToken = localStorage.getItem("authToken");
 
     try {
-      const response = await axios.get("https://fyntl.sangrahinnovations.com/user/myBusiness", {
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/user/myBusiness`, {
         headers: { Authorization: `Bearer ${authToken}` },
       });
 

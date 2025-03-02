@@ -42,7 +42,7 @@ const EWayBillSystem = () => {
     e.preventDefault();
     try {
       const response = await axios.post(
-        "https://fyntl.sangrahinnovations.com/user/eway_setup",
+        `${process.env.REACT_APP_API_URL}/user/eway_setup`,
         {
           x: credentials.x.trim(),
           y: credentials.y.trim(),

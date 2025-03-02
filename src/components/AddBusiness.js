@@ -47,7 +47,7 @@ const AddBusiness = () => {
     };
   
     try {
-      const response = await axios.post('https://fyntl.sangrahinnovations.com/user/business', requestBody, {
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}/user/business`, requestBody, {
         headers: {
           Authorization: `Bearer ${authToken}`, // Include the auth token if required
           "Content-Type": "application/json",
@@ -78,7 +78,7 @@ const AddBusiness = () => {
     }
 
     try {
-      const response = await axios.get(`https://fyntl.sangrahinnovations.com/user/validategst?gst=${gstNumber}`, {
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/user/validategst?gst=${gstNumber}`, {
         headers: {
           Authorization: `Bearer ${authToken}`,
           "Content-Type": "application/json",

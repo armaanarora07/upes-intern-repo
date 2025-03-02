@@ -25,7 +25,7 @@ const SignUp = () => {
     }
 
     try {
-      const response = await axios.post("https://fyntl.sangrahinnovations.com/user/verify", {
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}/user/verify`, {
         contact: `+91${phone}`,
       });
 
@@ -52,7 +52,7 @@ const SignUp = () => {
 
     try {
       const response = await axios.post(
-        "https://fyntl.sangrahinnovations.com/user/optVerification",
+        `${process.env.REACT_APP_API_URL}/user/optVerification`,
         { otp: otp }, 
         {
           headers: {

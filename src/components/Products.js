@@ -27,7 +27,7 @@ const Products = () => {
 
     if (field === "hsn_code" && value !== "other" && value !== "Select HSN Code") {
       try {
-        const response = await axios.get(`/user/hsn?hsn_code=${value}`, 
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/user/hsn?hsn_code=${value}`, 
           {
             headers: {
               Authorization: `Bearer ${authToken}`,

@@ -28,7 +28,7 @@ const Inventory = () => {
     setError("");
 
     try {
-      const productRes = await axios.get("https://fyntl.sangrahinnovations.com/stock/products", {
+      const productRes = await axios.get(`${process.env.REACT_APP_API_URL}/stock/products`, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
@@ -60,8 +60,8 @@ const Inventory = () => {
   const handleSaveProduct = async () => {
     try {
       const url = newProduct._id
-        ? `https://fyntl.sangrahinnovations.com/stock/product/${newProduct._id}`
-        : "https://fyntl.sangrahinnovations.com/stock/product";
+        ? `${process.env.REACT_APP_API_URL}/stock/product/${newProduct._id}`
+        : `${process.env.REACT_APP_API_URL}/stock/product`;
         const method = newProduct._id ? "put" : "post";
       
       console.log("Payload being sent:", newProduct);
@@ -105,7 +105,7 @@ const Inventory = () => {
   
     try {
       const response = await axios.delete(
-        `https://fyntl.sangrahinnovations.com/stock/product/${productId}`,
+        `${process.env.REACT_APP_API_URL}/stock/product/${productId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

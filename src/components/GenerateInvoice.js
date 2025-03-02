@@ -263,7 +263,7 @@ const InvoicePage = () => {
     try {
       //handleOpenAlert('success', 'PDF is downloading...');
       const response = await axios.put(
-        "/user/bill",
+        `${process.env.REACT_APP_API_URL}/user/bill`,
         body,
         {
           headers: {

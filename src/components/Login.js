@@ -28,7 +28,7 @@ const Login = () => {
     }
 
     try {
-      const response = await axios.post("https://fyntl.sangrahinnovations.com/user/login", {
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}/user/login`, {
         contact: `+91${phone}`,
       });
 
@@ -57,7 +57,7 @@ const Login = () => {
 
     try {
       const response = await axios.post(
-        "/user/optVerification",
+        `${process.env.REACT_APP_API_URL}/user/optVerification`,
         { otp: otp }, // OTP is sent in the body
         {
           headers: {

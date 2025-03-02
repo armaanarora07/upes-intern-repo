@@ -67,7 +67,7 @@ const Dashboard = () => {
 
       try {
         // Fetch transactions data
-        const transactionResponse = await axios.get("/user/myTransactions", {
+        const transactionResponse = await axios.get(`${process.env.REACT_APP_API_URL}/user/myTransactions`, {
           headers: {
             Authorization: `Bearer ${authToken}`,
             "Content-Type": "application/json",

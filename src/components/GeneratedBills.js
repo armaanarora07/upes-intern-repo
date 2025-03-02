@@ -52,7 +52,7 @@ const GeneratedBills = () => {
           return;
         }
 
-        const response = await axios.get('/user/myTransactions', {
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/user/myTransactions`, {
           headers: {
             Authorization: `Bearer ${authToken}`,
             'Content-Type': 'application/json',
@@ -162,7 +162,7 @@ const GeneratedBills = () => {
 
     try {
       const response = await axios.delete(
-        "https://fyntl.sangrahinnovations.com/user/transaction",
+        `${process.env.REACT_APP_API_URL}/user/transaction`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`, // Replace with your actual token

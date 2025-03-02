@@ -30,7 +30,7 @@ const EWayTransactions = () => {
           return;
         }
 
-        const response = await axios.get('https://fyntl.sangrahinnovations.com/user/ewaytransactions', {
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/user/ewaytransactions`, {
           headers: {
             Authorization: `Bearer ${authToken}`,
             'Content-Type': 'application/json',

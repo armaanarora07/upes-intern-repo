@@ -60,7 +60,7 @@ const GSTVerify = ({ gstNumber }) => {
     }
 
     try {
-      const response = await axios.get(`/user/validategst?gst=${gstNumber}`, {
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/user/validategst?gst=${gstNumber}`, {
         headers: {
           Authorization: `Bearer ${authToken}`,
           "Content-Type": "application/json",

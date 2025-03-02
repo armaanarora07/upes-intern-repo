@@ -27,7 +27,7 @@ const Users = () => {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          'https://fyntl.sangrahinnovations.com/user/transaction?party=09CYLPR6774F1ZN',
+          `${process.env.REACT_APP_API_URL}/user/transaction`,
           {
             method: 'GET',
             headers: {

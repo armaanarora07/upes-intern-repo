@@ -50,7 +50,7 @@ const EWayBillRequest = () => {
     };
 
     try {
-      const result = await axios.post("/user/eway", requestData, {
+      const result = await axios.post(`${process.env.REACT_APP_API_URL}/user/eway`, requestData, {
         headers: {
           Authorization: `Bearer ${authToken}`,
           "Content-Type": "application/json",
