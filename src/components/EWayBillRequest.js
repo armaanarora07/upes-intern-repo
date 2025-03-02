@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { FaFileAlt } from "react-icons/fa";
+import { FaTimes } from 'react-icons/fa';
 import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
 import { clearGSTDetails } from "../slices/gstSlice";
 import { clearProducts } from "../slices/productSlice";
 import { clearUserDetails } from "../slices/userdetailsSlice";
 import { setTitle } from "../slices/navbarSlice";
+import BillPreview from "./BillPreview";
 
 const EWayBillRequest = () => {
+  const [preview,setPreview] = useState(false);
   const [vehicleNo, setVehicleNo] = useState("");
   const [billDocId, setBillDocId] = useState("");
   const [TransporterId, setTransporterId] = useState("");
@@ -73,6 +75,10 @@ const EWayBillRequest = () => {
   const closeModal = () => {
     setShowModal(false);
     setResponse(null);
+    setBillDocId('');
+    setTransporterId('');
+    setVehicleNo('');
+    setDocNo('');
     setError(null);
     dispatch(clearGSTDetails());
     dispatch(clearProducts());
@@ -80,7 +86,7 @@ const EWayBillRequest = () => {
   };
 
   const onAddToGST = () => {
-    alert('This Feature will be added soon !')
+    setPreview(true);
   };
 
   return (
@@ -133,8 +139,8 @@ const EWayBillRequest = () => {
 
       {/* Modal for Response or Error */}
       {showModal && (
-        <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
-          <div className="bg-white p-6 rounded-lg shadow-md text-center w-96">
+        <div className="fixed inset-0 flex items-center justify-center bg-opacity-50">
+          <div className="bg-white p-6 rounded-lg shadow-md text-center w-1/3 min-h-[300px] relative">
             {response ? (
               <>
                 <h3 className="text-xl font-semibold mb-4">E-Way Bill Generated Successfully!</h3>
@@ -148,16 +154,16 @@ const EWayBillRequest = () => {
                     View E-Way Bill
                   </button>
                   <button
-                    className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600"
+                    className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
                     onClick={onAddToGST}
                   >
                     Add E-Way to GST Bill
                   </button>
                   <button
-                  className="mt-4 bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600"
-                  onClick={closeModal}
+                    className="absolute top-4 right-4 text-gray-600 transition-transform duration-300 ease-in-out transform hover:rotate-90"
+                    onClick={closeModal}
                   >
-                  Close
+                      <FaTimes className="h-6 w-6" />
                   </button>
                 </div>
               </>
@@ -176,6 +182,13 @@ const EWayBillRequest = () => {
           </div>
         </div>
       )}
+
+      <BillPreview
+         open={preview} 
+         onClose={() => setPreview(false)} 
+         ewayBillData={response} 
+      />
+
     </div>
   );
 };
