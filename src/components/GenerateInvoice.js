@@ -292,12 +292,14 @@ const InvoicePage = () => {
   }
 
   const generateEway = () =>{
-    console.log(billId);
     navigate(`/EWayBillRequest?billid=${billId}`);
+    dispatch(clearGSTDetails());
+    dispatch(clearProducts());
+    dispatch(clearUserDetails());
   }
 
   const createNewBill = () =>{
-    navigate(`/EWayBillRequest?billid=${billId}`);
+    navigate(`/gst-invoice`);
     dispatch(clearGSTDetails());
     dispatch(clearProducts());
     dispatch(clearUserDetails());
@@ -350,7 +352,7 @@ const InvoicePage = () => {
             className="px-6 py-3 bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 transition duration-200"
             onClick={addBill}
           >
-            Download PDF
+            Generate Invoice
           </button>
           <button
             className="px-6 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition duration-200"

@@ -9,7 +9,7 @@ const ActionModal = ({ isOpen, onClose, onGenerateEway,onCreateNewBill, download
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+    <div className="fixed inset-0 flex items-center justify-center bg-opacity-50">
       <div className="bg-white p-6 rounded-lg shadow-lg w-1/3 min-h-[300px] relative">
         <h2 className="font-semibold text-lg mb-4 text-center">Choose an Action</h2>
         <div className="flex flex-col mb-4">

@@ -52,10 +52,10 @@ class Template1 {
     this.doc.setFont("helvetica", "normal");
     this.doc.text(`M/S ${invoiceData.party.legal_name}`, 17, 46);
     this.doc.text(`Address :`, 17, 50);
-    this.doc.text(`${invoiceData.party.principal_address.address1}`, 17, 54);
-    this.doc.text(`${invoiceData.party.principal_address.address2}`, 17, 58);
+    this.doc.text(`${invoiceData.party.shipping_address.address1}`, 17, 54);
+    this.doc.text(`${invoiceData.party.shipping_address.address2}`, 17, 58);
     this.doc.text(`GSTIN : ${invoiceData.party.gstin}`, 17, 62);
-    this.doc.text(`Place of Supply : ${invoiceData.party.principal_address.country} - ${invoiceData.party.principal_address.pincode}`, 17, 66);
+    this.doc.text(`Place of Supply : ${invoiceData.party.shipping_address.country} - ${invoiceData.party.shipping_address.pincode}`, 17, 66);
 
     // Invoice Details block
     this.drawInvoiceDetailsBlock(invoiceData);
@@ -70,9 +70,9 @@ class Template1 {
     this.doc.text("P.O.No. :", 102, 52);
     this.doc.text("Delivery Date :", 102, 58);
     this.doc.text("Reverse Charge :", 150, 58);
-    this.doc.text("L.R.No. :", 102, 64);
+    this.doc.text(`Vehicle No : ${invoiceData.vehicleNumber ? invoiceData.vehicleNumber : ''}`, 102, 64);
     this.doc.text("Due Date :", 150, 64);
-    this.doc.text("E-Way No. :", 102, 70);
+    this.doc.text(`E-Way No : ${invoiceData.ewayNumber ? invoiceData.ewayNumber : ''}`, 102, 70);
   }
 
   addPageNumbers() {
@@ -88,7 +88,7 @@ class Template1 {
     const tableColumns = [
       { header: "S.No", dataKey: "sno" },
       { header: "Item Description", dataKey: "item" },
-      { header: "HSN/SAC Code", dataKey: "hsn" },
+      { header: "HSN Code", dataKey: "hsn" },
       { header: "IGST", dataKey: "igst" },
       { header: "Qty", dataKey: "qty" },
       { header: "Unit", dataKey: "unit" },
@@ -131,9 +131,9 @@ class Template1 {
         lineColor: [0, 0, 0],
       },
       columnStyles: {
-        0: { halign: "center", cellWidth: 10 },
-        1: { halign: "left", cellWidth: 40 },
-        2: { halign: "center", cellWidth: 25 },
+        0: { halign: "center", cellWidth: 15 },
+        1: { halign: "left", cellWidth: 45 },
+        2: { halign: "center", cellWidth: 15 },
         3: { halign: "center", cellWidth: 15 },
         4: { halign: "center", cellWidth: 15 },
         5: { halign: "center", cellWidth: 15 },
