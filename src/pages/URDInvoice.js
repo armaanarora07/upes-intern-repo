@@ -21,6 +21,8 @@ const URDInvoice = () => {
   const userDetails = useSelector(selectUserDetails);
 
   const handleBillGeneration = ()=>{
+    alert('This feature will be added soon !');
+    return;
     if(userDetails.tradeName.length > 0 && rows.length > 0 && rows[0].hsn_code.length > 0 ){
       navigate('/generate-invoice?type=invoice');
       return;
