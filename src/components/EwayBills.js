@@ -7,27 +7,36 @@ import { setEway } from "../slices/ewaySlice";
 import { setTitle } from "../slices/navbarSlice";
 
 const EWayBillSystem = () => {
-  const [serviceEnabled, setServiceEnabled] = useState(false);
   const [credentials, setCredentials] = useState({ x: "", y: "" });
   const navigate = useNavigate(); // Initialize navigation
   const dispatch = useDispatch();
   const authToken = useSelector((state) => state.auth.authToken); // access from global auth state 
   const ewayEnabled = useSelector((state) => state.eway.eway_enabled); // access from global eway state 
-  
+  const [serviceEnabled, setServiceEnabled] = useState(ewayEnabled);
+  const enable = useSelector((state)=> state.eway.enable);
+  const [status,setStatus] = useState(false);
+
   // Redirect to another page when service is enabled
   useEffect(() => {
-    console.log(ewayEnabled);
-    if (ewayEnabled) {
-      navigate("/eway-transactions"); // Redirect to the next page after service is enabled
-      console.log("Service Enabled:", ewayEnabled);
+
+    if(enable) {
+
+      if (ewayEnabled) {
+        navigate("/eway-transactions"); // Redirect to the next page after service is enabled
+      }
+
+    }else{
+
+      setStatus(true);
 
     }
+    
     const setNavTitle = () =>{
       dispatch(setTitle('Activate E-Way Services'));
     }
 
     setNavTitle();
-  }, [setTitle, dispatch, ewayEnabled, navigate]);
+  }, [setTitle, dispatch, ewayEnabled, navigate, enable]);
 
   const handleEnableService = async (e) => {
     e.preventDefault();
@@ -61,8 +70,12 @@ const EWayBillSystem = () => {
   return (
     <div className="p-8 mt-10">
           <div className="flex flex-col items-center justify-center mt-10">
-              {serviceEnabled ? (
-                <div>Loading...</div> // Show loading state until redirected
+              {serviceEnabled && status ? (
+
+                <div className='p-6 bg-white rounded-lg shadow-xl mt-5'>
+                  <h2 className="text-2xl font-bold text-gray-800 flex justify-center">Please Enable E-way in the Settings !</h2>
+                </div>
+
               ) : (
                 <form onSubmit={handleEnableService} className="bg-white p-6 rounded-lg shadow-md w-96">
                   <h2 className="text-xl font-bold mb-4">Activate E-Way Services</h2>
