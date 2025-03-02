@@ -4,6 +4,7 @@ import { FaFileAlt, FaSearch, FaEdit, FaTrashAlt, FaEye } from "react-icons/fa";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useSelector, useDispatch } from "react-redux";
+import { selectUserDetails } from "../slices/userdetailsSlice";
 import { setTitle } from "../slices/navbarSlice";
 
 const GeneratedBills = () => {
@@ -20,7 +21,28 @@ const GeneratedBills = () => {
 
   const authToken = useSelector((state) => state.auth.authToken); // access from global auth state 
 
+  const { rows } = useSelector((state) => state.products);
+  const { gstDetails } = useSelector((state) => state.gst);
+  const userDetails = useSelector(selectUserDetails);
+  const { GSTtandcDetails } = useSelector((state) => state.tandc);
+  const { businesses,selectedBusiness } = useSelector((state) => state.business);
+  const { signature } = useSelector((state) => state.signature);
+  const signatureEnabled = useSelector((state)=> state.signature.enabled);
+  const { stamp } = useSelector((state) => state.stamp);
+  const stampEnabled = useSelector((state)=> state.stamp.enabled);
+  const {logo} = useSelector((state)=> state.logo);
+  const {qr} = useSelector((state)=> state.qr);
+  const { selectedGBank } = useSelector((state) => state.banks);
+  const bankEnabled = useSelector((state)=> state.banks.enabled);
+  const attestationSelection = useSelector((state) => state.toggle.enabled);
+
+  const [business, setSelectedBusiness] = useState(
+      () => businesses?.find((b) => b._id === selectedBusiness) || {}
+    );
+
   const dispatch = useDispatch();
+
+
 
   useEffect(() => {
     const fetchBills = async () => {
@@ -90,6 +112,73 @@ const GeneratedBills = () => {
     setNavTitle();
   },[setTitle,dispatch])
 
+
+  // handle bill view 
+
+  const handleBillView = () =>{
+
+    const invoiceDataFromGlobal = {
+      firstParty: {
+        gstin: business ? business.gstin : '',
+        legal_name: business ? business.legal_name: '',
+        trade_name: business ? business.trade_name: '',
+        principal_address: business ? business.principal_address: '',
+        shipping_address: business ? business.shipping_address: ''
+      },
+      party: {
+        gstin: gstDetails.gstin,
+        legal_name: gstDetails.legalName,
+        trade_name: gstDetails.tradeName,
+        principal_address: gstDetails.principalAddress,
+        shipping_address: gstDetails.shippingAddress,
+        invoiceDate: userDetails.invoiceDate,
+        invoiceNo:userDetails.invoiceNo,
+        phoneNo: userDetails.phoneNo,
+      },
+      quantities: rows.map((row) => row.quantity),
+      hsn_details: rows.map((row) => ({
+        hsn_code: row.hsn_code,
+        product_info: row.product_info,
+        cgst: row.cgst,
+        sgst: row.sgst,
+        unit: row.unit,
+      })),
+      rates: rows.map((row) => row.price),
+      tandc: GSTtandcDetails,
+      signature: signature,
+      stamp: stamp,
+      logo:logo,
+      qr:qr,
+      bank: selectedGBank,
+      signatureEnabled:signatureEnabled,
+      stampEnabled:stampEnabled,
+      bankEnabled:bankEnabled,
+      attestationSelection:attestationSelection
+    };
+
+  }
+
+  const handleDeleteBill = async (transactionId) =>{
+
+    try {
+      const response = await axios.delete(
+        "https://fyntl.sangrahinnovations.com/user/transaction",
+        {
+          headers: {
+            Authorization: `Bearer ${authToken}`, // Replace with your actual token
+          },
+          data: {
+            transaction_id: transactionId,
+          },
+        }
+      );
+  
+      console.log("Response:", response.data);
+      window.location.reload(); 
+    } catch (error) {
+      console.error("Error deleting transaction:", error.response?.data || error.message);
+    }
+  }
   // Calculate the displayed bills based on the current page
   const indexOfLastBill = currentPage * itemsPerPage;
   const indexOfFirstBill = indexOfLastBill - itemsPerPage;
@@ -201,8 +290,13 @@ const GeneratedBills = () => {
                       <FaEye className="text-gray-500 cursor-pointer" />
                     </a>
                     <FaEdit className="text-blue-500 cursor-pointer" />
-                    <FaTrashAlt className="text-red-500 cursor-pointer" />
+                    <FaTrashAlt onClick={() => handleDeleteBill(bill._id)}  className="text-red-500 cursor-pointer" />
                   </div>
+                </td>
+                <td className="border px-4 py-2">
+                  <span className={`${bill.eway_status === 'done' ? "text-green-500" : "text-red-500"}`}>
+                    {bill.eway_status === 'done' ? "Generated" : "Not Generated"}
+                  </span>
                 </td>
               </tr>
             ))}
