@@ -14,7 +14,6 @@ import navbarReducer from '../slices/navbarSlice.js';
 import logoReducer from '../slices/logoSlice.js';
 import toggleReducer from '../slices/toggleSlice.js';
 import qrReducer from '../slices/qrSlice.js';
-import ewayTransactionReducer from '../slices/ewayTransactionSlice.js';
 
 const store = configureStore({
   reducer: {
@@ -32,7 +31,6 @@ const store = configureStore({
     logo:logoReducer,
     toggle:toggleReducer,
     qr:qrReducer,
-    ewayTransaction:ewayTransactionReducer,
   },
 });
 
