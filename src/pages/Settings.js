@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import Logo from '../components/Logo'
 import PaymentQR from '../components/PaymentQR';
 import { setTitle } from '../slices/navbarSlice';
-import { toggle } from '../slices/ewaySlice';
 
 function Settings() {
   const dispatch = useDispatch();
@@ -15,14 +14,6 @@ function Settings() {
   useEffect(()=>{
     dispatch(setTitle('Settings'));
   })
-
-  const handleToggle = ()=>{
-    dispatch(toggle());
-  }
-
-  const handleActivateEway = () => {
-    navigate('/eway-bills');
-  }
     
   return (
     <div className='p-8 mt-10'>
@@ -43,39 +34,8 @@ function Settings() {
        <h2 className="text-2xl font-bold text-gray-800">Add Business</h2>
     </div>
 
-    <div className="flex items-center justify-between p-6 bg-white rounded-lg shadow-xl mt-5">
-      <h2 className="text-2xl font-bold text-gray-800">Enable E-way</h2>
-      {ewayEnabled ? 
-      (
-      <div> 
-         <label className="flex items-center cursor-pointer">
-         <input type="checkbox" className="hidden" checked={enable} onChange={handleToggle} />
-         <div 
-            className={`w-14 h-7 flex items-center rounded-full p-1 transition-colors duration-300 ${
-            enable ? 'bg-blue-500' : 'bg-gray-400'
-            }`}
-         >
-            <div 
-            className={`bg-white w-6 h-6 rounded-full shadow-md transform transition-transform duration-300 ${
-               enable ? 'translate-x-7' : 'translate-x-0'
-            }`}
-            ></div>
-         </div>
-         </label>  
-      </div>
-      )
-      :
-      ( 
-      <div>
-         <button
-            className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
-            onClick={handleActivateEway}
-            >
-            Activate E-way Services
-         </button>
-      </div>
-      )
-      }
+    <div className="p-6 bg-white rounded-lg shadow-xl mt-5 cursor-pointer" onClick={()=>{navigate('/update-eway')}}>
+      <h2 className="text-2xl font-bold text-gray-800">Update E-way credentials</h2>
     </div>
 
   </div>
