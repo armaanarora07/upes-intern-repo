@@ -74,7 +74,7 @@ const InvoicePage = () => {
       if(invoiceType === 'gstinvoice'){
         navigate('/gst-invoice');
       }else{
-        navigate('/invoice');
+        navigate('/urd-invoice');
       }
 
     }
@@ -215,7 +215,7 @@ const InvoicePage = () => {
     const billTemplate = new BillTemplate();
     const doc = billTemplate.generateInvoice(invoiceData);
     const timestamp = new Date().toISOString().replace(/[-:.]/g, "");
-    const uniqueName = `invoice_${timestamp}.pdf`;
+    const uniqueName = `${invoiceType}_${timestamp}.pdf`;
     doc.save(uniqueName);
     
     //dispatch(clearGSTDetails());
@@ -223,8 +223,8 @@ const InvoicePage = () => {
     //dispatch(clearUserDetails());
   };
 
-  const addBill = async () =>{
-
+  const handleGSTBill = async () =>{
+    
     const body = { 
       party: {
         gstin: gstDetails.gstin,
@@ -289,6 +289,77 @@ const InvoicePage = () => {
       //handleOpenAlert('error','An error occurred while downloading the PDF.');
       console.error(error);
     }
+  }
+
+  const handleURDBill = async () =>{
+    
+    const body = { 
+      sn_no: userDetails.invoiceNo,
+      party: {
+        gstin: gstDetails.gstin,
+        name: gstDetails.tradeName,
+        contact :userDetails.phoneNo,
+        shipping_address: {
+          address1: gstDetails.shippingAddress.address1,
+          address2: gstDetails.shippingAddress.address2,
+          pincode: gstDetails.shippingAddress.pincode,
+          city: gstDetails.shippingAddress.city,
+          state: gstDetails.shippingAddress.state,
+          country: gstDetails.shippingAddress.country,
+        },
+      },
+      quantities: rows.map((row) => parseFloat(row.quantity)),
+      hsn_details: rows.map((row) => ({
+        hsn_code: row.hsn_code,
+        product_info: row.product_info,
+        cgst: parseFloat(row.cgst).toString(), // Convert to number and back to string
+        sgst: parseFloat(row.sgst).toString(), // Convert to number and back to string
+        unit: row.unit,
+      })),
+      rates: rows.map((row) => row.price),
+      bill_date: userDetails.invoiceDate,
+    };
+
+    console.log(body);
+  
+    try {
+      //handleOpenAlert('success', 'PDF is downloading...');
+      const response = await axios.put(
+        `${process.env.REACT_APP_API_URL}/user/purchasebill`,
+        body,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${authToken}`,
+          },
+        }
+      );
+  
+      if (response.status === 200) {
+        const Url = response.data.url; // Access the URL from the response data
+        //setBillId(response.data.bill_doc_id);
+        if (Url) {
+          setShowPdfModal(true); // Show the modal after downloading
+        } else {
+         // handleOpenAlert('error','Download URL is missing in the response.');
+        }
+      } else {
+        //handleOpenAlert('error','Failed to generate PDF. Please try again.');
+        console.error(`Error: ${response.status} ${response.statusText}`);
+      }
+    } catch (error) {
+      //handleOpenAlert('error','An error occurred while downloading the PDF.');
+      console.error(error);
+    }
+  }
+
+  const addBill = async () =>{
+
+      if(invoiceType === 'gstinvoice'){
+        handleGSTBill();
+      }else{
+        handleURDBill();
+      }
   }
 
   const generateEway = () =>{
@@ -369,6 +440,7 @@ const InvoicePage = () => {
         onGenerateEway={generateEway}
         onCreateNewBill={createNewBill}
         onDownloadbill={handleDownloadPDF}
+        invoiceType={invoiceType}
         />
       </div>
     </div>
