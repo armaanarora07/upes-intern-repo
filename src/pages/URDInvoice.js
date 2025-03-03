@@ -21,10 +21,9 @@ const URDInvoice = () => {
   const userDetails = useSelector(selectUserDetails);
 
   const handleBillGeneration = ()=>{
-    alert('This feature will be added soon !');
-    return;
+    
     if(userDetails.tradeName.length > 0 && rows.length > 0 && rows[0].hsn_code.length > 0 ){
-      navigate('/generate-invoice?type=invoice');
+      navigate('/generate-invoice?type=urdinvoice');
       return;
     }
     alert('Enter the Required Details');
@@ -33,7 +32,7 @@ const URDInvoice = () => {
   useEffect(()=>{
     
     const setNavTitle = () =>{
-      dispatch(setTitle('Create Invoice'));
+      dispatch(setTitle('Create URD Invoice'));
     }
 
     setNavTitle();
@@ -41,6 +40,7 @@ const URDInvoice = () => {
 
   return (
     <div className="p-8 mt-10">
+      <GSTVerify/>
       <UserDetails/>
       <Products/>
       <BankDetails/>
