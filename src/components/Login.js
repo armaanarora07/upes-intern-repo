@@ -1,15 +1,21 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom"; // for navigation
+import { useDispatch } from "react-redux";
+import { login,verifyotp } from "../slices/authSlice.js";
+import { setEway } from "../slices/ewaySlice.js";
+import { useSelector } from "react-redux";
 
 const Login = () => {
   const [phone, setPhone] = useState("");
   const [otp, setOtp] = useState("");
   const [step, setStep] = useState(1); // Step 1: Phone input, Step 2: OTP verification
-  const [authToken, setAuthToken] = useState(""); // Store initial authToken
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const navigate = useNavigate(); // Hook to navigate to Dashboard
+  const dispatch = useDispatch(); // Hook to dispatch the authToken
+  const authToken = useSelector((state) => state.auth.authToken); //access from global auth state 
+  const verifiedotp = useSelector((state) => state.auth.otp); 
 
   // Handle phone number submission and get authToken
   const handlePhoneSubmit = async (e) => {
@@ -22,12 +28,12 @@ const Login = () => {
     }
 
     try {
-      const response = await axios.post("/user/login", {
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}/user/login`, {
         contact: `+91${phone}`,
       });
 
       if (response.status === 200 && response.data.authToken) {
-        setAuthToken(response.data.authToken); // Save the authToken for later
+        dispatch(login(response.data.authToken));
         setStep(2); // Move to OTP input step
         setSuccessMessage("Verification code sent. Please check your messages.");
         setErrorMessage(""); // Clear any existing error message
@@ -51,7 +57,7 @@ const Login = () => {
 
     try {
       const response = await axios.post(
-        "/user/optVerification",
+        `${process.env.REACT_APP_API_URL}/user/optVerification`,
         { otp: otp }, // OTP is sent in the body
         {
           headers: {
@@ -59,11 +65,11 @@ const Login = () => {
           },
         }
       );
-
       if (response.status === 200 && response.data.authToken) {
-        const newAuthToken = response.data.authToken;
-        localStorage.setItem('authToken', newAuthToken); // Save the new authToken in localStorage
-        setAuthToken(newAuthToken); // Update authToken in state
+        dispatch(login(response.data.authToken));
+        console.log(response.data.user.eway_enabled);
+        dispatch(setEway(response.data.user.eway_enabled));
+        dispatch(verifyotp(true));
         setSuccessMessage("OTP verified successfully.");
         setErrorMessage(""); // Clear any existing error message
 
@@ -76,6 +82,17 @@ const Login = () => {
       setErrorMessage("An error occurred while verifying OTP. Please try again later.");
     }
   };
+
+  useEffect(()=>{
+
+    const checkAuth = ()=>{
+        if(authToken && verifiedotp){
+          navigate("/dashboard");
+        }
+    }
+
+    checkAuth();
+  })
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-100 via-white to-purple-100 flex items-center justify-center px-4">

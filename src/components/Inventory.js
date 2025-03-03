@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
+import { FaBox } from "react-icons/fa";
 import axios from "axios";
 import { Edit, Trash2, Plus, Search } from "lucide-react";
+import { useDispatch } from "react-redux";
+import { setTitle } from "../slices/navbarSlice";
 
 const Inventory = () => {
   const [products, setProducts] = useState([]);
@@ -9,11 +12,15 @@ const Inventory = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
-
+  const dispatch = useDispatch();
   const token = localStorage.getItem('authToken');
 
   useEffect(() => {
     loadData();
+    const setNavTitle = () =>{
+      dispatch(setTitle('Inventory Management'));
+    }
+    setNavTitle();
   }, []);
 
   const loadData = async () => {
@@ -21,7 +28,7 @@ const Inventory = () => {
     setError("");
 
     try {
-      const productRes = await axios.get("https://fyntl.sangrahinnovations.com/stock/products", {
+      const productRes = await axios.get(`${process.env.REACT_APP_API_URL}/stock/products`, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
@@ -53,8 +60,8 @@ const Inventory = () => {
   const handleSaveProduct = async () => {
     try {
       const url = newProduct._id
-        ? `https://fyntl.sangrahinnovations.com/stock/product/${newProduct._id}`
-        : "https://fyntl.sangrahinnovations.com/stock/product";
+        ? `${process.env.REACT_APP_API_URL}/stock/product/${newProduct._id}`
+        : `${process.env.REACT_APP_API_URL}/stock/product`;
         const method = newProduct._id ? "put" : "post";
       
       console.log("Payload being sent:", newProduct);
@@ -98,7 +105,7 @@ const Inventory = () => {
   
     try {
       const response = await axios.delete(
-        `https://fyntl.sangrahinnovations.com/stock/product/${productId}`,
+        `${process.env.REACT_APP_API_URL}/stock/product/${productId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -132,9 +139,10 @@ const Inventory = () => {
   );
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-6 text-[#4154f1]">Inventory Management</h1>
-      <div className="flex justify-between items-center mb-4">
+  
+    <div className="p-8 mt-10">
+
+      <div className="flex justify-between items-center mb-4 mt-5">
         <div className="flex items-center gap-4">
           <div className="relative">
             <Search

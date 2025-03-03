@@ -3,6 +3,9 @@ import axios from "axios";
 import { FaFileAlt, FaSearch, FaEdit, FaTrashAlt, FaEye } from "react-icons/fa"; 
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { useSelector, useDispatch } from "react-redux";
+import { selectUserDetails } from "../slices/userdetailsSlice";
+import { setTitle } from "../slices/navbarSlice";
 
 const GeneratedBills = () => {
   const [selectedDate, setSelectedDate] = useState(null);
@@ -16,19 +19,42 @@ const GeneratedBills = () => {
   const [lastMonthBills, setLastMonthBills] = useState(0);    // For Bills Generated Last Month
   const [thisMonthBills, setThisMonthBills] = useState(0);    // For Bills Generated This Month
 
-  const token = localStorage.getItem('authToken');
+  const authToken = useSelector((state) => state.auth.authToken); // access from global auth state 
+
+  const { rows } = useSelector((state) => state.products);
+  const { gstDetails } = useSelector((state) => state.gst);
+  const userDetails = useSelector(selectUserDetails);
+  const { GSTtandcDetails } = useSelector((state) => state.tandc);
+  const { businesses,selectedBusiness } = useSelector((state) => state.business);
+  const { signature } = useSelector((state) => state.signature);
+  const signatureEnabled = useSelector((state)=> state.signature.enabled);
+  const { stamp } = useSelector((state) => state.stamp);
+  const stampEnabled = useSelector((state)=> state.stamp.enabled);
+  const {logo} = useSelector((state)=> state.logo);
+  const {qr} = useSelector((state)=> state.qr);
+  const { selectedGBank } = useSelector((state) => state.banks);
+  const bankEnabled = useSelector((state)=> state.banks.enabled);
+  const attestationSelection = useSelector((state) => state.toggle.enabled);
+
+  const [business, setSelectedBusiness] = useState(
+      () => businesses?.find((b) => b._id === selectedBusiness) || {}
+    );
+
+  const dispatch = useDispatch();
+
+
 
   useEffect(() => {
     const fetchBills = async () => {
       try {
-        if (!token) {
+        if (!authToken) {
           setErrorMessage("No token found");
           return;
         }
 
-        const response = await axios.get('/user/myTransactions', {
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/user/myTransactions`, {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${authToken}`,
             'Content-Type': 'application/json',
           },
         });
@@ -76,8 +102,83 @@ const GeneratedBills = () => {
     };
 
     fetchBills();
-  }, [token]);
+  }, [authToken]);
 
+  useEffect(()=>{
+    const setNavTitle = () =>{
+      dispatch(setTitle('Generated Bills'));
+    }
+
+    setNavTitle();
+  },[setTitle,dispatch])
+
+
+  // handle bill view 
+
+  const handleBillView = () =>{
+
+    const invoiceDataFromGlobal = {
+      firstParty: {
+        gstin: business ? business.gstin : '',
+        legal_name: business ? business.legal_name: '',
+        trade_name: business ? business.trade_name: '',
+        principal_address: business ? business.principal_address: '',
+        shipping_address: business ? business.shipping_address: ''
+      },
+      party: {
+        gstin: gstDetails.gstin,
+        legal_name: gstDetails.legalName,
+        trade_name: gstDetails.tradeName,
+        principal_address: gstDetails.principalAddress,
+        shipping_address: gstDetails.shippingAddress,
+        invoiceDate: userDetails.invoiceDate,
+        invoiceNo:userDetails.invoiceNo,
+        phoneNo: userDetails.phoneNo,
+      },
+      quantities: rows.map((row) => row.quantity),
+      hsn_details: rows.map((row) => ({
+        hsn_code: row.hsn_code,
+        product_info: row.product_info,
+        cgst: row.cgst,
+        sgst: row.sgst,
+        unit: row.unit,
+      })),
+      rates: rows.map((row) => row.price),
+      tandc: GSTtandcDetails,
+      signature: signature,
+      stamp: stamp,
+      logo:logo,
+      qr:qr,
+      bank: selectedGBank,
+      signatureEnabled:signatureEnabled,
+      stampEnabled:stampEnabled,
+      bankEnabled:bankEnabled,
+      attestationSelection:attestationSelection
+    };
+
+  }
+
+  const handleDeleteBill = async (transactionId) =>{
+
+    try {
+      const response = await axios.delete(
+        `${process.env.REACT_APP_API_URL}/user/transaction`,
+        {
+          headers: {
+            Authorization: `Bearer ${authToken}`, // Replace with your actual token
+          },
+          data: {
+            transaction_id: transactionId,
+          },
+        }
+      );
+  
+      console.log("Response:", response.data);
+      window.location.reload(); 
+    } catch (error) {
+      console.error("Error deleting transaction:", error.response?.data || error.message);
+    }
+  }
   // Calculate the displayed bills based on the current page
   const indexOfLastBill = currentPage * itemsPerPage;
   const indexOfFirstBill = indexOfLastBill - itemsPerPage;
@@ -114,17 +215,11 @@ const GeneratedBills = () => {
   };
 
   return (
-    <div className="p-4">
-      <div className="flex items-center space-x-2 h-14   p-5 text-[#4154f1] font-bold text-3xl">
-        <FaFileAlt className="text-3xl" />
-        <span>Generated Bills</span>
-      </div>
-
+    <div className="p-8 mt-10">
+    <div className="mt-3">
       {errorMessage && <p className="text-red-500">{errorMessage}</p>}
 
-
-      
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-16 px-4 py-2 ">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-16 px-4 py-2 mb-3">
         <div className="bg-white shadow-xl border rounded-3xl p-6 w-full h-40 transform transition-all duration-300 hover:scale-105">
           <h2 className="text-5xl text-center text-gray-800 mt-2">{totalBills}</h2>
           <p className="text-center text-black text-[16px] font-medium mt-4">Total Bills Generated</p>
@@ -180,7 +275,9 @@ const GeneratedBills = () => {
               <tr key={bill._id}>
                 <td className="border px-4 py-2">{bill.sn_no}</td>
                 <td className="border px-4 py-2">{bill.name}</td>
-                <td className="border px-4 py-2">{new Date(bill.created_at).toLocaleDateString()}</td>
+                <td className="border px-4 py-2"> 
+                  {new Date(bill.created_at).toLocaleString([], { hour12: true, timeStyle: 'short', dateStyle: 'medium' })}
+                </td>
                 <td className="border px-4 py-2">{bill.total_value || "N/A"}</td>
                 <td className="border px-4 py-2">
                   <span className={`${bill.generated ? "text-green-500" : "text-red-500"}`}>
@@ -188,14 +285,18 @@ const GeneratedBills = () => {
                   </span>
                 </td>
                 <td className="border px-4 py-2">
-                  <div className="flex space-x-2">
+                  <div className="flex justify-between items-center">
                     <a href={bill.downloadlink} target="_blank" rel="noopener noreferrer">
                       <FaEye className="text-gray-500 cursor-pointer" />
                     </a>
                     <FaEdit className="text-blue-500 cursor-pointer" />
-                    <FaTrashAlt className="text-red-500 cursor-pointer" />
-            <h1>{bill._id}</h1>
+                    <FaTrashAlt onClick={() => handleDeleteBill(bill._id)}  className="text-red-500 cursor-pointer" />
                   </div>
+                </td>
+                <td className="border px-4 py-2">
+                  <span className={`${bill.eway_status === 'done' ? "text-green-500" : "text-red-500"}`}>
+                    {bill.eway_status === 'done' ? "Generated" : "Not Generated"}
+                  </span>
                 </td>
               </tr>
             ))}
@@ -235,6 +336,7 @@ const GeneratedBills = () => {
             Page {currentPage} of {totalPages}
           </p>
         </div>
+      </div>
       </div>
     </div>
   );

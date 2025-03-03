@@ -1,14 +1,19 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { logout } from "../slices/authSlice.js";
 
-const Logout = ({ onLogout }) => {
+const Logout = () => {
   const [showConfirm, setShowConfirm] = useState(false);
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   const handleLogout = () => {
     // Clear user session
-    localStorage.removeItem("authToken");
+    dispatch(logout());
     navigate("/login"); // Redirect to login page
+  
   };
   
   

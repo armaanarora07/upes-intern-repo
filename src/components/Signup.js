@@ -1,14 +1,20 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom"; 
+import { useDispatch } from "react-redux";
+import { signup, verifyotp } from "../slices/authSlice.js";
+import { useSelector } from "react-redux";
+
 const SignUp = () => {
   const [phone, setPhone] = useState("");
   const [otp, setOtp] = useState("");
   const [step, setStep] = useState(1); 
-  const [authToken, setAuthToken] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const navigate = useNavigate();
+  const dispatch = useDispatch(); // Hook to dispatch the authToken
+  const authToken = useSelector((state) => state.auth.authToken); //// Store initial authToken - access from global auth state 
+  const verifiedotp = useSelector((state) => state.auth.otp);
 
   const handlePhoneSubmit = async (e) => {
     e.preventDefault();
@@ -19,12 +25,12 @@ const SignUp = () => {
     }
 
     try {
-      const response = await axios.post("https://fyntl.sangrahinnovations.com/user/verify", {
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}/user/verify`, {
         contact: `+91${phone}`,
       });
 
       if (response.status === 200 && response.data.authToken) {
-        setAuthToken(response.data.authToken);
+        dispatch(signup(response.data.authToken));
         setStep(2); 
         setSuccessMessage("Verification code sent. Please check your messages.");
         setErrorMessage(""); 
@@ -46,7 +52,7 @@ const SignUp = () => {
 
     try {
       const response = await axios.post(
-        "https://fyntl.sangrahinnovations.com/user/optVerification",
+        `${process.env.REACT_APP_API_URL}/user/optVerification`,
         { otp: otp }, 
         {
           headers: {
@@ -56,12 +62,10 @@ const SignUp = () => {
       );
 
       if (response.status === 200 && response.data.authToken) {
-        const newAuthToken = response.data.authToken;
-        localStorage.setItem('authToken', newAuthToken);
-        setAuthToken(newAuthToken);
+        dispatch(signup(response.data.authToken));
+        dispatch(verifyotp(true));
         setSuccessMessage("OTP verified successfully.");
         setErrorMessage("");
-
         navigate("/add-business");
       } else {
         setErrorMessage("OTP verification failed. Please try again.");
@@ -70,6 +74,17 @@ const SignUp = () => {
       setErrorMessage("An error occurred while verifying OTP. Please try again later.");
     }
   };
+
+  useEffect(()=>{
+  
+      const checkAuth = ()=>{
+          if(authToken && verifiedotp){
+            navigate("/dashboard");
+          }
+      }
+  
+      checkAuth();
+    })
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-100 via-white to-purple-100 flex items-center justify-center px-4">

@@ -1,4 +1,7 @@
 import React, { useEffect, useState } from 'react';
+import {FaMoneyCheckAlt} from 'react-icons/fa';
+import { useDispatch } from 'react-redux';
+import { setTitle } from '../slices/navbarSlice';
 
 const Users = () => {
   const [data, setData] = useState([]);
@@ -6,6 +9,17 @@ const Users = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+
+    const setNavTitle = () =>{
+      dispatch(setTitle('Users Transactions'));
+    }
+
+    setNavTitle();
+
+  }, [setTitle,dispatch]);
 
   useEffect(() => {
     const authToken = localStorage.getItem("authToken");
@@ -13,7 +27,7 @@ const Users = () => {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          'https://fyntl.sangrahinnovations.com/user/transaction?party=09CYLPR6774F1ZN',
+          `${process.env.REACT_APP_API_URL}/user/transaction`,
           {
             method: 'GET',
             headers: {
@@ -59,8 +73,8 @@ const Users = () => {
   if (error) return <div>Error: {error}</div>;
 
   return (
-    <div className="p-4">
-      <h1 className="text-2xl text-[#4154f1] font-bold mb-4">Users Transactions</h1>
+    <div className="p-8 mt-10">
+    <div className='mt-5'>
       
       <input
         type="text"
@@ -70,6 +84,7 @@ const Users = () => {
         className="mb-4 p-2 border border-gray-300 rounded w-full max-w-md"
       />
       
+      <div className="p-2 overflow-x-auto">
       <table className="w-[1150px] border-collapse border border-gray-300">
         <thead>
           <tr className="bg-gray-100">
@@ -107,6 +122,8 @@ const Users = () => {
           ))}
         </tbody>
       </table>
+      </div>
+      </div>
     </div>
   );
 };

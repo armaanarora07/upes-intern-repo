@@ -12,7 +12,7 @@ const TemplateModal = ({ isOpen, onClose, onSelect }) => {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch('/user/format', {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/user/format`, {
         headers: {
           Authorization: `Bearer ${authToken}`,
         },
@@ -43,7 +43,7 @@ const TemplateModal = ({ isOpen, onClose, onSelect }) => {
   // Function to update selected template
   const updateSelectedTemplate = async (templateId) => {
     try {
-      const response = await fetch('/user/format', {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/user/format`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
