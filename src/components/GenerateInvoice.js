@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useSelector, useDispatch } from "react-redux";
-import { selectUserDetails } from "../slices/userdetailsSlice";
+import { selectUserDetails, selectShippingAddress,  } from "../slices/userdetailsSlice";
 import { clearGSTDetails } from '../slices/gstSlice';
 import { clearProducts } from '../slices/productSlice';
 import { clearUserDetails } from '../slices/userdetailsSlice';
@@ -148,7 +148,7 @@ const InvoicePage = () => {
   useEffect(() => {
     dispatch(setTitle('Generate Invoice'));
     
-    if (gstDetails && rows && rows.length > 0) {
+    if ((gstDetails || userDetails) && rows && rows.length > 0) {
       const invoiceDataFromGlobal = {
         firstParty: {
           gstin: business ? business.gstin : '',
@@ -158,11 +158,11 @@ const InvoicePage = () => {
           shipping_address: business ? business.shipping_address: ''
         },
         party: {
-          gstin: gstDetails.gstin,
-          legal_name: gstDetails.legalName,
-          trade_name: gstDetails.tradeName,
-          principal_address: gstDetails.principalAddress,
-          shipping_address: gstDetails.shippingAddress,
+          gstin:  gstDetails ? gstDetails.gstin : '',
+          legal_name:  gstDetails ? gstDetails.legalName : userDetails.legalName,
+          trade_name:  gstDetails ? gstDetails.tradeName : userDetails.tradeName,
+          principal_address:  gstDetails ? gstDetails.principalAddress : userDetails.primaryAddress,
+          shipping_address:  gstDetails ? gstDetails.shippingAddress : userDetails.shippingAddress,
           invoiceDate: userDetails.invoiceDate,
           invoiceNo:userDetails.invoiceNo,
           phoneNo: userDetails.phoneNo,
@@ -217,10 +217,6 @@ const InvoicePage = () => {
     const timestamp = new Date().toISOString().replace(/[-:.]/g, "");
     const uniqueName = `${invoiceType}_${timestamp}.pdf`;
     doc.save(uniqueName);
-    
-    //dispatch(clearGSTDetails());
-    //dispatch(clearProducts());
-    //dispatch(clearUserDetails());
   };
 
   const handleGSTBill = async () =>{
@@ -291,22 +287,15 @@ const InvoicePage = () => {
     }
   }
 
-  const handleURDBill = async () =>{
+  const handleURDPurchaseBill = async () =>{
     
     const body = { 
       sn_no: userDetails.invoiceNo,
       party: {
-        gstin: gstDetails.gstin,
-        name: gstDetails.tradeName,
+        gstin: userDetails.phoneNo,
+        name: userDetails.tradeName,
         contact :userDetails.phoneNo,
-        shipping_address: {
-          address1: gstDetails.shippingAddress.address1,
-          address2: gstDetails.shippingAddress.address2,
-          pincode: gstDetails.shippingAddress.pincode,
-          city: gstDetails.shippingAddress.city,
-          state: gstDetails.shippingAddress.state,
-          country: gstDetails.shippingAddress.country,
-        },
+        shipping_address: userDetails.shippingAddress,
       },
       quantities: rows.map((row) => parseFloat(row.quantity)),
       hsn_details: rows.map((row) => ({
@@ -353,12 +342,70 @@ const InvoicePage = () => {
     }
   }
 
+  const handleURDSalesBill = async () =>{
+    
+    const body = { 
+      party: {
+        gstin: userDetails.phoneNo,
+        legal_name: userDetails.legalName,
+        trade_name: userDetails.tradeName,
+        principal_address: userDetails.primaryAddress,
+        shipping_address: userDetails.shippingAddress
+      },
+      quantities: rows.map((row) => parseFloat(row.quantity)),
+      hsn_details: rows.map((row) => ({
+        hsn_code: row.hsn_code,
+        product_info: row.product_info,
+        cgst: parseFloat(row.cgst).toString(), // Convert to number and back to string
+        sgst: parseFloat(row.sgst).toString(), // Convert to number and back to string
+        unit: row.unit,
+      })),
+      rates: rows.map((row) => row.price),
+    };
+  
+    try {
+      //handleOpenAlert('success', 'PDF is downloading...');
+      const response = await axios.put(
+        `${process.env.REACT_APP_API_URL}/user/bill`,
+        body,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${authToken}`,
+          },
+        }
+      );
+  
+      if (response.status === 200) {
+        const Url = response.data.url; // Access the URL from the response data
+        setBillId(response.data.bill_doc_id);
+        if (Url) {
+          setShowPdfModal(true); // Show the modal after downloading
+        } else {
+         // handleOpenAlert('error','Download URL is missing in the response.');
+        }
+      } else {
+        //handleOpenAlert('error','Failed to generate PDF. Please try again.');
+        console.error(`Error: ${response.status} ${response.statusText}`);
+      }
+    } catch (error) {
+      //handleOpenAlert('error','An error occurred while downloading the PDF.');
+      console.error(error);
+    }
+  }
+
+
   const addBill = async () =>{
 
       if(invoiceType === 'gstinvoice'){
         handleGSTBill();
+      }else if(invoiceType === 'urd/purchase-invoice'){
+        handleURDPurchaseBill();
+      }else if(invoiceType === 'urd/sales-invoice'){
+        handleURDSalesBill();
       }else{
-        handleURDBill();
+        alert('Invalid Invoice Type');
+        return;
       }
   }
 
@@ -370,7 +417,11 @@ const InvoicePage = () => {
   }
 
   const createNewBill = () =>{
-    navigate(`/gst-invoice`);
+    if(invoiceType === 'gstinvoice'){
+      navigate('/gst-invoice');
+    }else{
+      navigate('/urd-invoice');
+    }
     dispatch(clearGSTDetails());
     dispatch(clearProducts());
     dispatch(clearUserDetails());
