@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Line } from "react-chartjs-2";
 import { useSelector,useDispatch } from "react-redux";
 import {checkAndFetchBusinesses,setBusiness} from '../slices/businessSlice';
 import { setTitle } from '../slices/navbarSlice';
+import { logout } from "../slices/authSlice";
 
 import {
   Chart as ChartJS,
@@ -32,6 +33,7 @@ const Dashboard = () => {
   const [legal_name, setLegalName] = useState(business ? business.legal_name : ''); // State for legal_name
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   useEffect(() => {
 
@@ -39,7 +41,13 @@ const Dashboard = () => {
 
     setLegalName(business ? business.legal_name : '');
 
-  }, [businesses, selectedBusiness,business]);
+    if(errorMessage === 'Invalid Token'){ // Logging out on Invalid Token
+      // Clear user session
+      dispatch(logout());
+      navigate("/login"); // Redirect to login page
+    }
+
+  }, [businesses, selectedBusiness,business, errorMessage]);
 
   useEffect(()=>{
 
