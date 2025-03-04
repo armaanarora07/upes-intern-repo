@@ -13,7 +13,7 @@ import {
   setInvoiceDate
 } from '../slices/userdetailsSlice';
 
-const UserDetails = () => {
+const UserDetails = ({Title}) => {
   const dispatch = useDispatch();
   const userDetails = useSelector(selectUserDetails);
   const isShippingSameAsPrimary = useSelector(selectIsShippingSameAsPrimary);
@@ -39,7 +39,7 @@ const UserDetails = () => {
 
   return (
     <div className="p-6 bg-white rounded-lg shadow-xl mt-5">
-      <h2 className="text-2xl font-bold text-gray-800">Buyer Details</h2>
+      <h2 className="text-2xl font-bold text-gray-800">{Title}</h2>
       <div className="flex space-x-2">
         <div className="w-2/5 p-2 relative">
           <div className="space-y-4 relative mt-4">

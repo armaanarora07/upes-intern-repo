@@ -43,7 +43,7 @@ const GSTInvoice = () => {
   return (
     <div className="p-8 mt-10">
       <GSTVerify/>
-      <UserDetails/>
+      <UserDetails Title={'Buyer Details'}/>
       <Products/>
       <BankDetails/>
       <TermsAndConditions/>
