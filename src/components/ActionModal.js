@@ -1,12 +1,8 @@
 import React from 'react';
 import { FaTimes } from 'react-icons/fa';
 
-const ActionModal = ({ isOpen, onClose, onGenerateEway,onCreateNewBill, downloadUrl, onDownloadbill }) => {
+const ActionModal = ({ isOpen, onClose, onGenerateEway,onCreateNewBill, downloadUrl, onDownloadbill, invoiceType }) => {
   if (!isOpen) return null;
-
-  const handleViewBill = () => {
-    window.open(downloadUrl, '_blank');
-  };
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-opacity-50">
@@ -19,12 +15,18 @@ const ActionModal = ({ isOpen, onClose, onGenerateEway,onCreateNewBill, download
           >
             Download Bill
           </button>
-          <button
+          {invoiceType==='gstinvoice' && 
+          (
+           <>
+            <button
             className="bg-blue-500 text-white px-4 py-2 rounded-lg mb-2 transition duration-200 hover:bg-blue-600 shadow-md"
             onClick={onGenerateEway}
-          >
+            >
             Generate E-way
-          </button>
+            </button>
+          </>
+          )
+          }
           <h1 className="text-center my-2">OR</h1>
           <button
             className="bg-blue-500 text-white px-4 py-2 rounded-lg mb-2 transition duration-200 hover:bg-blue-600 shadow-md"

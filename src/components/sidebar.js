@@ -6,6 +6,7 @@ import {
   FaCog, FaSignOutAlt,FaChevronDown, FaChevronUp
 } from 'react-icons/fa';
 import {useSelector} from 'react-redux';
+import FyntlLogo2 from '../assets/FyntlLogo2.png';
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -23,7 +24,7 @@ const Sidebar = () => {
     <div className="bg-[#F9FAFC] w-64 h-screen flex flex-col px-6 py-4 shadow-lg">
       <div>
         <div>
-          <h1 className="text-[#4154f1] font-bold text-3xl">SCAN T</h1>
+          <img alt='logo' src={FyntlLogo2} className='h-20'/>
           <p className="text-black font-medium mb-8">Billing Software</p>
         </div>
         <div>
@@ -101,12 +102,12 @@ const Sidebar = () => {
                     </li>
                     <li>
                       <NavLink
-                        to="/invoice"
+                        to="/urd-invoice"
                         className={({ isActive }) =>
                           isActive ? "text-[#4154f1] font-semibold" : "text-black font-medium"
                         }
                       >
-                        Invoice
+                        URD Invoice
                       </NavLink>
                     </li>
                   </ul>

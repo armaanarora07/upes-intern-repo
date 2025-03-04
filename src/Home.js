@@ -20,6 +20,7 @@ import GSTInvoice from "./pages/GSTInvoice";
 import Navbar from "./components/Navbar";
 import EWayTransactions from './components/EwayTransactions';
 import InvoicePage from './components/GenerateInvoice';
+import UpdateEwayCred from "./components/UpdateEwayCred";
 
 
 function Home() {
@@ -39,10 +40,11 @@ function Home() {
           <Route path="/user-business" element={<UpdateBusiness />} />
           <Route path="/generated-bills" element={<GeneratedBills />} />
           <Route path="/gst-invoice" element={<GSTInvoice/>} />
-          <Route path="/invoice" element={<URDInvoice/>} />
+          <Route path="/urd-invoice" element={<URDInvoice/>} />
           <Route path="/inventory" element={<Inventory/>}></Route>
           <Route path="/eway-bills" element={<EwayBills />} />
           <Route path="/EWayBillRequest" element={<EWayBillRequest />} />
+          <Route path="/update-eway" element={<UpdateEwayCred/>} />
           <Route path="eway-transactions" element={<EWayTransactions/>}/>
           <Route path="/payments" element={<Payments />} />
           <Route path="/activity" element={<Activity />} />

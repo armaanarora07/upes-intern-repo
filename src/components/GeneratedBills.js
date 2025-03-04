@@ -285,11 +285,10 @@ const GeneratedBills = () => {
                   </span>
                 </td>
                 <td className="border px-4 py-2">
-                  <div className="flex justify-between items-center">
+                  <div className="flex justify gap-6">
                     <a href={bill.downloadlink} target="_blank" rel="noopener noreferrer">
                       <FaEye className="text-gray-500 cursor-pointer" />
                     </a>
-                    <FaEdit className="text-blue-500 cursor-pointer" />
                     <FaTrashAlt onClick={() => handleDeleteBill(bill._id)}  className="text-red-500 cursor-pointer" />
                   </div>
                 </td>

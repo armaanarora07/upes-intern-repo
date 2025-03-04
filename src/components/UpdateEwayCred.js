@@ -1,29 +1,25 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
-import {FaFileAlt} from 'react-icons/fa';
 import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
 import { setEway } from "../slices/ewaySlice";
 import { setTitle } from "../slices/navbarSlice";
 
-const EWayBillSystem = () => {
+const UpdateEwayCred = () => {
   const [credentials, setCredentials] = useState({ x: "", y: "" });
-  const navigate = useNavigate(); // Initialize navigation
-  const dispatch = useDispatch();
   const authToken = useSelector((state) => state.auth.authToken); // access from global auth state 
   const ewayEnabled = useSelector((state) => state.eway.eway_enabled); // access from global eway state 
-  const enable = useSelector((state)=> state.eway.enable);
-  const [status,setStatus] = useState(false);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   // Redirect to another page when service is enabled
   useEffect(() => {
 
-    if (ewayEnabled) {
-        navigate("/eway-transactions"); // Redirect to the next page after service is enabled
+    if (!ewayEnabled) {
+        navigate("/eway-bills"); // Redirect to the next page after service is enabled
     }
-
     const setNavTitle = () =>{
-      dispatch(setTitle('Activate E-Way Services'));
+      dispatch(setTitle('Update E-Way Services'));
     }
 
     setNavTitle();
@@ -32,7 +28,7 @@ const EWayBillSystem = () => {
   const handleEnableService = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(
+      const response = await axios.put(
         `${process.env.REACT_APP_API_URL}/user/eway_setup`,
         {
           x: credentials.x.trim(),
@@ -62,7 +58,7 @@ const EWayBillSystem = () => {
     <div className="p-8 mt-10">
           <div className="flex flex-col items-center justify-center mt-10">
                 <form onSubmit={handleEnableService} className="bg-white p-6 rounded-lg shadow-md w-96">
-                  <h2 className="text-xl font-bold mb-4">Activate E-Way Services</h2>
+                  <h2 className="text-xl font-bold mb-4">Update E-Way Services</h2>
 
                   <input
                     type="text"
@@ -86,7 +82,7 @@ const EWayBillSystem = () => {
                     type="submit" 
                     className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
                   >
-                    Activate Services
+                    Update Credentials
                   </button>
                 </form>
           </div>
@@ -94,4 +90,4 @@ const EWayBillSystem = () => {
   );
 };
 
-export default EWayBillSystem;
+export default UpdateEwayCred;
