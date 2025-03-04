@@ -50,7 +50,7 @@ class Template1 {
     this.doc.setFont("helvetica", "bold");
     this.doc.text("Customer Detail", 17, 40);
     this.doc.setFont("helvetica", "normal");
-    this.doc.text(`M/S ${invoiceData.party.legal_name}`, 17, 46);
+    this.doc.text(`M/S ${invoiceData.party.trade_name.replace(/^M\/S\s+/i, "")}`, 17, 46);
     this.doc.text(`Address :`, 17, 50);
     this.doc.text(`${invoiceData.party.shipping_address.address1}`, 17, 54);
     this.doc.text(`${invoiceData.party.shipping_address.address2}`, 17, 58);
