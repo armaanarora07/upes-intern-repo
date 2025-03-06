@@ -32,6 +32,10 @@ const Dashboard = () => {
   );
   const [legal_name, setLegalName] = useState(business ? business.legal_name : ''); // State for legal_name
 
+  const [GSTSalesData, setGSTSalesData] = useState(null);
+  const [URDSalesData, setURDSalesData] = useState(null);
+  const [URDPurchaseData, setURDPurchaseData] = useState(null);
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -83,7 +87,9 @@ const Dashboard = () => {
         });
 
         const transactions = transactionResponse.data?.data || [];
+        
         setTransactions(transactions);
+
         const sales = transactions.map((txn) => ({
           date: new Date(txn.created_at).toLocaleDateString(),
           amount: txn.total_value || 0,
@@ -91,6 +97,33 @@ const Dashboard = () => {
 
         setSalesData(sales);
 
+        const urdPurchaseTransactions = transactions.filter(entry => entry.second_party === "" || entry.second_party === null);
+
+        const urdPurchaseData = urdPurchaseTransactions.map((txn) => ({
+          date: new Date(txn.created_at).toLocaleDateString(),
+          amount: txn.total_value || 0,
+        }));
+
+        setURDPurchaseData(urdPurchaseData);
+
+        const urdSalesTransactions = transactions.filter(entry => /^[0-9]{10}$/.test(entry.second_party));
+
+        const urdSalesData = urdSalesTransactions.map((txn) => ({
+          date: new Date(txn.created_at).toLocaleDateString(),
+          amount: txn.total_value || 0,
+        }));
+
+        setURDSalesData(urdSalesData);
+
+        const gstSalesTransactions = transactions.filter(entry => /^[0-9A-Z]{15}$/.test(entry.second_party));
+
+        const gstSalesData = gstSalesTransactions.map((txn) => ({
+          date: new Date(txn.created_at).toLocaleDateString(),
+          amount: txn.total_value || 0,
+        }));
+
+        setGSTSalesData(gstSalesData);
+       
       } catch (error) {
         if (error.response) {
           setErrorMessage(error.response.data.message || "An error occurred on the server.");
@@ -126,6 +159,51 @@ const Dashboard = () => {
       }
     : {};
 
+    const URDSalesChartData = URDSalesData
+    ? {
+        labels: URDSalesData.map((item) => item.date),
+        datasets: [
+          {
+            label: "URD Sales Over Time",
+            data: URDSalesData.map((item) => item.amount),
+            borderColor: "rgba(65, 84, 241, 0.5)",
+            backgroundColor: "rgba(65, 84, 241, 0.5)",
+            tension: 0.4,
+          },
+        ],
+      }
+    : {};
+
+    const URDPurchaseChartData = URDPurchaseData
+    ? {
+        labels: URDPurchaseData.map((item) => item.date),
+        datasets: [
+          {
+            label: "URD Purchases Over Time",
+            data: URDPurchaseData.map((item) => item.amount),
+            borderColor: "rgba(65, 84, 241, 0.5)",
+            backgroundColor: "rgba(65, 84, 241, 0.5)",
+            tension: 0.4,
+          },
+        ],
+      }
+    : {};
+
+    const GSTChartData = GSTSalesData
+    ? {
+        labels: GSTSalesData.map((item) => item.date),
+        datasets: [
+          {
+            label: "URD Purchases Over Time",
+            data: GSTSalesData.map((item) => item.amount),
+            borderColor: "rgba(65, 84, 241, 0.5)",
+            backgroundColor: "rgba(65, 84, 241, 0.5)",
+            tension: 0.4,
+          },
+        ],
+      }
+    : {};
+
   if (loading) {
     return (
       <div className="p-8 mt-10">
@@ -135,95 +213,370 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="p-8 mt-10">
-    
-      <div className="flex items-center justify-between mt-3">
-        {/* Business Name */}
-        <div className="text-2xl font-bold text-gray-800">
-          {`${legal_name}`} 
-        </div>
+    <div className="bg-gray-50 min-h-screen p-8 mt-10">
 
-        {/* Dropdown Section */}
-        <div className="flex items-center space-x-2 ml-auto">
-          <span className="text-gray-800 font-bold">Select Business</span>
-          <select 
-            className="border rounded px-3 py-1" 
-            onChange={(e) => handleDropdown(e.target.value)}
-          >
-              {businesses.map((business, key) => (
-                <option key={key} value={business._id}>
-                  {business.legal_name}
-                </option>
-              ))}
-          </select>
-        </div>
-      </div>
+      <div className="max-w-7xl mx-auto bg-white rounded-xl shadow-sm overflow-hidden">
+  
+        {/* Dashboard Content */}
+        <div className="p-6">
 
-      {errorMessage && <p className="text-red-500">{errorMessage}</p>}
+            {/* Header with improved alignment */}
+            <div className="px-6 py-5 mt-5 mb-6 bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden">
 
-      <div className="flex space-x-12">
-      {transactions.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 py-8 px-5 gap-4">
-          <div className="border p-4 rounded shadow-sm">
-            <h2 className="text-lg font-semibold mb-2">Latest Transactions</h2>
-            <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="border-b">
-                  <th className="py-2 px-4">Bill ID</th>
-                  <th className="py-2 px-4">DATE</th>
-                  <th className="py-2 px-4">Bill For</th>
-                  <th className="py-2 px-4">AMOUNT</th>
-                </tr>
-              </thead>
-              <tbody>
-                {transactions.slice(0, 5).map((txn, index) => (
-                  <tr key={index} className="border-b">
-                    <td className="py-2 px-4">{txn.sn_no || "N/A"}</td>
-                    <td className="py-2 px-4">
-                      {txn.created_at ? new Date(txn.created_at).toLocaleDateString() : "N/A"}
-                    </td>
-                    <td className="py-2 px-4">{txn.name || "N/A"}</td>
-                    <td className="py-2 px-4">₹ {txn.total_value ? txn.total_value.toLocaleString() : "0"}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-            <Link to="/generated-bills" className="text-[#4154f1] hover:underline mt-2 block">
-              See All Transactions
-            </Link>
-          </div>
-
-          <div className="border p-4 rounded shadow-sm">
-            <h2 className="text-lg font-semibold mb-2">Sales Report</h2>
-            {salesData ? (
-              <div>
-                <Line
-                  data={chartData}
-                  options={{
-                    responsive: true,
-                    scales: {
-                      x: {
-                        title: { display: true, text: "Date" },
-                      },
-                      y: {
-                        title: { display: true, text: "Sales (₹)" },
-                        beginAtZero: true,
-                      },
-                    },
-                  }}
-                />
+              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                {/* Business Name */}
+                <h1 className="text-2xl font-bold text-gray-800">
+                  {legal_name}
+                </h1>
+      
+                {/* Business Selector with improved styling */}
+                <div className="flex items-center space-x-3">
+                  <span className="text-gray-700 font-medium">Select Business</span>
+                  <select 
+                    className="border border-gray-300 rounded-lg px-4 py-2 bg-white text-gray-800 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all" 
+                    onChange={(e) => handleDropdown(e.target.value)}
+                  >
+                    {businesses.map((business, key) => (
+                      <option key={key} value={business._id}>
+                        {business.legal_name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
               </div>
-            ) : (
-              <p>No sales data available.</p>
-            )}
-          </div>
+              
+              {/* Error message with better positioning */}
+              {errorMessage && (
+                <div className="mt-2 p-3 bg-red-50 border border-red-200 rounded-lg text-red-600">
+                  {errorMessage}
+                </div>
+              )}
+            </div>
+
+          {transactions.length > 0 ? (
+            <>
+              {/* Latest Transactions Card - Improved styling */}
+              <div className="mb-6">
+                <div className="bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden">
+                  <div className="px-6 py-4 border-b border-gray-200">
+                    <h2 className="text-lg font-semibold text-gray-800">Latest Transactions</h2>
+                  </div>
+                  <div className="p-6">
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left">
+                        <thead>
+                          <tr className="bg-gray-50">
+                            <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Bill ID</th>
+                            <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                            <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Bill For</th>
+                            <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-200">
+                          {transactions.slice(0, 5).map((txn, index) => (
+                            <tr key={index} className="hover:bg-gray-50 transition-colors">
+                              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{txn.sn_no || "N/A"}</td>
+                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                {txn.created_at ? new Date(txn.created_at).toLocaleDateString() : "N/A"}
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{txn.name || "N/A"}</td>
+                              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">₹ {txn.total_value ? txn.total_value.toLocaleString() : "0"}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                    <div className="mt-4 text-right">
+                      <Link to="/generated-bills" className="inline-flex items-center text-sm font-medium text-blue-600 hover:text-blue-800">
+                        See All Transactions
+                        <svg className="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              </div>
+  
+              {/* Charts Grid - Improved layout and responsiveness */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {/* Total Sales Report */}
+                <div className="bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden">
+                  <div className="px-6 py-4 border-b border-gray-200">
+                    <h2 className="text-lg font-semibold text-gray-800">Total Sales Report</h2>
+                  </div>
+                  <div className="p-6 h-80">
+                    {salesData ? (
+                      <Line
+                        data={chartData}
+                        options={{
+                          responsive: true,
+                          maintainAspectRatio: false,
+                          plugins: {
+                            legend: {
+                              position: 'top',
+                              labels: {
+                                boxWidth: 10,
+                                usePointStyle: true,
+                                padding: 20
+                              }
+                            },
+                            tooltip: {
+                              backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                              titleColor: '#111827',
+                              bodyColor: '#4B5563',
+                              borderColor: '#E5E7EB',
+                              borderWidth: 1,
+                              padding: 12,
+                              boxPadding: 6,
+                              usePointStyle: true
+                            }
+                          },
+                          scales: {
+                            x: {
+                              grid: {
+                                display: false
+                              },
+                              title: { 
+                                display: true, 
+                                text: "Date",
+                                padding: {top: 10}
+                              }
+                            },
+                            y: {
+                              grid: {
+                                borderDash: [2, 4],
+                                color: '#E5E7EB'
+                              },
+                              title: { 
+                                display: true, 
+                                text: "Sales (₹)",
+                                padding: {bottom: 10}
+                              },
+                              beginAtZero: true
+                            }
+                          }
+                        }}
+                      />
+                    ) : (
+                      <div className="flex items-center justify-center h-full">
+                        <p className="text-gray-500">No sales data available.</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+  
+                {/* GST Sales Report */}
+                <div className="bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden">
+                  <div className="px-6 py-4 border-b border-gray-200">
+                    <h2 className="text-lg font-semibold text-gray-800">GST Sales Report</h2>
+                  </div>
+                  <div className="p-6 h-80">
+                    {GSTSalesData ? (
+                      <Line
+                        data={GSTChartData}
+                        options={{
+                          responsive: true,
+                          maintainAspectRatio: false,
+                          plugins: {
+                            legend: {
+                              position: 'top',
+                              labels: {
+                                boxWidth: 10,
+                                usePointStyle: true,
+                                padding: 20
+                              }
+                            },
+                            tooltip: {
+                              backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                              titleColor: '#111827',
+                              bodyColor: '#4B5563',
+                              borderColor: '#E5E7EB',
+                              borderWidth: 1,
+                              padding: 12,
+                              boxPadding: 6,
+                              usePointStyle: true
+                            }
+                          },
+                          scales: {
+                            x: {
+                              grid: {
+                                display: false
+                              },
+                              title: { 
+                                display: true, 
+                                text: "Date",
+                                padding: {top: 10}
+                              }
+                            },
+                            y: {
+                              grid: {
+                                borderDash: [2, 4],
+                                color: '#E5E7EB'
+                              },
+                              title: { 
+                                display: true, 
+                                text: "Sales (₹)",
+                                padding: {bottom: 10}
+                              },
+                              beginAtZero: true
+                            }
+                          }
+                        }}
+                      />
+                    ) : (
+                      <div className="flex items-center justify-center h-full">
+                        <p className="text-gray-500">No GST sales data available.</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+  
+                {/* URD Sales Report */}
+                <div className="bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden">
+                  <div className="px-6 py-4 border-b border-gray-200">
+                    <h2 className="text-lg font-semibold text-gray-800">URD Sales Report</h2>
+                  </div>
+                  <div className="p-6 h-80">
+                    {URDSalesData ? (
+                      <Line
+                        data={URDSalesChartData}
+                        options={{
+                          responsive: true,
+                          maintainAspectRatio: false,
+                          plugins: {
+                            legend: {
+                              position: 'top',
+                              labels: {
+                                boxWidth: 10,
+                                usePointStyle: true,
+                                padding: 20
+                              }
+                            },
+                            tooltip: {
+                              backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                              titleColor: '#111827',
+                              bodyColor: '#4B5563',
+                              borderColor: '#E5E7EB',
+                              borderWidth: 1,
+                              padding: 12,
+                              boxPadding: 6,
+                              usePointStyle: true
+                            }
+                          },
+                          scales: {
+                            x: {
+                              grid: {
+                                display: false
+                              },
+                              title: { 
+                                display: true, 
+                                text: "Date",
+                                padding: {top: 10}
+                              }
+                            },
+                            y: {
+                              grid: {
+                                borderDash: [2, 4],
+                                color: '#E5E7EB'
+                              },
+                              title: { 
+                                display: true, 
+                                text: "Sales (₹)",
+                                padding: {bottom: 10}
+                              },
+                              beginAtZero: true
+                            }
+                          }
+                        }}
+                      />
+                    ) : (
+                      <div className="flex items-center justify-center h-full">
+                        <p className="text-gray-500">No URD sales data available.</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+  
+                {/* URD Purchases Report */}
+                <div className="bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden">
+                  <div className="px-6 py-4 border-b border-gray-200">
+                    <h2 className="text-lg font-semibold text-gray-800">URD Purchases Report</h2>
+                  </div>
+                  <div className="p-6 h-80">
+                    {URDPurchaseData ? (
+                      <Line
+                        data={URDPurchaseChartData}
+                        options={{
+                          responsive: true,
+                          maintainAspectRatio: false,
+                          plugins: {
+                            legend: {
+                              position: 'top',
+                              labels: {
+                                boxWidth: 10,
+                                usePointStyle: true,
+                                padding: 20
+                              }
+                            },
+                            tooltip: {
+                              backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                              titleColor: '#111827',
+                              bodyColor: '#4B5563',
+                              borderColor: '#E5E7EB',
+                              borderWidth: 1,
+                              padding: 12,
+                              boxPadding: 6,
+                              usePointStyle: true
+                            }
+                          },
+                          scales: {
+                            x: {
+                              grid: {
+                                display: false
+                              },
+                              title: { 
+                                display: true, 
+                                text: "Date",
+                                padding: {top: 10}
+                              }
+                            },
+                            y: {
+                              grid: {
+                                borderDash: [2, 4],
+                                color: '#E5E7EB'
+                              },
+                              title: { 
+                                display: true, 
+                                text: "Purchases (₹)",
+                                padding: {bottom: 10}
+                              },
+                              beginAtZero: true
+                            }
+                          }
+                        }}
+                      />
+                    ) : (
+                      <div className="flex items-center justify-center h-full">
+                        <p className="text-gray-500">No URD Purchases data available.</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </>
+          ) : (
+            <div className="flex flex-col items-center justify-center p-12 bg-white rounded-xl shadow-sm">
+              <svg className="w-16 h-16 text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+              </svg>
+              <p className="text-gray-600 text-lg">No recent transactions available.</p>
+              <p className="text-gray-500 mt-1">Transactions will appear here once they're recorded in the system.</p>
+            </div>
+          )}
         </div>
-      ) : (
-        <p>No recent transactions available.</p>
-      )}
       </div>
     </div>
   );
-};
-
+}
 export default Dashboard;
