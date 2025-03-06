@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {FaMoneyCheckAlt} from 'react-icons/fa';
+import { FaMoneyCheckAlt } from 'react-icons/fa';
 import { useDispatch } from 'react-redux';
 import { setTitle } from '../slices/navbarSlice';
 
@@ -12,14 +12,8 @@ const Users = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-
-    const setNavTitle = () =>{
-      dispatch(setTitle('Users Transactions'));
-    }
-
-    setNavTitle();
-
-  }, [setTitle,dispatch]);
+    dispatch(setTitle('Users Transactions'));
+  }, [dispatch]);
 
   useEffect(() => {
     const authToken = localStorage.getItem("authToken");
@@ -42,7 +36,7 @@ const Users = () => {
         }
 
         const result = await response.json();
-        setData(result.data || []); // Extract "data" array from the response
+        setData(result.data || []);
         setFilteredData(result.data || []);
       } catch (err) {
         setError(err.message);
@@ -57,7 +51,7 @@ const Users = () => {
   const handleSearch = (e) => {
     const term = e.target.value.toLowerCase();
     setSearchTerm(term);
-  
+
     const filtered = data.filter((item) =>
       (item.first_party && item.first_party.toLowerCase().includes(term)) ||
       (item.second_party && item.second_party.toLowerCase().includes(term)) ||
@@ -69,60 +63,67 @@ const Users = () => {
     setFilteredData(filtered);
   };
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
+  if (loading) return <div className="text-center mt-10">Loading...</div>;
+  if (error) return <div className="text-center mt-10 text-red-500">Error: {error}</div>;
 
   return (
     <div className="p-8 mt-10">
-    <div className='mt-5'>
-      
-      <input
-        type="text"
-        placeholder="Search by First Party, Second Party, or Product..."
-        value={searchTerm}
-        onChange={handleSearch}
-        className="mb-4 p-2 border border-gray-300 rounded w-full max-w-md"
-      />
-      
-      <div className="p-2 overflow-x-auto">
-      <table className="w-[1150px] border-collapse border border-gray-300">
-        <thead>
-          <tr className="bg-gray-100">
-            <th className="border border-gray-300 p-2">S.No</th>
-            <th className="border border-gray-300 p-2">First Party</th>
-            <th className="border border-gray-300 p-2">Second Party</th>
-            <th className="border border-gray-300 p-2">Product</th>
-            <th className="border border-gray-300 p-2">Rate</th>
-            <th className="border border-gray-300 p-2">Quantity</th>
-            <th className="border border-gray-300 p-2">Total Value</th>
-            <th className="border border-gray-300 p-2">Download</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredData.map((item, index) => (
-            <tr key={item._id} className="hover:bg-gray-50">
-              <td className="border border-gray-300 p-2">{item.sn_no}</td>
-              <td className="border border-gray-300 p-2">{item.first_party}</td>
-              <td className="border border-gray-300 p-2">{item.second_party}</td>
-              <td className="border border-gray-300 p-2">{item.products?.join(', ')}</td>
-              <td className="border border-gray-300 p-2">{item.rate?.join(', ')}</td>
-              <td className="border border-gray-300 p-2">{item.quantity?.join(', ')}</td>
-              <td className="border border-gray-300 p-2">{item.total_value}</td>
-              <td className="border border-gray-300 p-2">
-                <a
-                  href={item.downloadlink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-[#4154f1] underline"
-                >
-                  Download
-                </a>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      </div>
+      <div className='mt-5'>
+        <input
+          type="text"
+          placeholder="Search by First Party, Second Party, or Product..."
+          value={searchTerm}
+          onChange={handleSearch}
+          className="mb-4 p-2 border border-gray-300 rounded w-full max-w-md"
+        />
+
+        <div className="bg-white border rounded-lg shadow-xl overflow-hidden">
+          <div className="px-6 py-4 border-b border-gray-200">
+            <h2 className="text-lg font-semibold text-gray-800">Users Transactions</h2>
+          </div>
+
+          <div className="overflow-x-auto">
+            <table className="min-w-full table-fixed border-collapse">
+              <thead>
+                <tr className="bg-gray-100">
+                  <th className="w-1/12 px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase">S.No</th>
+                  <th className="w-2/12 px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase">First Party</th>
+                  <th className="w-2/12 px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase">Second Party</th>
+                  <th className="w-3/12 px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase">Product</th>
+                  <th className="w-1/12 px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase">Rate</th>
+                  <th className="w-1/12 px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase">Quantity</th>
+                  <th className="w-1/12 px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase">Total Value</th>
+                  <th className="w-1/12 px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase">Download</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-200">
+                {filteredData.map((item, index) => (
+                  <tr key={item._id} className="hover:bg-gray-50 transition-colors">
+                    <td className="px-4 py-4 text-sm text-gray-700">{item.sn_no}</td>
+                    <td className="px-4 py-4 text-sm text-gray-700">{item.first_party}</td>
+                    <td className="px-4 py-4 text-sm text-gray-700">{item.second_party}</td>
+                    <td className="px-4 py-4 text-sm text-gray-700 break-words whitespace-normal">
+                      {item.products?.join(', ')}
+                    </td>
+                    <td className="px-4 py-4 text-sm text-gray-700">{item.rate?.join(', ')}</td>
+                    <td className="px-4 py-4 text-sm text-gray-700">{item.quantity?.join(', ')}</td>
+                    <td className="px-4 py-4 text-sm text-gray-700">{item.total_value}</td>
+                    <td className="px-4 py-4 text-sm text-gray-700">
+                      <a
+                        href={item.downloadlink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-600 underline"
+                      >
+                        Download
+                      </a>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
     </div>
   );

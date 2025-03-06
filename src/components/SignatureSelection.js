@@ -14,7 +14,7 @@ function SignatureSelection() {
   };
 
   return (
-    <div className="p-6 bg-white rounded-lg shadow-xl mt-5 flex flex-col items-center sm:flex-row sm:justify-between gap-3">
+    <div className="p-6 bg-white border rounded-lg shadow-xl mt-5 flex flex-col items-center sm:flex-row sm:justify-between gap-3">
       {/* Left Section - Signature/Stamp */}
 
       {enabled ? <Stamp /> : <Signature />}

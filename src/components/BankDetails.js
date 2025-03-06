@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { addBankDetails, clearSelectedBank, editBankDetails, SelectedBank, setEnabled} from '../slices/bankSlice';
 import { FaEdit, FaTrash, FaTimes } from 'react-icons/fa';
+import { Trash2 } from 'lucide-react';
 
 const BankDetails = () => {
   const dispatch = useDispatch();
@@ -71,7 +72,7 @@ const BankDetails = () => {
 
 
   return (
-    <div className="p-6 bg-white rounded-lg shadow-xl mt-5">
+    <div className="p-6 bg-white border rounded-lg shadow-xl mt-5">
       <div className="mt-4 flex justify-between">
 
         <div className='flex space-x-3'>
@@ -107,7 +108,7 @@ const BankDetails = () => {
           <p className="text-gray-600">Branch Name : <span className="font-semibold">{selectedBank.branchName}</span></p>
           <div className="flex space-x-2 mt-3">
             <button onClick={handleRemoveBank} className="btn btn-red">
-              <FaTrash />
+              <Trash2 className="w-5 h-5" />
             </button>
           </div>
         </div>

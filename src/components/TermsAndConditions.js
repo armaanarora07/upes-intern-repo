@@ -13,7 +13,7 @@ const TermsAndConditions = () => {
   }
 
   return (
-    <div className="p-6 bg-white rounded-lg shadow-xl mt-5">
+    <div className="p-6 bg-white border rounded-lg shadow-xl mt-5">
         <h2 className="text-2xl font-bold text-gray-800">Terms and Conditions</h2>
         <div>
          <textarea

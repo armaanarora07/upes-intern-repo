@@ -292,7 +292,7 @@ const InvoicePage = () => {
     const body = { 
       sn_no: userDetails.invoiceNo,
       party: {
-        gstin: userDetails.phoneNo,
+        gstin: "",
         name: userDetails.tradeName,
         contact :userDetails.phoneNo,
         shipping_address: userDetails.shippingAddress,
