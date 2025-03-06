@@ -6,7 +6,7 @@ import { setGSTDetails, setGSTError } from '../slices/gstSlice';
 import { setTradeName, setPhoneNo, updatePrimaryAddress , toggleShippingSameAsPrimary, setInvoiceNo} from '../slices/userdetailsSlice';
 import axios from 'axios';
 
-const GSTVerify = ({ gstNumber }) => {
+const GSTVerify = ({ gstNumber, isRequired }) => {
   const dispatch = useDispatch();
   const authToken = useSelector((state) => state.auth.authToken);
   const gstDetails = useSelector((state) => state.gst.gstDetails);
@@ -98,7 +98,7 @@ const GSTVerify = ({ gstNumber }) => {
   };
 
   return (
-    <div className="p-6 bg-white rounded-lg shadow-xl mt-5">
+    <div className="p-6 bg-white border rounded-lg shadow-xl mt-5">
       <h2 className="text-2xl font-bold text-gray-800">GSTIN</h2>
       <div className="w-2/5 relative">
       <div className="relative mb-3 mt-4">
@@ -117,6 +117,7 @@ const GSTVerify = ({ gstNumber }) => {
             }
           }}
           className="w-full border border-[#4154f1] rounded-lg p-2"
+          required={isRequired}
         />
         {status && (isVerified ? (
           <span className="absolute right-2 top-2 text-green-500">
@@ -127,6 +128,9 @@ const GSTVerify = ({ gstNumber }) => {
             <FaTimesCircle />
           </span>
         ))}
+        {isRequired && !GST && (
+            <span className="text-red-500 text-xs mt-1">GSTIN is required</span>
+         )}
       </div>
       </div>
 

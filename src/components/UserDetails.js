@@ -13,7 +13,7 @@ import {
   setInvoiceDate
 } from '../slices/userdetailsSlice';
 
-const UserDetails = ({Title}) => {
+const UserDetails = ({Title,isRequired,isInvoiceRequired}) => {
   const dispatch = useDispatch();
   const userDetails = useSelector(selectUserDetails);
   const isShippingSameAsPrimary = useSelector(selectIsShippingSameAsPrimary);
@@ -38,7 +38,7 @@ const UserDetails = ({Title}) => {
   };
 
   return (
-    <div className="p-6 bg-white rounded-lg shadow-xl mt-5">
+    <div className="p-6 bg-white border rounded-lg shadow-xl mt-5">
       <h2 className="text-2xl font-bold text-gray-800">{Title}</h2>
       <div className="flex space-x-2">
         <div className="w-2/5 p-2 relative">
@@ -52,20 +52,29 @@ const UserDetails = ({Title}) => {
                 value={userDetails.tradeName}
                 onChange={(e) => dispatch(setTradeName(e.target.value))}
                 className="w-full border border-[#4154f1] rounded-lg p-2"
+                required={isRequired}
               />
+              {isRequired && !userDetails.tradeName && (
+              <span className="text-red-500 text-xs mt-1">Name is required</span>
+              )}
             </div>
 
             <div className="relative">
-              <span className="absolute -top-3 left-2 text-sm bg-white px-1 text-black">
-                Phone No
-              </span>
-              <input
-                type="text"
-                value={userDetails.phoneNo}
-                onChange={(e) => dispatch(setPhoneNo(e.target.value))}
-                className="w-full border border-[#4154f1] rounded-lg p-2"
-              />
-            </div>
+            <span className="absolute -top-3 left-2 text-sm bg-white px-1 text-black">
+              Phone No
+            </span>
+            <input
+              type="text"
+              value={userDetails.phoneNo}
+              onChange={(e) => dispatch(setPhoneNo(e.target.value))}
+              className="w-full border border-[#4154f1] rounded-lg p-2"
+              required={isRequired}
+            />
+            {isRequired && !userDetails.phoneNo && (
+              <span className="text-red-500 text-xs mt-1">Phone number is required</span>
+            )}
+          </div>
+
           </div>
         </div>
         <div className="w-1/5 p-2 relative">
@@ -90,7 +99,11 @@ const UserDetails = ({Title}) => {
                     value={userDetails.invoiceNo}
                     onChange={(e) => dispatch(setInvoiceNo(e.target.value))}
                     className="w-full border border-[#4154f1] rounded-lg p-2"
+                    required={isInvoiceRequired}
                   />
+                  {isInvoiceRequired && !userDetails.invoiceNo && (
+                    <span className="text-red-500 text-xs mt-1">Invoice number is required</span>
+                  )}
             </div>
           </div>
         </div>
@@ -109,7 +122,11 @@ const UserDetails = ({Title}) => {
                 value={userDetails.primaryAddress.address1}
                 onChange={(e) => handlePrimaryAddressChange('address1', e.target.value)}
                 className="w-full border border-[#4154f1] rounded-lg p-2"
+                required={isRequired}
               />
+              {isRequired && !userDetails.primaryAddress.address1 && (
+              <span className="text-red-500 text-xs mt-1">Address is required</span>
+              )}
             </div>
 
             <div className="relative">
@@ -121,7 +138,11 @@ const UserDetails = ({Title}) => {
                 value={userDetails.primaryAddress.pincode}
                 onChange={(e) => handlePrimaryAddressChange('pincode', e.target.value)}
                 className="w-full border border-[#4154f1] rounded-lg p-2"
+                required={isRequired}
               />
+              {isRequired && !userDetails.primaryAddress.pincode && (
+              <span className="text-red-500 text-xs mt-1">Pincode is required</span>
+              )}
             </div>
 
             <div className="relative">
@@ -133,7 +154,11 @@ const UserDetails = ({Title}) => {
                 value={userDetails.primaryAddress.state}
                 onChange={(e) => handlePrimaryAddressChange('state', e.target.value)}
                 className="w-full border border-blue-500 rounded-lg p-2"
+                required={isRequired}
               />
+              {isRequired && !userDetails.primaryAddress.state && (
+              <span className="text-red-500 text-xs mt-1">State is required</span>
+              )}
             </div>
           </div>
         </div>
@@ -159,7 +184,11 @@ const UserDetails = ({Title}) => {
                 value={userDetails.shippingAddress.address1}
                 onChange={(e) => handleShippingAddressChange('address1', e.target.value)}
                 className="w-full border border-[#4154f1] rounded-lg p-2"
+                required={isRequired}
               />
+              {isRequired && !userDetails.shippingAddress.address1 && (
+              <span className="text-red-500 text-xs mt-1">Address is required</span>
+              )}
             </div>
 
             <div className="relative">
@@ -171,7 +200,11 @@ const UserDetails = ({Title}) => {
                 value={userDetails.shippingAddress.pincode}
                 onChange={(e) => handleShippingAddressChange('pincode', e.target.value)}
                 className="w-full border border-[#4154f1] rounded-lg p-2"
+                required={isRequired}
               />
+              {isRequired && !userDetails.shippingAddress.pincode && (
+              <span className="text-red-500 text-xs mt-1">Pincode is required</span>
+              )}
             </div>
 
             <div className="relative">
@@ -183,7 +216,11 @@ const UserDetails = ({Title}) => {
                 value={userDetails.shippingAddress.state}
                 onChange={(e) => handleShippingAddressChange('state', e.target.value)}
                 className="w-full border border-[#4154f1] rounded-lg p-2"
+                required={isRequired}
               />
+              {isRequired && !userDetails.shippingAddress.state && (
+              <span className="text-red-500 text-xs mt-1">State is required</span>
+              )}
             </div>
           </div>
         </div>
