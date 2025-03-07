@@ -6,7 +6,7 @@ const Navbar = () => {
 
   return (
     <nav 
-      className="bg-[#F9FAFC] bg-opacity-60 backdrop-blur-md h-16 flex items-center px-6 shadow-xl fixed top-0 right-0 z-10 transition-all duration-300"
+      className="bg-[#F9FAFC] bg-opacity-60 backdrop-blur-md h-16 flex items-center px-6 shadow-xl fixed top-0 right-0 z-10"
       style={{ left: 'var(--sidebar-width, 16rem)' }}
     >
       <h1 className="text-[#4154f1] font-bold text-3xl">

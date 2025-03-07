@@ -7,7 +7,7 @@ import { useSelector } from 'react-redux';
 import FyntlLogo1 from '../assets/FyntlLogo1.png';
 
 const Sidebar = () => {
-  const [expanded, setExpanded] = useState(true);
+  const [expanded, setExpanded] = useState(false);
   const [expandedItems, setExpandedItems] = useState({});
   const [hoveredItem, setHoveredItem] = useState(null);
   const { businesses } = useSelector((state) => state.business);
@@ -22,6 +22,12 @@ const Sidebar = () => {
   }, [expanded]);
 
   const toggleDropdown = (key) => {
+
+    if(businesses.length === 0){
+      alert('Add a Business to generate the Bill');
+      return;
+    }
+    
     setExpandedItems(prev => ({
       ...prev,
       [key]: !prev[key]
@@ -88,7 +94,7 @@ const Sidebar = () => {
 
   return (
     <div 
-      className={`bg-[#1E1E2D] h-screen transition duration-500 flex flex-col shadow-lg relative ${
+      className={`bg-[#1E1E2D] h-screen flex flex-col shadow-lg relative ${
         expanded ? 'w-64' : 'w-20'
       }`}
     >

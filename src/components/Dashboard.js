@@ -51,7 +51,7 @@ const Dashboard = () => {
       navigate("/login"); // Redirect to login page
     }
 
-  }, [businesses, selectedBusiness,business, errorMessage]);
+  }, [businesses, selectedBusiness,business, errorMessage,dispatch,navigate]);
 
   useEffect(()=>{
 
@@ -138,7 +138,7 @@ const Dashboard = () => {
     };
         
     fetchData();
-  }, []);
+  }, [authToken]);
 
   const handleDropdown = (value) =>{
      dispatch(setBusiness(value));

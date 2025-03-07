@@ -49,7 +49,7 @@ function Home() {
         <Sidebar />
       </div>
       {/* Use CSS variable for dynamic margin */}
-      <div className="flex-grow transition-all duration-300" style={{ marginLeft: 'var(--sidebar-width, 16rem)' }}>
+      <div className="flex-grow" style={{ marginLeft: 'var(--sidebar-width, 16rem)' }}>
         <Navbar />
         <div className="mt-5 p-5">
           <Routes>
