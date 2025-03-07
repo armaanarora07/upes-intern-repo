@@ -429,9 +429,9 @@ const InvoicePage = () => {
   }
 
   return (
-    <div className="flex flex-col lg:flex-row w-full p-8 mt-10 space-y-6 lg:space-y-0 lg:space-x-6">
+    <div className="flex flex-col lg:flex-row w-full p-8 lg:space-x-6">
       {/* Left Pane - PDF Preview */}
-      <div className="flex-1 p-6 bg-white rounded-lg shadow-xl">
+      <div className="flex-1 p-6 bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden">
 
         <div className="text-2xl font-bold text-gray-800 mb-3">
           Invoice Preview
@@ -447,7 +447,7 @@ const InvoicePage = () => {
       </div>
 
       {/* Right Pane - Controls */}
-      <div className="w-full lg:w-1/3 h-auto p-6 bg-white rounded-lg shadow-xl flex flex-col items-center">
+      <div className="w-full lg:w-1/3 h-auto p-6 bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden flex flex-col items-center">
         <div className="text-2xl font-bold text-gray-800 mb-3">
           Customize Invoice
         </div>

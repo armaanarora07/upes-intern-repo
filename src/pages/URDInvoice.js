@@ -66,8 +66,8 @@ const URDInvoice = () => {
    }
 
   return (
-    <div className="p-8 mt-10">
-      <div className='p-6 bg-white border rounded-lg shadow-xl mt-5'>
+    <div className="p-8">
+      <div className='p-6 mt-5 mb-6 bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden'>
           <h2 className="text-2xl font-bold text-gray-800">Select Invoice Type</h2>
           <select 
             className="border rounded px-3 py-1 mt-3 ml-2" 

@@ -213,48 +213,49 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="bg-gray-50 min-h-screen p-8 mt-10">
+    <div className="min-h-screen p-8">
 
-      <div className="max-w-7xl mx-auto bg-white rounded-xl shadow-sm overflow-hidden">
+      <div className="max-w-7xl mx-auto">
   
         {/* Dashboard Content */}
         <div className="p-6">
 
-            {/* Header with improved alignment */}
-            <div className="px-6 py-5 mt-5 mb-6 bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden">
-
-              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                {/* Business Name */}
-                <h1 className="text-2xl font-bold text-gray-800">
-                  {legal_name}
-                </h1>
-      
-                {/* Business Selector with improved styling */}
-                <div className="flex items-center space-x-3">
-                  <span className="text-gray-700 font-medium">Select Business</span>
-                  <select 
-                    className="border border-gray-300 rounded-lg px-4 py-2 bg-white text-gray-800 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all" 
-                    onChange={(e) => handleDropdown(e.target.value)}
-                  >
-                    {businesses.map((business, key) => (
-                      <option key={key} value={business._id}>
-                        {business.legal_name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-              
-              {/* Error message with better positioning */}
-              {errorMessage && (
-                <div className="mt-2 p-3 bg-red-50 border border-red-200 rounded-lg text-red-600">
-                  {errorMessage}
-                </div>
-              )}
-            </div>
-
           {transactions.length > 0 ? (
             <>
+              {/* Header with improved alignment */}
+              <div className="px-6 py-5 mb-6 bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden">
+
+                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                  {/* Business Name */}
+                  <h1 className="text-2xl font-bold text-gray-800">
+                    {legal_name}
+                  </h1>
+
+                  {/* Business Selector with improved styling */}
+                  <div className="flex items-center space-x-3">
+                    <span className="text-gray-700 font-medium">Select Business</span>
+                    <select 
+                      className="border border-gray-300 rounded-lg px-4 py-2 bg-white text-gray-800 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all" 
+                      onChange={(e) => handleDropdown(e.target.value)}
+                    >
+                      {businesses.map((business, key) => (
+                        <option key={key} value={business._id}>
+                          {business.legal_name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
+                {/* Error message with better positioning */}
+                {errorMessage && (
+                  <div className="mt-2 p-3 bg-red-50 border border-red-200 rounded-lg text-red-600">
+                    {errorMessage}
+                  </div>
+                )}
+
+              </div>
+
               {/* Latest Transactions Card - Improved styling */}
               <div className="mb-6">
                 <div className="bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden">

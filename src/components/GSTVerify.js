@@ -98,7 +98,7 @@ const GSTVerify = ({ gstNumber, isRequired }) => {
   };
 
   return (
-    <div className="p-6 bg-white border rounded-lg shadow-xl mt-5">
+    <div className='p-6 mt-5 mb-6 bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden'>
       <h2 className="text-2xl font-bold text-gray-800">GSTIN</h2>
       <div className="w-2/5 relative">
       <div className="relative mb-3 mt-4">

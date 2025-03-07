@@ -25,7 +25,7 @@ const GSTInvoice = () => {
 
   const handleBillGeneration = ()=>{
     
-      if(gstDetails && userDetails.tradeName.length > 0 && userDetails.phoneNo.length > 0 && userDetails.primaryAddress.length > 0 && userDetails.shippingAddress.length > 0 && rows.length > 0 && rows[0].hsn_code.length > 0 ){
+      if(gstDetails && userDetails.tradeName.length > 0 && userDetails.phoneNo.length > 0 && rows.length > 0 && rows[0].hsn_code.length > 0 ){
         setisRequired(false);
         navigate('/generate-invoice?type=gstinvoice');
         return;
@@ -45,7 +45,7 @@ const GSTInvoice = () => {
   },[setTitle,dispatch])
 
   return (
-    <div className="p-8 mt-10">
+    <div className="p-8">
       <GSTVerify isRequired={isRequired}/>
       <UserDetails Title={'Buyer Details'} isRequired={isRequired}/>
       <Products/>

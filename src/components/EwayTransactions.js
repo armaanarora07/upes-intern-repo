@@ -57,7 +57,7 @@ const EWayTransactions = () => {
   }
 
   return (
-    <div className="p-8 mt-10">
+    <div className="p-8">
       <div className="mt-5">
 
       <div className="bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden">

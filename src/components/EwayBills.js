@@ -59,7 +59,7 @@ const EWayBillSystem = () => {
   };
 
   return (
-    <div className="p-8 mt-10">
+    <div className="p-8">
           <div className="flex flex-col items-center justify-center mt-10">
                 <form onSubmit={handleEnableService} className="bg-white p-6 rounded-lg shadow-md w-96">
                   <h2 className="text-xl font-bold mb-4">Activate E-Way Services</h2>

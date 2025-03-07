@@ -55,10 +55,11 @@ const UpdateEwayCred = () => {
   };
 
   return (
-    <div className="p-8 mt-10">
+    <div className="p-8">
           <div className="flex flex-col items-center justify-center mt-10">
-                <form onSubmit={handleEnableService} className="bg-white p-6 rounded-lg shadow-md w-96">
-                  <h2 className="text-xl font-bold mb-4">Update E-Way Services</h2>
+                <form onSubmit={handleEnableService} className="p-6 mt-5 mb-6 bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden">
+                  
+                  <h2 className="text-xl font-bold mb-4 flex justify-center">Update E-Way Services</h2>
 
                   <input
                     type="text"

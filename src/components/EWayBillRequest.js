@@ -90,12 +90,13 @@ const EWayBillRequest = () => {
   };
 
   return (
-    <div className="p-8 mt-10">
+    <div className="p-8">
       <div className="mt-5">
         <div className="flex flex-col items-center justify-center">
-          <h2 className="text-xl font-bold mb-4">Request E-Way Bill</h2>
+          <div className="p-6 mt-5 mb-6 bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden">
+          <h2 className="text-xl font-bold mb-4 flex justify-center">Request E-Way Bill</h2>
 
-          <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-md w-96">
+          <form onSubmit={handleSubmit} className="w-96">
             <label className="block mb-2">
               Transporter Id
               <input
@@ -134,6 +135,7 @@ const EWayBillRequest = () => {
               {loading ? "Sending..." : "Submit Request"}
             </button>
           </form>
+          </div>
         </div>
       </div>
 

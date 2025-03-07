@@ -183,7 +183,8 @@ const Inventory = () => {
   };
 
   return (
-    <div className="p-8 mt-10">
+    <div className="p-8">
+      <div className="mt-3">
       {/* Analytics Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 px-4 py-2 mb-6">
         <div className="bg-white shadow-xl border rounded-3xl p-6 w-full h-40 transform transition-all duration-300 hover:scale-105">
@@ -205,7 +206,7 @@ const Inventory = () => {
       </div>
 
       {/* Search and Add Product */}
-      <div className="flex flex-col sm:flex-row justify-between items-center gap-3 p-4 bg-white border-b border-gray-200 rounded-t-xl shadow-sm">
+      <div className="flex flex-col sm:flex-row justify-between items-center gap-3 p-4 bg-white rounded-t-xl shadow-sm">
         <div className="relative w-full sm:w-auto">
           <Search
             className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
@@ -250,13 +251,8 @@ const Inventory = () => {
         
         {/* Table Container */}
         <div className="overflow-x-auto">
-          {loading ? (
-            <div className="flex justify-center items-center h-48">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
-            </div>
-          ) : error ? (
-            <div className="text-red-500 p-6 text-center">{error}</div>
-          ) : currentProducts.length === 0 ? (
+
+           {currentProducts.length === 0 && (
             <div className="flex flex-col items-center justify-center py-12">
               <Package className="w-16 h-16 text-gray-300 mb-4" />
               <p className="text-gray-600 text-lg">
@@ -264,7 +260,8 @@ const Inventory = () => {
               </p>
               <p className="text-gray-500 mt-1">Add your first product using the button above</p>
             </div>
-          ) : (
+           )}
+
             <table className="w-full">
               <thead>
                 <tr className="bg-gray-50">
@@ -319,7 +316,6 @@ const Inventory = () => {
                 ))}
               </tbody>
             </table>
-          )}
         </div>
         
         {/* Pagination Controls */}
@@ -590,6 +586,7 @@ const Inventory = () => {
           </div>
         </div>
       )}
+      </div>
     </div>
   );
 };

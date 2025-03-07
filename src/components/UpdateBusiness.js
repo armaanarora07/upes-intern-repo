@@ -221,8 +221,10 @@ const UpdateBusiness = () => {
 
 
   return (
-    <div className='p-8 mt-10'>
-
+    <div className='p-8'>
+     
+     <div className="p-6 mt-5 mb-6 bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden">
+      
       <div className="text-2xl font-bold text-gray-800 mt-3">
         My Business Details 
       </div>
@@ -458,6 +460,7 @@ const UpdateBusiness = () => {
           </div>
         </div>
       )}
+      </div>
     </div>
   );
 }

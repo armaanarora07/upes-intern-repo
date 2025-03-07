@@ -217,7 +217,7 @@ const GeneratedBills = () => {
   };
 
   return (
-    <div className="p-8 mt-10">
+    <div className="p-8">
     <div className="mt-3">
       {errorMessage && <p className="text-red-500">{errorMessage}</p>}
 
@@ -236,7 +236,7 @@ const GeneratedBills = () => {
         </div>
       </div>
       
-       <div className="flex flex-col sm:flex-row justify-end items-center gap-3 p-4 bg-white border-b border-gray-200">
+       <div className="flex flex-col sm:flex-row justify-end items-center gap-3 p-4 bg-white">
         {/* Search Input */}
         <div className="relative w-full sm:w-auto">
           <div className="flex items-center w-full">
