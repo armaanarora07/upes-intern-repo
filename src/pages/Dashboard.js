@@ -227,7 +227,7 @@ const Dashboard = () => {
         labels: GSTSalesData.map((item) => item.date),
         datasets: [
           {
-            label: "URD Purchases Over Time",
+            label: "GST Sales Over Time",
             data: GSTSalesData.map((item) => item.amount),
             borderColor: "rgba(65, 84, 241, 0.5)",
             backgroundColor: "rgba(65, 84, 241, 0.5)",
