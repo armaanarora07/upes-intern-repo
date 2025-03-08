@@ -1,6 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 import Sidebar from "./components/sidebar";
-import Dashboard from "./components/Dashboard";
+import Dashboard from "./pages/Dashboard";
 import AddBusiness from "./components/AddBusiness";
 import GeneratedBills from "./components/GeneratedBills";
 import EwayBills from "./components/EwayBills";
