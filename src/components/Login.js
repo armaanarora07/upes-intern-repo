@@ -94,10 +94,10 @@ const Login = () => {
   }, [authToken, verifiedotp, navigate]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-100 via-white to-purple-100 flex items-center justify-center px-4">
-      <div className="relative w-full max-w-lg p-8 space-y-8 bg-white bg-opacity-90 rounded-3xl shadow-xl transition-all duration-500 hover:shadow-2xl hover:scale-105">
+    <div className="min-h-screen flex items-center justify-center px-4">
+      <div className="relative w-full max-w-lg p-8 space-y-8 bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden transition-all duration-500 hover:shadow-2xl hover:scale-105">
         <div className="text-center">
-          <h2 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[#4154f1] to-black">
+          <h2 className="text-4xl font-extrabold text-transparent bg-clip-text bg-[#1E1E2D]">
             Welcome to Fyntl-AI
           </h2>
           <p className="mt-2 text-gray-600">Login to continue</p>
@@ -109,7 +109,7 @@ const Login = () => {
               Phone Number
             </label>
             <div className="flex">
-              <span className="inline-flex items-center px-3 bg-gray-100 text-gray-600 rounded-l-full">
+              <span className="inline-flex items-center px-3 bg-gray-100 text-gray-600 rounded-md">
                 +91
               </span>
               <input
@@ -118,7 +118,7 @@ const Login = () => {
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 placeholder="Enter your phone number"
-                className="w-full px-4 py-3 bg-white border border-gray-300 rounded-r-full shadow-sm focus:ring-4 focus:ring-blue-300 transition duration-300"
+                className="w-full px-4 py-3 bg-white border border-gray-300 rounded-md shadow-sm focus:ring-4 focus:ring-blue-300 transition duration-300"
                 disabled={step === 2}
               />
             </div>
@@ -135,7 +135,7 @@ const Login = () => {
                 value={otp}
                 onChange={(e) => setOtp(e.target.value)}
                 placeholder="Enter the 6-digit OTP"
-                className="w-full px-4 py-3 bg-white border border-gray-300 rounded-full shadow-sm focus:ring-4 transition duration-300"
+                className="w-full px-4 py-3 bg-white border border-gray-300 rounded-md shadow-sm focus:ring-4 transition duration-300"
               />
             </div>
           )}
@@ -169,10 +169,10 @@ const Login = () => {
           <button
             type="submit"
             disabled={step === 1 && !termsAccepted}
-            className={`w-full py-3 text-lg font-bold text-white rounded-full shadow-lg transform transition duration-300 ${
+            className={`w-full py-3 text-lg font-bold text-white rounded-md shadow-lg transform transition duration-300 ${
               step === 1 && !termsAccepted
                 ? "bg-gray-400 cursor-not-allowed"
-                : "bg-gradient-to-r from-[#4154f1] to-black hover:scale-105"
+                : "bg-blue-500 hover:scale-105"
             }`}
           >
             {step === 1 ? "Login" : "Verify OTP"}
@@ -184,12 +184,6 @@ const Login = () => {
           <a href="/signup" className="font-bold text-blue-500 hover:underline transition duration-200">
             Sign Up Here
           </a>
-        </div>
-
-        <div className="mt-8 text-center">
-          <blockquote className="text-sm italic text-gray-500">
-            "The future belongs to those who believe in the beauty of their dreams."
-          </blockquote>
         </div>
       </div>
     </div>

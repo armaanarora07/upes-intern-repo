@@ -97,10 +97,10 @@ const SignUp = () => {
   }, [authToken, verifiedotp, navigate]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-100 via-white to-purple-100 flex items-center justify-center px-4">
-      <div className="relative w-full max-w-lg p-8 space-y-8 bg-white bg-opacity-90 rounded-3xl shadow-xl">
+    <div className="min-h-screen flex items-center justify-center px-4">
+      <div className="relative w-full max-w-lg p-8 space-y-8 bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden shadow-xl">
         <div className="text-center">
-          <h2 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[#4154f1] to-black">
+          <h2 className="text-4xl font-extrabold text-transparent bg-clip-text bg-[#1E1E2D]">
             Join Fyntl-AI Now!
           </h2>
           <p className="mt-2 text-gray-600">Sign up and be part of something amazing</p>
@@ -110,13 +110,13 @@ const SignUp = () => {
           <div>
             <label className="block text-sm font-medium text-gray-700">Phone Number</label>
             <div className="flex">
-              <span className="inline-flex items-center px-3 bg-gray-100 text-gray-600 rounded-l-full">+91</span>
+              <span className="inline-flex items-center px-3 bg-gray-100 text-gray-600 rounded-md">+91</span>
               <input
                 type="tel"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 placeholder="Enter your phone number"
-                className="w-full px-4 py-3 bg-white border rounded-r-full"
+                className="w-full px-4 py-3 bg-white border rounded-md"
                 disabled={step === 2}
               />
             </div>
@@ -153,7 +153,7 @@ const SignUp = () => {
                 value={otp}
                 onChange={(e) => setOtp(e.target.value)}
                 placeholder="Enter the 6-digit OTP"
-                className="w-full px-4 py-3 bg-white border rounded-full"
+                className="w-full px-4 py-3 bg-white border rounded-md"
               />
             </div>
           )}
@@ -163,10 +163,10 @@ const SignUp = () => {
 
           <button type="submit"
             disabled={step === 1 && !acceptedTerms}
-            className={`w-full py-3 text-lg font-bold text-white rounded-full shadow-lg transform transition duration-300 ${
+            className={`w-full py-3 text-lg font-bold text-white rounded-md shadow-lg transform transition duration-300 ${
               step === 1 && !acceptedTerms
                 ? "bg-gray-400 cursor-not-allowed"
-                : "bg-gradient-to-r from-[#4154f1] to-black hover:scale-105"
+                : "bg-blue-500 hover:scale-105"
             }`}>
             {step === 1 ? "Sign Up" : "Verify OTP"}
           </button>

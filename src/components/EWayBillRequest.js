@@ -96,7 +96,7 @@ const EWayBillRequest = () => {
           <div className="p-6 mt-5 mb-6 bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden">
           <h2 className="text-xl font-bold mb-4 flex justify-center">Request E-Way Bill</h2>
 
-          <form onSubmit={handleSubmit} className="w-96">
+          <form onSubmit={handleSubmit} className="w-96 mb-5">
             <label className="block mb-2">
               Transporter Id
               <input

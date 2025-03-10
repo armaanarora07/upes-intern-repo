@@ -48,7 +48,7 @@ const EWayBillSystem = () => {
 
       if (response.data.status) {
         dispatch(setEway(true));
-        alert("Services enabled: " + response.data.message);
+        navigate("/eway-transactions"); // Redirect to the eway-transactions page after service is enabled
       } else {
         alert(response.data.message || "Setup failed");
       }
@@ -60,9 +60,11 @@ const EWayBillSystem = () => {
 
   return (
     <div className="p-8">
-          <div className="flex flex-col items-center justify-center mt-10">
-                <form onSubmit={handleEnableService} className="bg-white p-6 rounded-lg shadow-md w-96">
-                  <h2 className="text-xl font-bold mb-4">Activate E-Way Services</h2>
+          <div className="flex flex-col items-center justify-center mt-5">
+             <div className="p-6 mt-5 mb-6 bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden">
+                <form onSubmit={handleEnableService} className="w-96 mb-5">
+                  
+                  <h2 className="text-xl font-bold mb-4 flex justify-center">Activate E-Way Services</h2>
 
                   <input
                     type="text"
@@ -89,6 +91,7 @@ const EWayBillSystem = () => {
                     Activate Services
                   </button>
                 </form>
+              </div> 
           </div>
     </div>
   );
