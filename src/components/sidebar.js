@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { NavLink } from 'react-router-dom';
 import {FaBusinessTime, FaFileInvoice,FaChartLine, FaUsers, FaEnvelope, FaQuestionCircle,
-  FaCog, FaSignOutAlt, FaChevronDown, FaChevronUp,FaAngleRight, FaAngleLeft,FaTruck, FaBoxOpen, FaBook
+  FaCog, FaSignOutAlt, FaChevronDown, FaChevronUp,FaAngleRight, FaAngleLeft,FaTruck, FaBoxOpen, FaBook, FaUserTie
 } from 'react-icons/fa';
 import { useSelector } from 'react-redux';
 import FyntlLogo1 from '../assets/FyntlLogo1.png';
@@ -78,7 +78,6 @@ const Sidebar = () => {
       dropdownItems: [
         { label: 'GST Invoice', path: '/gst-invoice' },
         { label: 'URD Invoice', path: '/urd-invoice' },
-        { label: 'Proforma Invoice', path: '/proforma-invoice' },
       ]
     },
     { icon: <FaBusinessTime />, label: 'My Business', path: '/my-business' },
@@ -86,6 +85,7 @@ const Sidebar = () => {
     { icon: <FaBoxOpen />, label: 'Inventory', path: '/inventory' },
     { icon: <FaTruck />, label: 'E-way Bill', path: '/eway-bills' },
     { icon: <FaUsers />, label: 'Parties', path: '/users' },
+    { icon: <FaUserTie />, label: 'Invite User', path: '/invite-user' },
     { icon: <FaEnvelope />, label: 'Messages', path: '/messages' },
     { icon: <FaQuestionCircle />, label: 'Help', path: '/help' },
     { icon: <FaCog />, label: 'Settings', path: '/settings' },
@@ -94,7 +94,7 @@ const Sidebar = () => {
 
   return (
     <div 
-      className={`bg-[#1E1E2D] h-screen flex flex-col shadow-lg relative ${
+      className={`bg-[#1E1E2D] dark:bg-gray-900 h-screen flex flex-col shadow-lg relative ${
         expanded ? 'w-64' : 'w-20'
       }`}
     >
