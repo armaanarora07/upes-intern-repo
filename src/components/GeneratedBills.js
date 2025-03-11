@@ -236,7 +236,7 @@ const GeneratedBills = () => {
         </div>
       </div>
       
-       <div className="flex flex-col sm:flex-row justify-end items-center gap-3 p-4 bg-white">
+       <div className="flex flex-col sm:flex-row justify-end items-center gap-3 p-4">
         {/* Search Input */}
         <div className="relative w-full sm:w-auto">
           <div className="flex items-center w-full">

@@ -197,110 +197,94 @@ class Template2 {
 
     this.doc.line(170,finalY+30,200,finalY+30);
 
+    this.doc.text(invoiceData.totalTaxableAmount,175, finalY + 5);
+    
+    this.doc.text(`Add: CGST`,55, finalY + 10);
+    this.doc.text(`@`,125, finalY + 10);
+    this.doc.text(`${invoiceData.cgstRate} %`,150, finalY + 10);
+    this.doc.text(invoiceData.totalCGSTTax,175, finalY + 10);
+
+    this.doc.text(`Add: SGST`,55, finalY + 15);
+    this.doc.text(`@`,125, finalY + 15);
+    this.doc.text(`${invoiceData.sgstRate} %`,150, finalY + 15);
+    this.doc.text(invoiceData.totalSGSTTax,175, finalY + 15);
+
+    this.doc.text(`Grand Total`,70, finalY + 25);
+    this.doc.text(`${invoiceData.totalQuantity}`,125, finalY + 25);
+    this.doc.text(`${invoiceData.unit}`,150, finalY + 25);
+    this.doc.text(invoiceData.totalAmount,175, finalY + 25);
+
     this.doc.line(170,finalY,170,finalY+30);
+   
+    this.drawUnderlineTotals(12,finalY+32,"Tax Rate",String(invoiceData.cgstRate + invoiceData.sgstRate));
+
+    this.drawUnderlineTotals(30,finalY+32,"Taxable Amount",invoiceData.totalTaxableAmount);
+
+    this.drawUnderlineTotals(60,finalY+32,"CGST Amt",invoiceData.totalCGSTTax);
+
+    this.drawUnderlineTotals(80,finalY+32,"SGST Amt",invoiceData.totalSGSTTax);
+
+    this.drawUnderlineTotals(100,finalY+32,"Total Tax",invoiceData.totalTax);
+
+    this.doc.text(invoiceData.totalAmountInWords, 12, finalY + 47);
 
     this.doc.line(10,finalY+50,200,finalY+50);
 
-    this.doc.line(10,finalY+80,200,finalY+80);
+    this.drawSignatureandTerms(invoiceData,finalY);
+  }
 
-
-    /*this.doc.rect(15, finalY + 5, 85, 15, "S");
+  drawUnderlineTotals(xPos,yPos,text,data) {
     this.doc.setFont("helvetica", "bold");
-    this.doc.text("TOTAL IN WORDS", 17, finalY + 10);
+    const textWidth = this.doc.getTextWidth(text);
+    this.doc.text(text, xPos, yPos);
+    this.doc.line(xPos, yPos + 1, xPos + textWidth, yPos + 1);
     this.doc.setFont("helvetica", "normal");
-    const wrappedText = this.doc.splitTextToSize(invoiceData.totalAmountInWords, 80);
-    this.doc.text(wrappedText, 17, finalY + 15);
-
-    // Amount details
-    this.drawAmountDetails(invoiceData, finalY);
-    
-    // Bank details and terms
-    this.drawBankAndTerms(invoiceData, finalY);
-    
-    // Signature and stamp
-    this.drawSignatureAndStamp(invoiceData, finalY);*/
+    this.doc.text(text === "Tax Rate" ? data +" %" : data, xPos, yPos+6);
   }
 
-  drawAmountDetails(invoiceData, finalY) {
-    // Taxable amount
-    this.doc.rect(100, finalY + 5, 95, 15, "S");
+  drawSignatureandTerms(invoiceData,finalY){
+
+    const pageWidth = this.doc.internal.pageSize.width;
+
     this.doc.setFont("helvetica", "bold");
-    this.doc.text("Taxable Amount", 102, finalY + 10);
-    this.doc.text(invoiceData.totalTaxableAmount, 180, finalY + 10, { align: "right" });
 
-    // Total tax
-    this.doc.rect(100, finalY + 20, 95, 10, "S");
-    this.doc.text("Total Tax", 102, finalY + 25);
-    this.doc.text(invoiceData.totalTax, 180, finalY + 25, { align: "right" });
+    this.doc.text("Terms and Conditions",15, finalY + 55);
 
-    // Total amount after tax
-    this.doc.rect(100, finalY + 30, 95, 10, "S");
-    this.doc.text("Total Amount After Tax", 102, finalY + 35);
-    this.doc.text(invoiceData.totalAmount, 180, finalY + 35, { align: "right" });
+    this.doc.text("E & O.E",15, finalY + 60);
 
-    // E. & O.E
-    this.doc.rect(100, finalY + 40, 95, 10, "S");
-    this.doc.text("E. & O.E.", 180, finalY + 45, { align: "right" });
+    this.doc.line(10,finalY+63,pageWidth/2,finalY+63); // line
 
-    // GST reverse charge
-    this.doc.rect(100, finalY + 50, 95, 10, "S");
-    this.doc.text("GST PAYABLE ON REVERSE CHARGE", 102, finalY + 55);
-    this.doc.text("N.A.", 180, finalY + 55, { align: "right" });
-  }
+    const inputText = invoiceData.tandc;
 
-  drawBankAndTerms(invoiceData, finalY) {
-    // Bank details
-    this.doc.rect(15, finalY + 20, 85, 20, "S");
+    const points = inputText.split("\n");
+
+    let y = finalY+68;
+
     this.doc.setFont("helvetica", "normal");
-    this.doc.setFontSize(8);
-    if(invoiceData.bankEnabled && invoiceData.bank){
-    this.doc.text("Bank Details", 17, finalY + 24);
-    this.doc.text(`Account Holder Name : ${invoiceData.bank?.accountHolderName}`, 17, finalY + 27);
-    this.doc.text(`Account Number : ${invoiceData.bank?.accountNumber}`, 17, finalY + 30);
-    this.doc.text(`IFSC Code : ${invoiceData.bank?.ifscCode}`, 17, finalY + 33);
-    this.doc.text(`Bank Name : ${invoiceData.bank?.bankName}`, 17, finalY + 36);
-    }
-    // Terms and conditions
-    this.doc.rect(15, finalY + 40, 85, 20, "S");
-    this.doc.text("Terms & Conditions", 17, finalY + 45);
-    this.doc.text(`${invoiceData.tandc}`, 17, finalY + 50);
-  }
 
-  drawSignatureAndStamp(invoiceData, finalY) {
-        
-    // Signature and  Stamp  section
-    this.doc.rect(100, finalY + 60, 95, 40, "S");
-    this.doc.setFont("helvetica", "bold");
-    if(invoiceData.attestationSelection) {
-       // Stamp section
-       if(invoiceData.stampEnabled && invoiceData.stamp){
-       this.doc.text("Stamp :", 102, finalY + 70);
-       const stX = 150 - 20;
-       const stY = finalY + 71.5;
-       this.doc.addImage(invoiceData.stamp, "PNG", stX, stY, 20, 20);
-       }
-    } else{
-        // Signature section
-        if(invoiceData.signatureEnabled && invoiceData.signature){
-          this.doc.text("Signature :", 102, finalY + 70);
-          const sigX = 150 - 20;
-          const sigY = finalY + 71.5;
-          this.doc.addImage(invoiceData.signature, "PNG", sigX, sigY, 20, 20);
-        }
-    }
-    //Payment QR
-    this.doc.rect(15, finalY + 60, 85, 40, "S");
-    this.doc.setFont("helvetica", "bold");
-    if(invoiceData.qr){
-      this.doc.text("Payment QR :", 17, finalY + 70);
-      const stX = 150 - 110;
-      const stY = finalY + 71.5;
-      this.doc.addImage(invoiceData.qr, "PNG", stX, stY, 20, 20);
-    }
+    points.forEach(point => {
+       
+      const wrappedText = this.doc.splitTextToSize(point, (pageWidth/2)-10); // Wrap text
+       
+      this.doc.text(wrappedText, 12, y);
+       
+      y += wrappedText.length * 3 + 4; // Add line spacing dynamically
     
-    // Company name
+    });
+    
+    this.doc.line(pageWidth / 2,finalY+50, pageWidth / 2, finalY+90);  // Vertical Line
+
+    this.doc.setFont("helvetica", "bold");
+
+    this.doc.text("Receiver Signature:",pageWidth/2 + 2, finalY + 55);
+    
+    this.doc.line(pageWidth/2,finalY+70,200,finalY+70);
+
     const tradeName = invoiceData.firstParty.trade_name.replace(/^M\/S\s+/i, "");
-    this.doc.text(`for ${tradeName}`, 170, finalY + 95, { align: "center" });
+
+    this.doc.text(`For ${tradeName}`,pageWidth/2 + 20, finalY + 85);
+
+    this.doc.line(10,finalY+90,200,finalY+90);
   }
 
   generateInvoice(invoiceData) {

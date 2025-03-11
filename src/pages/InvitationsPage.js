@@ -9,14 +9,20 @@ const InviteUserForm = () => {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState(null);
   const authToken = useSelector((state) => state.auth.authToken);
+  const { businesses} = useSelector((state) => state.business);
+  const userbusiness = businesses.map(item => item.gstin);
   const dispatch = useDispatch();
 
   useEffect(()=>{
       const setNavTitle = () =>{
         dispatch(setTitle('Invite User'));
       }
-  
       setNavTitle();
+
+      if (userbusiness.length === 1) {
+        setUserData({ ...userData, gstin: userbusiness[0] })
+      } 
+
     },[setTitle,dispatch])
 
   const validateInput = () => {
@@ -75,14 +81,18 @@ const InviteUserForm = () => {
           required
         />
         {errors.contactOrEmail && <p className="text-red-500 text-sm">{errors.contactOrEmail}</p>}
-        <input
-          type="text"
-          placeholder="GSTIN"
-          value={userData.gstin}
-          onChange={(e) => setUserData({ ...userData, gstin: e.target.value })}
-          className="w-full p-2 border rounded"
-          required
-        />
+          <select
+            value={userData.gstin}
+            onChange={(e) => setUserData({ ...userData, gstin: e.target.value })}
+            className="w-full p-2 border rounded"
+          >
+            {userbusiness.map((gst) => (
+              <option key={gst} value={gst}>
+                {`${gst}`}
+              </option>
+            ))}
+          </select>
+
         {errors.gstin && <p className="text-red-500 text-sm">{errors.gstin}</p>}
         <button
           type="submit"

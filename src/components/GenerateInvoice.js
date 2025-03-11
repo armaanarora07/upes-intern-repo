@@ -23,8 +23,8 @@ const InvoicePage = () => {
   const authToken = useSelector((state) => state.auth.authToken); 
   
   const templates = {
-    template1: Template1,
-    template2: Template2,
+    template1: Template2,
+    template2:Template1
   };
 
   const navigate = useNavigate();
@@ -48,6 +48,8 @@ const InvoicePage = () => {
    const [business, setSelectedBusiness] = useState(
       () => businesses?.find((b) => b._id === selectedBusiness) || {}
     );
+
+    console.log(businesses);
 
   const getQueryParams = () => {
     return new URLSearchParams(location.search);
@@ -89,8 +91,14 @@ const InvoicePage = () => {
 
     const calculatedData = { ...data };
     let overallTotalTax = 0;
+    let overallTotalCGSTTax = 0;
+    let overallTotalSGSTTax = 0;
     let overallTotalTaxableAmount = 0;
     let overallTotalAmount = 0;
+    let cgst = 0;
+    let sgst = 0;
+    let overallUnit = '';
+    let totalQuantity = 0;
 
     calculatedData.hsn_details.forEach((item, index) => {
         // Ensure values are valid numbers
@@ -98,6 +106,8 @@ const InvoicePage = () => {
         const unitPrice = Number(calculatedData.rates[index]) || 0;
         const cgstRate = parseFloat(item.cgst) || 0;
         const sgstRate = parseFloat(item.sgst) || 0;
+        const unit = item.unit;
+        console.log({cgstRate,sgstRate})
         const taxRate = cgstRate + sgstRate;
 
         // Calculate values safely
@@ -106,21 +116,41 @@ const InvoicePage = () => {
         const totalTax = taxPerUnit * quantity;
         const totalAmount = taxableAmount + totalTax;
 
+        const CGSTtaxPerUnit = (unitPrice * cgstRate) / 100;
+        const totalCGSTTax = CGSTtaxPerUnit * quantity;
+
+        const SGSTtaxPerUnit = (unitPrice * sgstRate) / 100;
+        const totalSGSTTax = SGSTtaxPerUnit * quantity;
+
         // Assign rounded values
         item.taxableAmount = taxableAmount.toFixed(2);
         item.totalTax = totalTax.toFixed(2);
+        item.totalCGSTTax = totalCGSTTax.toFixed(2);
+        item.totalSGSTTax = totalSGSTTax.toFixed(2);
         item.totalAmount = totalAmount.toFixed(2);
 
         // Accumulate totals safely
         overallTotalTaxableAmount += taxableAmount;
         overallTotalTax += totalTax;
+        overallTotalCGSTTax += totalCGSTTax;
+        overallTotalSGSTTax += totalSGSTTax;
         overallTotalAmount += totalAmount;
+        totalQuantity += quantity;
+        cgst = cgstRate;
+        sgst = sgstRate;
+        overallUnit = unit;
     });
 
     // Convert totals to fixed decimal values
     calculatedData.totalTaxableAmount = overallTotalTaxableAmount.toFixed(2);
     calculatedData.totalTax = overallTotalTax.toFixed(2);
+    calculatedData.totalCGSTTax = overallTotalCGSTTax.toFixed(2);
+    calculatedData.totalSGSTTax = overallTotalSGSTTax.toFixed(2);
     calculatedData.totalAmount = overallTotalAmount.toFixed(2);
+    calculatedData.cgstRate = cgst;
+    calculatedData.sgstRate = sgst;
+    calculatedData.totalQuantity = totalQuantity;
+    calculatedData.unit = overallUnit;
 
     // Ensure total amount is a valid number before converting to words
     if (!isNaN(overallTotalAmount) && isFinite(overallTotalAmount)) {
@@ -431,7 +461,7 @@ const InvoicePage = () => {
   return (
     <div className="flex flex-col lg:flex-row w-full p-8 lg:space-x-6">
       {/* Left Pane - PDF Preview */}
-      <div className="flex-1 p-6 bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden">
+      <div className="flex-1 p-6 bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden mt-2">
 
         <div className="text-2xl font-bold text-gray-800 mb-3">
           Invoice Preview
@@ -447,7 +477,7 @@ const InvoicePage = () => {
       </div>
 
       {/* Right Pane - Controls */}
-      <div className="w-full lg:w-1/3 h-auto p-6 bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden flex flex-col items-center">
+      <div className="w-full lg:w-1/3 h-auto p-6 bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden flex flex-col items-center mt-2">
         <div className="text-2xl font-bold text-gray-800 mb-3">
           Customize Invoice
         </div>

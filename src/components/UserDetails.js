@@ -38,20 +38,20 @@ const UserDetails = ({Title,isRequired,isInvoiceRequired}) => {
   };
 
   return (
-    <div className="p-6 mt-5 mb-6 bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden">
-      <h2 className="text-2xl font-bold text-gray-800">{Title}</h2>
+    <div className="p-6 mt-5 mb-6 bg-white dark:bg-gray-800 border dark:border-gray-700 rounded-lg shadow-xl dark:shadow-gray-900 border-gray-200 rounded-xl shadow-sm overflow-hidden">
+      <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-200">{Title}</h2>
       <div className="flex space-x-2">
         <div className="w-2/5 p-2 relative">
           <div className="space-y-4 relative mt-4">
             <div className="relative mb-4">
-              <span className="absolute -top-3 left-2 text-sm bg-white px-1 text-black">
+              <span className="absolute -top-3 left-2 text-sm bg-white dark:bg-gray-800 px-1 text-black dark:text-white">
                 Name
               </span>
               <input
                 type="text"
                 value={userDetails.tradeName}
                 onChange={(e) => dispatch(setTradeName(e.target.value))}
-                className="w-full border border-[#4154f1] rounded-lg p-2"
+                className="w-full border border-gray-300 dark:border-gray-600 rounded-lg p-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4154f1]"
                 required={isRequired}
               />
               {isRequired && !userDetails.tradeName && (
@@ -60,14 +60,14 @@ const UserDetails = ({Title,isRequired,isInvoiceRequired}) => {
             </div>
 
             <div className="relative">
-            <span className="absolute -top-3 left-2 text-sm bg-white px-1 text-black">
+            <span className="absolute -top-3 left-2 text-sm bg-white dark:bg-gray-800 px-1 text-black dark:text-white">
               Phone No
             </span>
             <input
               type="text"
               value={userDetails.phoneNo}
               onChange={(e) => dispatch(setPhoneNo(e.target.value))}
-              className="w-full border border-[#4154f1] rounded-lg p-2"
+              className="w-full border border-gray-300 dark:border-gray-600 rounded-lg p-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4154f1]"
               required={isRequired}
             />
             {isRequired && !userDetails.phoneNo && (
@@ -80,25 +80,29 @@ const UserDetails = ({Title,isRequired,isInvoiceRequired}) => {
         <div className="w-1/5 p-2 relative">
           <div className="space-y-4 relative">
             <div className="relative mt-4">
-                  <span className="absolute -top-3 left-2 text-sm bg-white px-1 text-black">
+            <span className="absolute -top-3 left-2 text-sm bg-white dark:bg-gray-800 px-1 text-black dark:text-white">
                     Invoice Date
                   </span>
                   <input
                     type="date"
                     value={date}
                     onChange={handleDateChange}
-                    className="w-full border border-[#4154f1] rounded-lg p-2"
+                    className="w-full border border-gray-300 dark:border-gray-600 rounded-lg p-2 
+                              bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200 
+                              placeholder-gray-500 dark:placeholder-gray-400 
+                              focus:outline-none focus:ring-2 focus:ring-[#4154f1] 
+                              dark:focus:ring-[#6b77ff]"
                   />
             </div>
             <div className="relative">
-                  <span className="absolute -top-3 left-2 text-sm bg-white px-1 text-black">
+            <span className="absolute -top-3 left-2 text-sm bg-white dark:bg-gray-800 px-1 text-black dark:text-white">
                     Invoie No
                   </span>
                   <input
                     type="text"
                     value={userDetails.invoiceNo}
                     onChange={(e) => dispatch(setInvoiceNo(e.target.value))}
-                    className="w-full border border-[#4154f1] rounded-lg p-2"
+                    className="w-full border border-gray-300 dark:border-gray-600 rounded-lg p-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4154f1]"
                     required={isInvoiceRequired}
                   />
                   {isInvoiceRequired && !userDetails.invoiceNo && (
@@ -111,17 +115,17 @@ const UserDetails = ({Title,isRequired,isInvoiceRequired}) => {
       
       <div className="flex space-x-2">
         <div className="w-2/5 p-2 relative">
-          <span>Address Type</span>
+          <span className="text-sm bg-white dark:bg-gray-800 px-1 text-black dark:text-white">Address Type</span>
           <div className="space-y-4 relative mt-4">
             <div className="relative mb-4">
-              <span className="absolute -top-3 left-2 text-sm bg-white px-1 text-black">
+            <span className="absolute -top-3 left-2 text-sm bg-white dark:bg-gray-800 px-1 text-black dark:text-white">
                 Address
               </span>
               <input
                 type="text"
                 value={userDetails.primaryAddress.address1}
                 onChange={(e) => handlePrimaryAddressChange('address1', e.target.value)}
-                className="w-full border border-[#4154f1] rounded-lg p-2"
+                className="w-full border border-gray-300 dark:border-gray-600 rounded-lg p-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4154f1]"
                 required={isRequired}
               />
               {isRequired && !userDetails.primaryAddress.address1 && (
@@ -130,14 +134,14 @@ const UserDetails = ({Title,isRequired,isInvoiceRequired}) => {
             </div>
 
             <div className="relative">
-              <span className="absolute -top-3 left-2 text-sm bg-white px-1 text-black">
+            <span className="absolute -top-3 left-2 text-sm bg-white dark:bg-gray-800 px-1 text-black dark:text-white">
                 City PinCode
               </span>
               <input
                 type="text"
                 value={userDetails.primaryAddress.pincode}
                 onChange={(e) => handlePrimaryAddressChange('pincode', e.target.value)}
-                className="w-full border border-[#4154f1] rounded-lg p-2"
+                className="w-full border border-gray-300 dark:border-gray-600 rounded-lg p-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4154f1]"
                 required={isRequired}
               />
               {isRequired && !userDetails.primaryAddress.pincode && (
@@ -146,14 +150,14 @@ const UserDetails = ({Title,isRequired,isInvoiceRequired}) => {
             </div>
 
             <div className="relative">
-              <span className="absolute -top-3 left-2 text-sm bg-white px-1 text-black">
+            <span className="absolute -top-3 left-2 text-sm bg-white dark:bg-gray-800 px-1 text-black dark:text-white">
                 State
               </span>
               <input
                 type="text"
                 value={userDetails.primaryAddress.state}
                 onChange={(e) => handlePrimaryAddressChange('state', e.target.value)}
-                className="w-full border border-blue-500 rounded-lg p-2"
+                className="w-full border border-gray-300 dark:border-gray-600 rounded-lg p-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4154f1]"
                 required={isRequired}
               />
               {isRequired && !userDetails.primaryAddress.state && (
@@ -165,25 +169,25 @@ const UserDetails = ({Title,isRequired,isInvoiceRequired}) => {
 
         <div className="w-2/5 p-2 relative">
           <label className="flex items-center mb-4">
-            <input
-              type="checkbox"
-              checked={isShippingSameAsPrimary}
-              className="mr-2 text-black accent-blue-500"
-              onChange={handleSameAsShipping}
-            />
-            <span>Same as shipping address</span>
+          <input
+            type="checkbox"
+            checked={isShippingSameAsPrimary}
+            className="mr-2 text-black accent-blue-500 dark:accent-blue-400 dark:bg-gray-800 dark:border-gray-600"
+            onChange={handleSameAsShipping}
+          />
+            <span className="text-sm bg-white dark:bg-gray-800 px-1 text-black dark:text-white" >Same as shipping address</span>
           </label>
           
           <div className="space-y-4 relative">
             <div className="relative">
-              <span className="absolute -top-3 left-2 text-sm bg-white px-1 text-black">
+            <span className="absolute -top-3 left-2 text-sm bg-white dark:bg-gray-800 px-1 text-black dark:text-white">
                 Address
               </span>
               <input
                 type="text"
                 value={userDetails.shippingAddress.address1}
                 onChange={(e) => handleShippingAddressChange('address1', e.target.value)}
-                className="w-full border border-[#4154f1] rounded-lg p-2"
+                className="w-full border border-gray-300 dark:border-gray-600 rounded-lg p-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4154f1]"
                 required={isRequired}
               />
               {isRequired && !userDetails.shippingAddress.address1 && (
@@ -192,14 +196,14 @@ const UserDetails = ({Title,isRequired,isInvoiceRequired}) => {
             </div>
 
             <div className="relative">
-              <span className="absolute -top-3 left-2 text-sm bg-white px-1 text-black">
+            <span className="absolute -top-3 left-2 text-sm bg-white dark:bg-gray-800 px-1 text-black dark:text-white">
                 City Pincode
               </span>
               <input
                 type="text"
                 value={userDetails.shippingAddress.pincode}
                 onChange={(e) => handleShippingAddressChange('pincode', e.target.value)}
-                className="w-full border border-[#4154f1] rounded-lg p-2"
+                className="w-full border border-gray-300 dark:border-gray-600 rounded-lg p-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4154f1]"
                 required={isRequired}
               />
               {isRequired && !userDetails.shippingAddress.pincode && (
@@ -208,14 +212,14 @@ const UserDetails = ({Title,isRequired,isInvoiceRequired}) => {
             </div>
 
             <div className="relative">
-              <span className="absolute -top-3 left-2 text-sm bg-white px-1 text-black">
+            <span className="absolute -top-3 left-2 text-sm bg-white dark:bg-gray-800 px-1 text-black dark:text-white">
                 State
               </span>
               <input
                 type="text"
                 value={userDetails.shippingAddress.state}
                 onChange={(e) => handleShippingAddressChange('state', e.target.value)}
-                className="w-full border border-[#4154f1] rounded-lg p-2"
+                className="w-full border border-gray-300 dark:border-gray-600 rounded-lg p-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4154f1]"
                 required={isRequired}
               />
               {isRequired && !userDetails.shippingAddress.state && (

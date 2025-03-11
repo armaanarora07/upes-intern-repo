@@ -21,6 +21,16 @@ import {
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
 const Dashboard = () => {
+  const [allTransactions,setAllTransactions] = useState([]);
+  const [filter,setFilter] = useState('thisMonth');
+  const filters = [
+    { id: 'today', name: 'Today' },
+    { id: 'thisWeek', name: 'This Week' },
+    { id: 'thisMonth', name: 'This Month' },
+    { id: 'thisQuarter', name: 'This Quarter' },
+    { id: 'currentFinancialYear', name: 'Current Financial Year' },
+    { id: 'previousFinancialYear', name: 'Previous Financial Year' }
+  ];
   const [transactions, setTransactions] = useState([]);
   const [salesData, setSalesData] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
@@ -71,7 +81,7 @@ const Dashboard = () => {
     }
 
     setNavTitle();
-  },[setTitle,dispatch,businesses])
+  },[dispatch,businesses])
 
   useEffect(() => {
     const fetchData = async () => {
@@ -93,69 +103,7 @@ const Dashboard = () => {
 
         const transactions = transactionResponse.data?.data || [];
         
-        setTransactions(transactions);
-
-        const sales = transactions.map((txn) => ({
-          date: new Date(txn.created_at).toLocaleDateString(),
-          amount: txn.total_value || 0,
-        }));
-
-        let TotalSales = 0;
-
-        sales.forEach(element => {
-          TotalSales += Number(element.amount);
-        });
-
-        setTotalSales(TotalSales.toFixed(2));
-        setSalesData(sales);
-
-        const urdPurchaseTransactions = transactions.filter(entry => entry.second_party === "" || entry.second_party === null);
-
-        const urdPurchaseData = urdPurchaseTransactions.map((txn) => ({
-          date: new Date(txn.created_at).toLocaleDateString(),
-          amount: txn.total_value || 0,
-        }));
-
-        let TotalURDPurchases = 0;
-
-        urdPurchaseData.forEach(element => {
-          TotalURDPurchases += Number(element.amount);
-        });
-        
-        setTotalURDPurchases(TotalURDPurchases.toFixed(2));
-        setURDPurchaseData(urdPurchaseData);
-
-        const urdSalesTransactions = transactions.filter(entry => /^[0-9]{10}$/.test(entry.second_party));
-
-        const urdSalesData = urdSalesTransactions.map((txn) => ({
-          date: new Date(txn.created_at).toLocaleDateString(),
-          amount: txn.total_value || 0,
-        }));
-
-        let TotalURDSales = 0;
-
-        urdSalesData.forEach(element => {
-          TotalURDSales += Number(element.amount);
-        });
-        
-        setTotalURDSales(TotalURDSales.toFixed(2));
-        setURDSalesData(urdSalesData);
-
-        const gstSalesTransactions = transactions.filter(entry => /^[0-9A-Z]{15}$/.test(entry.second_party));
-
-        const gstSalesData = gstSalesTransactions.map((txn) => ({
-          date: new Date(txn.created_at).toLocaleDateString(),
-          amount: txn.total_value || 0,
-        }));
-
-        let TotalGSTSales = 0;
-
-        gstSalesData.forEach(element => {
-          TotalGSTSales += Number(element.amount);
-        });
-
-        setTotalGSTSales(TotalGSTSales.toFixed(2));
-        setGSTSalesData(gstSalesData);
+        setAllTransactions(transactions);
        
       } catch (error) {
         if (error.response) {
@@ -171,10 +119,116 @@ const Dashboard = () => {
     };
         
     fetchData();
+
   }, [authToken]);
 
+  function filterDataByDateRange(data, range) {
+    const today = new Date();
+    const startOfWeek = new Date(today.setDate(today.getDate() - today.getDay() + 1)); // Monday
+    const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+    const startOfQuarter = new Date(today.getFullYear(), Math.floor(today.getMonth() / 3) * 3, 1);
+    const currentFinancialYearStart = new Date(today.getMonth() < 3 ? today.getFullYear() - 1 : today.getFullYear(), 3, 1);
+    const previousFinancialYearStart = new Date(currentFinancialYearStart.getFullYear() - 1, 3, 1);
+    const previousFinancialYearEnd = new Date(currentFinancialYearStart.getFullYear(), 2, 31);
+
+    return data.filter(entry => {
+        const entryDate = new Date(entry.created_at);
+
+        switch (range) {
+            case 'today':
+                return entryDate.toDateString() === new Date().toDateString();
+            case 'thisWeek':
+                return entryDate >= startOfWeek;
+            case 'thisMonth':
+                return entryDate >= startOfMonth;
+            case 'thisQuarter':
+                return entryDate >= startOfQuarter;
+            case 'currentFinancialYear':
+                return entryDate >= currentFinancialYearStart;
+            case 'previousFinancialYear':
+                return entryDate >= previousFinancialYearStart && entryDate <= previousFinancialYearEnd;
+            default:
+                return true; // Return all data if no filter is applied
+        }
+    });
+  }
+
+  useEffect(()=>{
+
+    const filteredData = filterDataByDateRange(allTransactions,filter); 
+    setTransactions(filteredData);
+
+    const sales = transactions.map((txn) => ({
+      date: new Date(txn.created_at).toLocaleDateString(),
+      amount: txn.total_value || 0,
+    }));
+  
+    let TotalSales = 0;
+  
+    sales.forEach(element => {
+      TotalSales += Number(element.amount);
+    });
+  
+    setTotalSales(TotalSales.toFixed(2));
+    setSalesData(sales);
+  
+    const urdPurchaseTransactions = transactions.filter(entry => entry.second_party === "" || entry.second_party === null);
+  
+    const urdPurchaseData = urdPurchaseTransactions.map((txn) => ({
+      date: new Date(txn.created_at).toLocaleDateString(),
+      amount: txn.total_value || 0,
+    }));
+  
+    let TotalURDPurchases = 0;
+  
+    urdPurchaseData.forEach(element => {
+      TotalURDPurchases += Number(element.amount);
+    });
+    
+    setTotalURDPurchases(TotalURDPurchases.toFixed(2));
+    setURDPurchaseData(urdPurchaseData);
+  
+    const urdSalesTransactions = transactions.filter(entry => /^[0-9]{10}$/.test(entry.second_party));
+  
+    const urdSalesData = urdSalesTransactions.map((txn) => ({
+      date: new Date(txn.created_at).toLocaleDateString(),
+      amount: txn.total_value || 0,
+    }));
+  
+    let TotalURDSales = 0;
+  
+    urdSalesData.forEach(element => {
+      TotalURDSales += Number(element.amount);
+    });
+    
+    setTotalURDSales(TotalURDSales.toFixed(2));
+    setURDSalesData(urdSalesData);
+  
+    const gstSalesTransactions = transactions.filter(entry => /^[0-9A-Z]{15}$/.test(entry.second_party));
+  
+    const gstSalesData = gstSalesTransactions.map((txn) => ({
+      date: new Date(txn.created_at).toLocaleDateString(),
+      amount: txn.total_value || 0,
+    }));
+  
+    let TotalGSTSales = 0;
+  
+    gstSalesData.forEach(element => {
+      TotalGSTSales += Number(element.amount);
+    });
+  
+    setTotalGSTSales(TotalGSTSales.toFixed(2));
+    setGSTSalesData(gstSalesData);
+  
+
+  },[allTransactions,transactions,filterDataByDateRange,filter]);
+  
   const handleDropdown = (value) =>{
-     dispatch(setBusiness(value));
+    dispatch(setBusiness(value));
+  }
+
+  const handleFilterDropdown = (value) =>{
+    setFilter(value);
   }
 
   const chartData = salesData
@@ -253,7 +307,7 @@ const Dashboard = () => {
         {/* Dashboard Content */}
         <div className="p-6">
 
-          {transactions.length > 0 ? (
+          {allTransactions.length > 0 ? (
             <>
               {/* Header with improved alignment */}
               <div className="px-6 py-5 mb-6 bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden">
@@ -264,20 +318,41 @@ const Dashboard = () => {
                     {legal_name}
                   </h1>
 
-                  {/* Business Selector with improved styling */}
-                  <div className="flex items-center space-x-3">
-                    <span className="text-gray-700 font-medium">Select Business</span>
-                    <select 
-                      className="border border-gray-300 rounded-lg px-4 py-2 bg-white text-gray-800 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all" 
-                      onChange={(e) => handleDropdown(e.target.value)}
-                    >
-                      {businesses.map((business, key) => (
-                        <option key={key} value={business._id}>
-                          {business.legal_name}
-                        </option>
-                      ))}
-                    </select>
+                  <div className="flex space-x-3">
+
+                      {/* Business Selector */}
+                      <div className="flex items-center space-x-3">
+                        <span className="text-gray-700 font-medium">Select Business</span>
+                        <select 
+                          className="border border-gray-300 rounded-lg px-4 py-2 bg-white text-gray-800 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all" 
+                          onChange={(e) => handleDropdown(e.target.value)}
+                        >
+                          {businesses.map((business, key) => (
+                            <option key={key} value={business._id}>
+                              {business.legal_name}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+
+                      {/* Filter Selector */}
+                      <div className="flex items-center space-x-3">
+                        <span className="text-gray-700 font-medium">Filter</span>
+                        <select 
+                          className="border border-gray-300 rounded-lg px-4 py-2 bg-white text-gray-800 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all" 
+                          value={filter}
+                          onChange={(e) => handleFilterDropdown(e.target.value)}
+                        >
+                            {filters.map((filter, key) => (
+                            <option key={key} value={filter.id}>
+                              {filter.name} 
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+
                   </div>
+                  
                 </div>
 
                 {/* Error message with better positioning */}
@@ -287,6 +362,32 @@ const Dashboard = () => {
                   </div>
                 )}
 
+              </div>
+
+               {/* Analytics Cards */}
+               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+                {[
+                  { label: "Total Sales", value: totalSales },
+                  { label: "Total GST Sales", value: totalGSTSales },
+                  { label: "Total URD Sales", value: totalURDSales },
+                  { label: "Total URD Purchases", value: totalURDPurchases }
+                ].map(({ label, value }, index) => (
+                  <div
+                    key={index}
+                    className="bg-white shadow-lg border rounded-3xl p-6 w-full h-40 transform transition-all duration-300 hover:scale-105"
+                  >
+                    <h2 className="text-4xl text-center text-gray-800 mt-2">
+                      {new Intl.NumberFormat("en-IN", {
+                        style: "currency",
+                        currency: "INR",
+                        minimumFractionDigits: 2
+                      }).format(value)}
+                    </h2>
+                    <p className="text-center text-black text-lg font-medium mt-4">
+                      {label}
+                    </p>
+                  </div>
+                ))}
               </div>
 
               {/* Latest Transactions Card - Improved styling */}
@@ -332,33 +433,6 @@ const Dashboard = () => {
                 </div>
               </div>
 
-              {/* Analytics Cards */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
-                {[
-                  { label: "Total Sales", value: totalSales },
-                  { label: "Total GST Sales", value: totalGSTSales },
-                  { label: "Total URD Sales", value: totalURDSales },
-                  { label: "Total URD Purchases", value: totalURDPurchases }
-                ].map(({ label, value }, index) => (
-                  <div
-                    key={index}
-                    className="bg-white shadow-lg border rounded-3xl p-6 w-full h-40 transform transition-all duration-300 hover:scale-105"
-                  >
-                    <h2 className="text-4xl text-center text-gray-800 mt-2">
-                      {new Intl.NumberFormat("en-IN", {
-                        style: "currency",
-                        currency: "INR",
-                        minimumFractionDigits: 2
-                      }).format(value)}
-                    </h2>
-                    <p className="text-center text-black text-lg font-medium mt-4">
-                      {label}
-                    </p>
-                  </div>
-                ))}
-              </div>
-
-  
               {/* Charts Grid - Improved layout and responsiveness */}
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Total Sales Report */}

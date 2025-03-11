@@ -21,6 +21,7 @@ import Navbar from "./components/Navbar";
 import EWayTransactions from './components/EwayTransactions';
 import InvoicePage from './components/GenerateInvoice';
 import UpdateEwayCred from "./components/UpdateEwayCred";
+import InvitationsPage from "./pages/InvitationsPage";
 
 // Add this CSS to your global styles or create a specific CSS file
 // .css or .scss file (to be included in your project)
@@ -51,7 +52,7 @@ function Home() {
       {/* Use CSS variable for dynamic margin */}
       <div className="flex-grow" style={{ marginLeft: 'var(--sidebar-width, 16rem)' }}>
         <Navbar />
-        <div className="mt-5 p-5">
+        <div className="dark:bg-gray-800 mt-5 p-5">
           <Routes>
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/add-business" element={<AddBusiness />} />
@@ -73,6 +74,7 @@ function Home() {
             <Route path="/settings" element={<Settings />} />
             <Route path="/logout" element={<Logout />} />
             <Route path='/generate-invoice' element={<InvoicePage/>}/>
+            <Route path='/invite-user' element={<InvitationsPage/>}/>
             {/* Redirect unknown routes to Dashboard */}
             <Route path="/*" element={<Dashboard />} />
           </Routes>
