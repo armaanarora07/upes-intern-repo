@@ -70,7 +70,7 @@ const InviteUserForm = () => {
 
   return (
     <div>
-      <h2 className="font-semibold text-lg mb-4 text-center">Invite User</h2>
+      <h2 className="text-xl font-bold mb-4 flex justify-center">Invite User</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         <input
           type="text"

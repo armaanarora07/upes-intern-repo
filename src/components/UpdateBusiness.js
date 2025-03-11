@@ -288,13 +288,15 @@ const UpdateBusiness = () => {
                 View HSN Codes
               </button>
 
-              <button 
+              {/*<button 
                 className="bg-blue-500 text-white p-3 rounded-lg hover:bg-blue-600 transition duration-200 flex items-center justify-center shadow-md transform hover:scale-105 w-3/4 mx-auto" // Reduced width
                 onClick={handleShowAddSkippedBillPopup} // Show Add Skipped Bill popup on click
               >
-                <FaPlus className="mr-2" /> {/* Icon for visual appeal */}
+                <FaPlus className="mr-2" />
                 Add Skipped Bill
               </button>
+              */}
+              
             </div>
           </div>
         </div>
