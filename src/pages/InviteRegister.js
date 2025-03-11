@@ -20,6 +20,7 @@ const InviteRegister = () => {
   const [successMessage, setSuccessMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [acceptedTerms, setAcceptedTerms] = useState(false);
+  const authToken = useSelector((state) => state.auth.authToken);
   
   // Extract the token from URL query parameters
   useEffect(() => {
@@ -27,6 +28,12 @@ const InviteRegister = () => {
     const tokenParam = params.get("token");
     if (tokenParam) {
       setToken(tokenParam);
+    }else{
+      if(authToken){
+        navigate('/dashboard');
+      }else{
+        navigate('/login');
+      }
     }
   }, [location.search]);
   
