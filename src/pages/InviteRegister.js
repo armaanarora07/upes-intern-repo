@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { signup, verifyotp } from "../slices/authSlice.js";
+import { setEway } from "../slices/ewaySlice.js";
 
 const InviteRegister = () => {
   const location = useLocation();
@@ -51,10 +52,17 @@ const InviteRegister = () => {
     
     setLoading(true);
     try {
+
+      const payload = {
+        token: token,
+        full_name: fullName,
+        contact: `+91${contact}`
+      };
   
       const response = await axios.post(
-        `${process.env.REACT_APP_API_URL}/user/verify`,
-        { contact: `+91${contact}` }
+        `${process.env.REACT_APP_API_URL}/user/register`,
+        payload,
+        { headers: { "Content-Type": "application/json" } }
       );
       if (response.status === 200 && response.data.authToken) {
         setInitialAuth(response.data.authToken);
@@ -82,19 +90,16 @@ const InviteRegister = () => {
     
     setLoading(true);
     try {
-      const payload = {
-        token: token,
-        full_name: fullName,
-        contact: `+91${contact}`,
-        otp: otp,
-      };
       const response = await axios.post(
-        `${process.env.REACT_APP_API_URL}/user/register`,
-        payload,
-        { headers: { "Content-Type": "application/json" } }
+        `${process.env.REACT_APP_API_URL}/user/optVerification`,
+        { otp },
+        {
+          headers: { Authorization: `Bearer ${initialAuth}` },
+        }
       );
       if (response.status === 200 && response.data.authToken) {
         dispatch(signup(response.data.authToken));
+        dispatch(setEway(response.data.user.eway_enabled));
         dispatch(verifyotp(true));
         setSuccessMessage(response.data.message || "Registration successful!");
         navigate("/add-business");
@@ -193,7 +198,7 @@ const InviteRegister = () => {
                 ? "bg-gray-400 cursor-not-allowed"
                 : "bg-blue-500 hover:scale-105"
             }`}>
-            {step === 1 ? "Get OTP" : "Submit"}
+            {step === 1 ? "Register" : "Verify OTP"}
           </button>
         </form>
 

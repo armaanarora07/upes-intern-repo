@@ -3,6 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { signup, verifyotp } from "../slices/authSlice.js";
+import { setEway } from "../slices/ewaySlice.js";
 
 const SignUp = () => {
   const [phone, setPhone] = useState("");
@@ -79,6 +80,7 @@ const SignUp = () => {
 
       if (response.status === 200 && response.data.authToken) {
         dispatch(signup(response.data.authToken));
+        dispatch(setEway(response.data.user.eway_enabled));
         dispatch(verifyotp(true));
         setSuccessMessage("OTP verified successfully.");
         navigate("/add-business");
