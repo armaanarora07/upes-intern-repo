@@ -86,7 +86,7 @@ const Sidebar = () => {
     { icon: <FaTruck />, label: 'E-way Bill', path: '/eway-bills' },
     { icon: <FaUsers />, label: 'Parties', path: '/users' },
     { icon: <FaUserTie />, label: 'Invite User', path: '/invite-user' },
-    { icon: <FaEnvelope />, label: 'Messages', path: '/messages' },
+    //{ icon: <FaEnvelope />, label: 'Messages', path: '/messages' },
     { icon: <FaQuestionCircle />, label: 'Help', path: '/help' },
     { icon: <FaCog />, label: 'Settings', path: '/settings' },
     { icon: <FaSignOutAlt />, label: 'Log Out', path: '/logout' }
