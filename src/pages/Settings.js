@@ -16,25 +16,25 @@ function Settings() {
   })
     
   return (
-    <div className='p-8 mt-10'>
+    <div className='p-8 '>
 
-    <div className='p-6 bg-white rounded-lg shadow-xl mt-5'>
+    <div className='p-6 mt-5 mb-6 bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden'>
        <Logo/>
     </div>
 
-    <div className='p-6 bg-white rounded-lg shadow-xl mt-5'>
+    <div className='p-6 mt-5 mb-6 bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden'>
        <PaymentQR/>
     </div>
 
-    <div className='p-6 bg-white rounded-lg shadow-xl mt-5'>
+    <div className='p-6 mt-5 mb-6 bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden'>
        <h2 className="text-2xl font-bold text-gray-800">Bill Templates</h2>
     </div>
 
-    <div className='p-6 bg-white rounded-lg shadow-xl mt-5 cursor-pointer' onClick={()=>{navigate('/add-business')}}>
+    <div className='p-6 mt-5 mb-6 bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden cursor-pointer' onClick={()=>{navigate('/add-business')}}>
        <h2 className="text-2xl font-bold text-gray-800">Add Business</h2>
     </div>
 
-    <div className="p-6 bg-white rounded-lg shadow-xl mt-5 cursor-pointer" onClick={()=>{navigate('/update-eway')}}>
+    <div className="p-6 mt-5 mb-6 bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden cursor-pointer" onClick={()=>{navigate('/update-eway')}}>
       <h2 className="text-2xl font-bold text-gray-800">Update E-way credentials</h2>
     </div>
 

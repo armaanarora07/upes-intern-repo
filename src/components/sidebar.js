@@ -1,201 +1,255 @@
-import React,{useState} from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { NavLink } from 'react-router-dom';
-import {
-  FaTachometerAlt, FaBusinessTime, FaFileInvoice, FaFileAlt,
-  FaMoneyBillWave, FaChartLine, FaUsers, FaEnvelope, FaQuestionCircle,
-  FaCog, FaSignOutAlt,FaChevronDown, FaChevronUp
+import {FaBusinessTime, FaFileInvoice,FaChartLine, FaUsers, FaEnvelope, FaQuestionCircle,
+  FaCog, FaSignOutAlt, FaChevronDown, FaChevronUp,FaAngleRight, FaAngleLeft,FaTruck, FaBoxOpen, FaBook, FaUserTie
 } from 'react-icons/fa';
-import {useSelector} from 'react-redux';
-import FyntlLogo2 from '../assets/FyntlLogo2.png';
+import { useSelector } from 'react-redux';
+import FyntlLogo1 from '../assets/FyntlLogo1.png';
 
 const Sidebar = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const {businesses} = useSelector((state)=> state.business);
+  const [expanded, setExpanded] = useState(false);
+  const [expandedItems, setExpandedItems] = useState({});
+  const [hoveredItem, setHoveredItem] = useState(null);
+  const { businesses } = useSelector((state) => state.business);
+  const dropdownRefs = useRef({});
 
-  const handleDropdown = () =>{
-      if(businesses.length === 0){
-         alert('Add a Business to generate the Bill');
-         return;
-      }
-      setIsOpen(!isOpen);
-  }
+  // Set CSS variable for sidebar width that can be used across the app
+  useEffect(() => {
+    document.documentElement.style.setProperty(
+      '--sidebar-width', 
+      expanded ? '16rem' : '5rem'
+    );
+  }, [expanded]);
+
+  const toggleDropdown = (key) => {
+
+    if(businesses.length === 0){
+      alert('Add a Business to generate the Bill');
+      return;
+    }
+    
+    setExpandedItems(prev => ({
+      ...prev,
+      [key]: !prev[key]
+    }));
+  };
+
+  const handleMouseEnter = (key) => {
+    if (!expanded) {
+      setHoveredItem(key);
+    }
+  };
+
+  const handleMouseLeave = (key) => {
+   
+   setTimeout(()=>{
+    if(!dropdownRefs.current[key]){
+      setHoveredItem(null);
+    }
+   },1000);   
+   
+  };
+
+  const handleDropdownMouseEnter = (key) => {
+    setHoveredItem(key);
+  };
+
+  const handleDropdownMouseLeave = () => {
+    setHoveredItem(null);
+  };
+
+  const toggleSidebar = () => {
+    setExpanded(!expanded);
+    // Close all dropdowns when collapsing sidebar
+    if (expanded) {
+      setExpandedItems({});
+      setHoveredItem(null);
+    }
+  };
+
+  // Define navigation items for reuse
+  const navItems = [
+    { icon: <FaChartLine />, label: 'Dashboard', path: '/dashboard' },
+    { 
+      icon: <FaFileInvoice />, 
+      label: 'Generate New Bill', 
+      path: '/generate-bill',
+      hasDropdown: true,
+      dropdownItems: [
+        { label: 'GST Invoice', path: '/gst-invoice' },
+        { label: 'URD Invoice', path: '/urd-invoice' },
+      ]
+    },
+    { icon: <FaBusinessTime />, label: 'My Business', path: '/my-business' },
+    { icon: <FaBook />, label: 'Transactions', path: '/generated-bills' },
+    { icon: <FaBoxOpen />, label: 'Inventory', path: '/inventory' },
+    { icon: <FaTruck />, label: 'E-way Bill', path: '/eway-bills' },
+    { icon: <FaUsers />, label: 'Parties', path: '/users' },
+    { icon: <FaUserTie />, label: 'Invite User', path: '/invite-user' },
+    //{ icon: <FaEnvelope />, label: 'Messages', path: '/messages' },
+    { icon: <FaQuestionCircle />, label: 'Help', path: '/help' },
+    { icon: <FaCog />, label: 'Settings', path: '/settings' },
+    { icon: <FaSignOutAlt />, label: 'Log Out', path: '/logout' }
+  ];
 
   return (
-    <div className="bg-[#F9FAFC] w-64 h-screen flex flex-col px-6 py-4 shadow-lg">
-      <div>
-        <div>
-          <img alt='logo' src={FyntlLogo2} className='h-20'/>
-          <p className="text-black font-medium mb-8">Billing Software</p>
-        </div>
-        <div>
-          <p className="text-black uppercase font-medium text-xs mb-4">Main Menu</p>
-          <ul>
-            <li className="mb-4 flex items-center">
-              <FaTachometerAlt className="text-[#4154f1] mr-4" />
-              <NavLink
-                to="/dashboard"
-                className={({ isActive }) =>
-                  isActive ? 'text-[#4154f1] font-semibold' : 'text-black font-medium'}
-              >
-                Dashboard
-              </NavLink>
-            </li>
-            {/*<li className="mb-4 flex items-center">
-              <FaBusinessTime className="text-[#4154f1] mr-4" />
-              <NavLink
-                to="/add-business"
-                className={({ isActive }) =>
-                  isActive ? 'text-[#4154f1] font-semibold' : 'text-black font-medium'}
-              >
-                Add Business
-              </NavLink>
-            </li>*/}
-            <li className="mb-4 flex items-center">
-              <FaFileAlt className="text-[#4154f1] mr-4" />
-              <NavLink
-                to="/my-business"
-                className={({ isActive }) =>
-                  isActive ? 'text-[#4154f1] font-semibold' : 'text-black font-medium'}
-              >
-                My Business
-              </NavLink>
-            </li>
-            {/*<li className="mb-4 flex items-center">
-              <FaFileInvoice className="text-[#4154f1] mr-4" />
-              <NavLink
-                to="/generate-bill"
-                className={({ isActive }) =>
-                  isActive ? 'text-[#4154f1] font-semibold' : 'text-black font-medium'}
-              >
-                Generate New Bill
-              </NavLink>
-            </li>*/}
-             <li className="mb-4">
-                  <div 
-                  className="flex items-center justify-between cursor-pointer" 
-                  onClick={() => handleDropdown()}
-                  >
-                  <div className="flex items-center">
-                    <FaFileInvoice className="text-[#4154f1] mr-4" />
-                    <span className="text-black font-medium">Generate New Bill</span>
-                  </div>
-                  {/* Arrow Icon Toggle */}
-                  {isOpen ? (
-                    <FaChevronUp className="text-gray-600 ml-2 transition-transform duration-300" />
-                  ) : (
-                    <FaChevronDown className="text-gray-600 ml-2 transition-transform duration-300" />
-                  )}
-                </div>
+    <div 
+      className={`bg-[#1E1E2D] dark:bg-gray-900 h-screen flex flex-col shadow-lg relative ${
+        expanded ? 'w-64' : 'w-20'
+      }`}
+    >
+      {/* Toggle button - increased size */}
+      <button 
+        className="absolute -right-4 top-18 mt-4 bg-white rounded-lg p-2 shadow-md z-10 hover:bg-gray-50"
+        onClick={toggleSidebar}
+      >
+        {expanded ? 
+          <FaAngleLeft className="text-[#1E1E2D] text-lg" /> : 
+          <FaAngleRight className="text-[#1E1E2D] text-lg" />
+        }
+      </button>
 
-                {/* Dropdown Links */}
-                <div className={`overflow-hidden transition-all duration-300 ${isOpen ? "max-h-40" : "max-h-0"}`}>
-                  <ul className="mt-2 ml-8 space-y-2">
-                    <li>
-                      <NavLink
-                        to="/gst-invoice"
-                        className={({ isActive }) =>
-                          isActive ? "text-[#4154f1] font-semibold" : "text-black font-medium"
-                        }
-                      >
-                        GST Invoice
-                      </NavLink>
-                    </li>
-                    <li>
-                      <NavLink
-                        to="/urd-invoice"
-                        className={({ isActive }) =>
-                          isActive ? "text-[#4154f1] font-semibold" : "text-black font-medium"
-                        }
-                      >
-                        URD Invoice
-                      </NavLink>
-                    </li>
-                  </ul>
+      {/* Logo section */}
+      <div className={`px-6 py-4 flex ${expanded ? 'justify-start' : 'justify-center'}`}>
+        <div className="flex flex-col items-center">
+          {expanded ? (
+             <div className="flex items-center">
+                <img alt='logo' src={FyntlLogo1} className='h-12 mr-3'/>
+                <div>
+                  <h1 className="text-lg font-bold text-white">Fyntl - AI</h1>
+                  <p className="text-sm text-gray-400">Billing Software</p>
                 </div>
-            </li>
-            <li className="mb-4 flex items-center">
-              <FaFileAlt className="text-[#4154f1] mr-4" />
-              <NavLink
-                to="/generated-bills"
-                className={({ isActive }) =>
-                  isActive ? 'text-[#4154f1] font-semibold' : 'text-black font-medium'}
-              >
-                Transactions
-              </NavLink>
-            </li>
-            <li className="mb-4 flex items-center">
-              <FaFileInvoice className="text-[#4154f1] mr-4" />
-              <NavLink
-                to="/inventory"
-                className={({ isActive }) =>
-                  isActive ? 'text-[#4154f1] font-semibold' : 'text-black font-medium'}
-              >
-                Inventory
-              </NavLink>
-            </li>
-            <li className="mb-4 flex items-center">
-              <FaFileAlt className="text-[#4154f1] mr-4" />
-              <NavLink
-                to="/eway-bills"
-                className={({ isActive }) =>
-                  isActive ? 'text-[#4154f1] font-semibold' : 'text-black font-medium'}
-              >
-                Generate E-way Bill
-              </NavLink>
-            </li>
-            <li className="mb-4 flex items-center">
-              <FaUsers className="text-[#4154f1] mr-4" />
-              <NavLink
-                to="/users"
-                className={({ isActive }) =>
-                  isActive ? 'text-[#4154f1] font-semibold' : 'text-black font-medium'}
-              >
-                Parties
-              </NavLink>
-            </li>
-          </ul>
-        </div>
-        <div>
-          <p className="text-black uppercase font-medium text-xs mb-4">Support</p>
-          <ul>
-            <li className="mb-4 flex items-center">
-              <FaEnvelope className="text-[#4154f1] mr-4" />
-              <NavLink
-                to="/messages"
-                className={({ isActive }) =>
-                  isActive ? 'text-[#4154f1] font-semibold' : 'text-black font-medium'}
-              >
-                Messages
-              </NavLink>
-            </li>
-            <li className="mb-4 flex items-center ">
-              <FaQuestionCircle className="text-[#4154f1] mr-4" />
-              <NavLink to="/help" className={({ isActive }) => isActive ? 'text-[#4154f1] font-semibold' : 'text-black font-medium'} > Help </NavLink>
-            </li>
-          </ul>
+             </div>
+          ) : (
+            <div>
+                <img alt='logo' src={FyntlLogo1} className='h-auto w-auto mb-2'/>
+             </div>
+          )}
         </div>
       </div>
-      <div className="mb-4">
-        <ul>
-          <li className="mb-4 flex items-center">
-            <FaCog className="text-[#4154f1] mr-4" />
-            <NavLink to="/settings" className={({ isActive }) => isActive ? 'text-[#4154f1] font-semibold' : 'text-black font-medium'}>
-              Settings
-            </NavLink>
-          </li>
-          <li className="flex items-center">
-            <FaSignOutAlt className="text-[#4154f1] mr-4" />
-            <NavLink
-              to="/logout"
-              className={({ isActive }) =>
-                isActive ? 'text-[#4154f1] font-semibold' : 'text-black font-medium'}
+
+      {/* Navigation items */}
+      <div className="flex-1 overflow-y">
+        <ul className="px-2">
+          {navItems.map((item, index) => (
+            <li 
+              key={item.path || index} 
+              className="mb-1 relative"
+              onMouseEnter={() => handleMouseEnter(item.label)}
+              onMouseLeave={() => handleMouseLeave(item.label)}
             >
-              Log Out
-            </NavLink>
-          </li>
+              <div>
+                {item.hasDropdown ? (
+                  <div 
+                    className={`flex items-center ${expanded ? 'px-4 py-2.5 justify-between' : 'px-0 py-3 flex-col justify-center'} 
+                    text-white font-medium cursor-pointer hover:bg-gray-700 rounded-md`}
+                    onClick={() => toggleDropdown(item.label)}
+                  >
+                    <div className={`flex items-center ${!expanded && 'justify-center w-full'}`}>
+                      <div className={`text-gray-300 ${expanded ? 'mr-3' : ''} text-2xl`}>
+                        {item.icon}
+                      </div>
+                      {expanded && <span>{item.label}</span>}
+                    </div>
+                    {expanded && (
+                      expandedItems[item.label] ? 
+                        <FaChevronUp className="text-gray-400" /> : 
+                        <FaChevronDown className="text-gray-400" />
+                    )}
+                  </div>
+                ) : (
+                  <NavLink
+                    to={item.path}
+                    className={({ isActive }) => 
+                      `flex items-center ${expanded ? 'px-4 py-2.5' : 'px-0 py-3 flex-col justify-center'} 
+                      ${isActive ? 'text-white font-semibold' : 'text-gray-300 font-medium'} 
+                      hover:bg-gray-700 rounded-md`
+                    }
+                  >
+                    <div className={`text-gray-300 ${expanded ? 'mr-3' : ''} text-2xl`} >
+                      {item.icon}
+                    </div>
+                    {expanded && <span>{item.label}</span>}
+                  </NavLink>
+                )}
+
+                {/* Dropdown items - shown when expanded */}
+                {expanded && item.hasDropdown && expandedItems[item.label] && (
+                  <div className="overflow-hidden bg-gray-800 rounded-md mt-1 shadow-inner">
+                    <ul className="py-1">
+                      {item.dropdownItems.map((dropdownItem) => (
+                        <li key={dropdownItem.path}>
+                          <NavLink
+                            to={dropdownItem.path}
+                            className={({ isActive }) =>
+                              `block pl-11 pr-4 py-2 ${
+                                isActive ? 'text-white font-semibold' : 'text-gray-300 font-medium'
+                              } hover:bg-gray-700`
+                            }
+                          >
+                            {dropdownItem.label}
+                          </NavLink>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {/* Focus Group for dropdown items when sidebar is collapsed - show on hover */}
+                {!expanded && item.hasDropdown && hoveredItem === item.label && (
+                  <div 
+                    ref={el => dropdownRefs.current[item.label] = el}
+                    className="absolute left-20 top-0 bg-white shadow-lg rounded-md z-50 w-60"
+                    onMouseEnter={() => handleDropdownMouseEnter(item.label)}
+                    onMouseLeave={handleDropdownMouseLeave}
+                  >
+                    <ul role="menu" className="py-2">
+                      {item.dropdownItems?.map((dropdownItem, idx) => (
+                        <li key={dropdownItem.path} role="menuitem">
+                          <NavLink
+                            to={dropdownItem.path}
+                            className={({ isActive }) =>
+                              `block px-4 py-3 ${
+                                isActive 
+                                  ? "bg-gray-200 text-gray-700 font-semibold" 
+                                  : idx % 2 === 0 
+                                    ? "bg-gray-100 text-gray-700 hover:bg-gray-200" 
+                                    : "bg-white text-gray-700 hover:bg-gray-200"
+                              }`
+                            }
+                          >
+                            {dropdownItem.label}
+                          </NavLink>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                
+                 {/* Icon Indicator when sidebar is collapsed - show on hover */}
+                 {!expanded && !item.hasDropdown && hoveredItem === item.label && (
+                  <div
+                    ref={(el) => (dropdownRefs.current[item.label] = el)}
+                    className="absolute left-20 top-0 w-40 bg-gray-400 text-white shadow-md rounded-md p-2 z-50 text-center"
+                    onMouseEnter={() => handleDropdownMouseEnter(item.label)}
+                    onMouseLeave={handleDropdownMouseLeave}
+                  >
+                    {item.label}
+                  </div>
+                )}
+
+              </div>
+            </li>
+          ))}
         </ul>
       </div>
-      <p className="text-gray-400 text-xs">Version 1.0.0</p>
+
+      {/* Version info - only in expanded mode */}
+      {expanded && (
+        <div className="px-6 py-3">
+          <p className="text-gray-500 text-xs">Version 1.0.0</p>
+        </div>
+      )}
     </div>
   );
 };

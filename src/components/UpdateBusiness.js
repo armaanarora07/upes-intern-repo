@@ -221,8 +221,10 @@ const UpdateBusiness = () => {
 
 
   return (
-    <div className='p-8 mt-10'>
-
+    <div className='p-8'>
+     
+     <div className="p-6 mt-5 mb-6 bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden">
+      
       <div className="text-2xl font-bold text-gray-800 mt-3">
         My Business Details 
       </div>
@@ -286,13 +288,15 @@ const UpdateBusiness = () => {
                 View HSN Codes
               </button>
 
-              <button 
+              {/*<button 
                 className="bg-blue-500 text-white p-3 rounded-lg hover:bg-blue-600 transition duration-200 flex items-center justify-center shadow-md transform hover:scale-105 w-3/4 mx-auto" // Reduced width
                 onClick={handleShowAddSkippedBillPopup} // Show Add Skipped Bill popup on click
               >
-                <FaPlus className="mr-2" /> {/* Icon for visual appeal */}
+                <FaPlus className="mr-2" />
                 Add Skipped Bill
               </button>
+              */}
+              
             </div>
           </div>
         </div>
@@ -458,6 +462,7 @@ const UpdateBusiness = () => {
           </div>
         </div>
       )}
+      </div>
     </div>
   );
 }

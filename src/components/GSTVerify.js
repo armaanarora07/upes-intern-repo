@@ -6,7 +6,7 @@ import { setGSTDetails, setGSTError } from '../slices/gstSlice';
 import { setTradeName, setPhoneNo, updatePrimaryAddress , toggleShippingSameAsPrimary, setInvoiceNo} from '../slices/userdetailsSlice';
 import axios from 'axios';
 
-const GSTVerify = ({ gstNumber }) => {
+const GSTVerify = ({ gstNumber, isRequired }) => {
   const dispatch = useDispatch();
   const authToken = useSelector((state) => state.auth.authToken);
   const gstDetails = useSelector((state) => state.gst.gstDetails);
@@ -98,47 +98,49 @@ const GSTVerify = ({ gstNumber }) => {
   };
 
   return (
-    <div className="p-6 bg-white rounded-lg shadow-xl mt-5">
-      <h2 className="text-2xl font-bold text-gray-800">GSTIN</h2>
+    <div className="p-6 mt-5 mb-6 bg-white dark:bg-gray-800 border dark:border-gray-700 rounded-lg shadow-xl dark:shadow-gray-900 border-gray-200 rounded-xl shadow-sm overflow-hidden">
+      <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-200">GSTIN</h2>
+  
       <div className="w-2/5 relative">
-      <div className="relative mb-3 mt-4">
-        <span className="absolute -top-3 left-2 text-sm bg-white px-1 text-black">
-          GSTIN
-        </span>
-        <input
-          type="text"
-          value={GST}
-          onChange={(e) => {
-            const formattedGST = formatGSTNumber(e.target.value);
-            setGST(formattedGST);
-            
-            if (formattedGST.length === 15) {
-              handleVerify(formattedGST);
-            }
-          }}
-          className="w-full border border-[#4154f1] rounded-lg p-2"
-        />
-        {status && (isVerified ? (
-          <span className="absolute right-2 top-2 text-green-500">
-            <FaCheckCircle />
+        <div className="relative mb-3 mt-4">
+          <span className="absolute -top-3 left-2 text-sm bg-white dark:bg-gray-800 px-1 text-black dark:text-white">
+            GSTIN
           </span>
-        ) : (
-          <span className="absolute right-2 top-2 text-red-500">
-            <FaTimesCircle />
-          </span>
-        ))}
+          <input
+            type="text"
+            value={GST}
+            onChange={(e) => {
+              const formattedGST = formatGSTNumber(e.target.value);
+              setGST(formattedGST);
+  
+              if (formattedGST.length === 15) {
+                handleVerify(formattedGST);
+              }
+            }}
+            className="w-full border border-gray-300 dark:border-gray-600 rounded-lg p-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4154f1]"
+            required={isRequired}
+          />
+          {status &&
+            (isVerified ? (
+              <span className="absolute right-2 top-2 text-green-500">
+                <FaCheckCircle />
+              </span>
+            ) : (
+              <span className="absolute right-2 top-2 text-red-500">
+                <FaTimesCircle />
+              </span>
+            ))}
+          {isRequired && !GST && (
+            <span className="text-red-500 text-xs mt-1">GSTIN is required</span>
+          )}
+        </div>
       </div>
-      </div>
-
+  
       {showAlert && (
-        <TopAlert
-          type={alertType}
-          message={alertMessage}
-          onClose={handleCloseAlert}
-        />
+        <TopAlert type={alertType} message={alertMessage} onClose={handleCloseAlert} />
       )}
     </div>
-  );
+  );  
 };
 
 export default GSTVerify;

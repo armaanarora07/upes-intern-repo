@@ -14,7 +14,7 @@ const BusinessCard = ({ id,gstin, legalName, tradeName}) => {
   };
 
   return (
-    <div onClick={handleClick} className="bg-white shadow-xl border rounded-3xl p-6 w-full h-auto transform transition-all duration-300 cursor-pointer hover:scale-105">
+    <div onClick={handleClick} className="p-6 mb-6 bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm w-full h-auto transform transition-all duration-300 cursor-pointer hover:scale-105">
           <div className="flex flex-col space-y-2">
             <div className="flex justify-between items-center">
               <span className="font-semibold">GSTIN</span>
@@ -50,7 +50,7 @@ const MyBusiness = () => {
   }, [setTitle,dispatch]);
 
   return (
-    <div className="p-8 mt-10">
+    <div className="p-8">
 
       {loading ? (
         <p>Loading...</p>
@@ -69,7 +69,7 @@ const MyBusiness = () => {
                   tradeName={business.trade_name}
                 />
               ))}
-              <div className="bg-white shadow-xl border rounded-3xl p-6 w-full h-auto transform transition-all duration-300 hover:scale-105 flex items-center justify-center cursor-pointer" onClick={() => navigate('/add-business')}>
+              <div className="p-6 mb-6 bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden w-full h-auto transform transition-all duration-300 hover:scale-105 flex items-center justify-center cursor-pointer" onClick={() => navigate('/add-business')}>
                 <FaPlusCircle className="text-3xl mr-2" />
                 <p className="text-xl font-semibold">Add More Business</p>
               </div>

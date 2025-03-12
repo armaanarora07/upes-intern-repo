@@ -108,13 +108,16 @@ const AddBusiness = () => {
   };
 
   return (
-    <div className='p-8 mt-10'>
+    <div className='p-8'>
+       
+      <div className='p-6 mt-5 mb-6 bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden h-auto'>
 
       <div className="text-2xl font-bold text-gray-800 mt-3">
         Enter your Business Details 
       </div>
   
       <div className="flex space-x-12">
+        
         <div className="w-2/5 p-2 relative">
           <div className="space-y-4 relative mt-4">
             {/* GSTIN Input */}
@@ -215,6 +218,7 @@ const AddBusiness = () => {
             </div>
           </div>
         </div>
+      </div>
       </div>
     </div>
   );

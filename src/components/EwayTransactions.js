@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import {useNavigate} from 'react-router-dom';
 import axios from "axios";
-import { FaEye, FaFileAlt } from "react-icons/fa"; 
+import { FaEye} from "react-icons/fa"; 
+import {Truck} from 'lucide-react';
 import { useSelector,useDispatch } from "react-redux";
 import { setTitle } from "../slices/navbarSlice";
 
@@ -56,47 +57,80 @@ const EWayTransactions = () => {
   }
 
   return (
-    <div className="p-8 mt-10">
+    <div className="p-8">
       <div className="mt-5">
 
-      {errorMessage && <p className="text-red-500">{errorMessage}</p>}
-
-      <table className="min-w-full bg-white border border-gray-300">
-        <thead>
-          <tr>
-            <th className="px-4 py-2 text-left">S.No</th>
-            <th className="px-4 py-2 text-left">First Party</th>
-            <th className="px-4 py-2 text-left">Second Party</th>
-            <th className="px-4 py-2 text-left">Product</th>
-            <th className="px-4 py-2 text-left">Total Price</th>
-            <th className="px-4 py-2 text-left">Issue Date</th>
-            <th className="px-4 py-2 text-left">View Bill</th>
-            <th className="px-4 py-2 text-left">E-Way Generate</th>
-          </tr>
-        </thead>
-        <tbody>
-          {transactions.map((transaction, index) => (
-            <tr key={transaction._id}>
-              <td className="border px-4 py-2">{index + 1}</td>
-              <td className="border px-4 py-2">{transaction.first_party}</td>
-              <td className="border px-4 py-2">{transaction.second_party}</td>
-              <td className="border px-4 py-2">{transaction.products.join(", ")}</td>
-              <td className="border px-4 py-2">{transaction.rate.reduce((a, b) => a + b, 0) * transaction.quantity.reduce((a, b) => a + b, 0)}</td>
-              <td className="border px-4 py-2">
-                {new Date(transaction.created_at).toLocaleString([], { hour12: true, timeStyle: 'short', dateStyle: 'medium' })}
-              </td>
-              <td className="border px-4 py-2">
-                <a href={transaction.downloadlink} target="_blank" rel="noopener noreferrer">
-                  <FaEye className="text-gray-500 cursor-pointer" />
-                </a>
-              </td>
-              <td className="border px-4 py-2">
-                <button className="bg-blue-500 text-white py-1 px-2 rounded" onClick={()=>{handleGenerateEway(transaction._id)}}>Generate E-Way</button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <div className="bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden">
+        
+        {/* Table Header */}
+        <div className="px-6 py-4 border-b border-gray-200">
+          <h2 className="text-lg font-semibold text-gray-800">Today's Transactions</h2>
+        </div>
+        
+        <div className="overflow-x-auto">
+          {transactions.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-12 bg-white">
+              
+              <p className="text-gray-600 text-lg">No transactions available.</p>
+              <p className="text-gray-500 mt-1">Create your first transaction to get started</p>
+            </div>
+          ) : (
+            <table className="min-w-full bg-white">
+              <thead>
+                <tr className="bg-gray-50">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">S.No</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">First Party</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Second Party</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Price</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Issue Date</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">View</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-200">
+                {transactions.map((transaction, index) => (
+                  <tr key={transaction._id} className="hover:bg-gray-50 transition-colors">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{index + 1}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{transaction.first_party}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{transaction.second_party}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {transaction.products.length > 1 
+                        ? `${transaction.products[0]} +${transaction.products.length - 1} more`
+                        : transaction.products.join(", ")}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                      ₹{(transaction.rate.reduce((a, b) => a + b, 0) * transaction.quantity.reduce((a, b) => a + b, 0)).toLocaleString('en-IN')}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {new Date(transaction.created_at).toLocaleString([], { hour12: true, timeStyle: 'short', dateStyle: 'medium' })}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      <a 
+                        href={transaction.downloadlink} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="text-blue-600 hover:text-blue-800 transition-colors"
+                      >
+                        <FaEye className="w-5 h-5" />
+                      </a>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <button 
+                        className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
+                        onClick={() => handleGenerateEway(transaction._id)}
+                      >
+                        <Truck className="w-4 h-4 mr-1" />
+                        E-Way
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
+        </div>
       </div>
     </div>
   );

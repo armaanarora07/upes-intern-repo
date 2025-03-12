@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import {useNavigate} from 'react-router-dom'
 import GSTVerify from '../components/GSTVerify';
 import UserDetails from '../components/UserDetails';
@@ -20,15 +20,19 @@ const GSTInvoice = () => {
   const { rows } = useSelector((state) => state.products);
   const { gstDetails } = useSelector((state) => state.gst);
   const userDetails = useSelector(selectUserDetails);
+  const [isRequired, setisRequired] = useState(false);
 
-  console.log();
 
   const handleBillGeneration = ()=>{
-      if(gstDetails && userDetails.tradeName.length > 0 && rows.length > 0 && rows[0].hsn_code.length > 0 ){
+    
+      if(gstDetails && userDetails.tradeName.length > 0 && userDetails.phoneNo.length > 0 && rows.length > 0 && rows[0].hsn_code.length > 0 ){
+        setisRequired(false);
         navigate('/generate-invoice?type=gstinvoice');
         return;
       }
+      setisRequired(true);
       alert('Enter the Required Details');
+      return;
   }
 
   useEffect(()=>{
@@ -41,9 +45,9 @@ const GSTInvoice = () => {
   },[setTitle,dispatch])
 
   return (
-    <div className="p-8 mt-10">
-      <GSTVerify/>
-      <UserDetails Title={'Buyer Details'}/>
+    <div className="p-8">
+      <GSTVerify isRequired={isRequired}/>
+      <UserDetails Title={'Buyer Details'} isRequired={isRequired}/>
       <Products/>
       <BankDetails/>
       <TermsAndConditions/>

@@ -21,13 +21,28 @@ const URDInvoice = () => {
   const userDetails = useSelector(selectUserDetails);
   const [invoiceType, setInvoiceType] = useState('urd/purchase-invoice');
   const [titleName, setTitleName] = useState('Buyer Details');
+  const [isRequired, setisRequired] = useState(false);
+  const [isInvoiceRequired,setisInvoiceRequired] = useState(false);
+
   const handleBillGeneration = ()=>{
     
-    if(userDetails.tradeName.length > 0 && rows.length > 0 && rows[0].hsn_code.length > 0 ){
+    if(userDetails.tradeName.length > 0 && userDetails.phoneNo.length > 0  && rows.length > 0 && rows[0].hsn_code.length > 0 ){
+
+      if(titleName === 'Buyer Details' && !userDetails.invoiceNo){
+        setisInvoiceRequired(true);
+        alert('Enter the Invoice Number');
+        return;
+      }
+
+      setisRequired(false);
       navigate(`/generate-invoice?type=${invoiceType}`);
       return;
+
     }
+
+    setisRequired(true);
     alert('Enter the Required Details');
+    return;
   }
 
   useEffect(()=>{
@@ -43,14 +58,16 @@ const URDInvoice = () => {
        setInvoiceType(value);
        if(value === 'urd/purchase-invoice'){
           setTitleName('Buyer Details');
+          setisInvoiceRequired(true);
        }else{
           setTitleName('Seller Details');
+          setisInvoiceRequired(false);
        }
    }
 
   return (
-    <div className="p-8 mt-10">
-      <div className='p-6 bg-white rounded-lg shadow-xl mt-5'>
+    <div className="p-8">
+      <div className='p-6 mt-5 mb-6 bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden'>
           <h2 className="text-2xl font-bold text-gray-800">Select Invoice Type</h2>
           <select 
             className="border rounded px-3 py-1 mt-3 ml-2" 
@@ -64,7 +81,7 @@ const URDInvoice = () => {
                 </option>
           </select>
       </div>
-      <UserDetails Title = {titleName}/>
+      <UserDetails Title = {titleName} isRequired={isRequired} isInvoiceRequired={isInvoiceRequired}/>
       <Products/>
       <BankDetails/>
       <TermsAndConditions/>
