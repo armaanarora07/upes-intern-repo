@@ -32,6 +32,7 @@ const authSlice = createSlice({
       localStorage.removeItem('products');
       localStorage.removeItem('gstDetails');
       localStorage.removeItem('userDetails');
+      localStorage.removeItem("Validity");
     },
     verifyotp: (state) => {
       state.otp = true;
