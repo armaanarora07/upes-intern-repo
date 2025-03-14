@@ -289,7 +289,7 @@ const BillPreview = ({ open, onClose, ewaybillData, billData }) => {
             gstin:  billData.second_party ? billData.second_party : '',
             legal_name:  billData.legal_name ? billData.legal_name : billData.name || '',
             trade_name:  billData.trade_name ? billData.trade_name : billData.name || '',
-            principal_address:  billData.principal_address ? billData.principal_address : billData.shipping_address ? billData.shipping_address : '',
+            principal_address:  billData.principal_address ? billData.principal_address : '',
             shipping_address:  billData.shipping_address ? billData.shipping_address : '',
             invoiceDate: billData.created_at.split(" ")[0],
             invoiceNo: billData.sn_no,
