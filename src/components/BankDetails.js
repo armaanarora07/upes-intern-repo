@@ -4,6 +4,70 @@ import { addBankDetails, clearSelectedBank, editBankDetails, SelectedBank, setEn
 import { FaEdit, FaTrash, FaTimes } from 'react-icons/fa';
 import { Trash2 } from 'lucide-react';
 
+const bankNames = [
+  // Public Sector Banks (PSBs)
+  "State Bank of India",
+  "Punjab National Bank",
+  "Bank of Baroda",
+  "Canara Bank",
+  "Union Bank of India",
+  "Bank of India",
+  "Indian Bank",
+  "Central Bank of India",
+  "Indian Overseas Bank",
+  "UCO Bank",
+  "Bank of Maharashtra",
+  "Punjab & Sind Bank",
+
+  // Private Sector Banks
+  "HDFC Bank",
+  "ICICI Bank",
+  "Kotak Mahindra Bank",
+  "Axis Bank",
+  "IndusInd Bank",
+  "Yes Bank",
+  "IDFC First Bank",
+  "Federal Bank",
+  "RBL Bank",
+  "South Indian Bank",
+  "Bandhan Bank",
+  "City Union Bank",
+  "Karur Vysya Bank",
+  "Tamilnad Mercantile Bank",
+  "DCB Bank",
+  "Karnataka Bank",
+  "Dhanlaxmi Bank",
+  "Jammu & Kashmir Bank",
+  "Nainital Bank",
+  "CSB Bank",
+
+  // Small Finance Banks (SFBs)
+  "AU Small Finance Bank",
+  "Equitas Small Finance Bank",
+  "Ujjivan Small Finance Bank",
+  "Jana Small Finance Bank",
+  "Suryoday Small Finance Bank",
+  "Capital Small Finance Bank",
+  "ESAF Small Finance Bank",
+  "Fincare Small Finance Bank",
+  "North East Small Finance Bank",
+  "Shivalik Small Finance Bank",
+  "Unity Small Finance Bank",
+  "Utkarsh Small Finance Bank",
+
+  // Payments Banks
+  "Airtel Payments Bank",
+  "India Post Payments Bank",
+  "Fino Payments Bank",
+  "Jio Payments Bank",
+  "NSDL Payments Bank",
+  "Paytm Payments Bank",
+
+  // Local Area Banks
+  "Coastal Local Area Bank Ltd",
+  "Krishna Bhima Samruddhi Local Area Bank Ltd"
+];
+
 const BankDetails = () => {
   const dispatch = useDispatch();
   const { bankDetails, selectedGBank, enabled } = useSelector((state) => state.banks);
@@ -70,6 +134,25 @@ const BankDetails = () => {
      dispatch(setEnabled());
   };
 
+const [filteredBanks, setFilteredBanks] = useState([]);
+
+const handleBankNameChange = (e) => {
+  const value = e.target.value;
+  setbankName(value);
+  
+  // Filter the list based on input
+  if (value.length > 0) {
+    setFilteredBanks(bankNames.filter(bank => bank.toLowerCase().includes(value.toLowerCase())));
+  } else {
+    setFilteredBanks([]);
+  }
+};
+
+const selectBank = (name) => {
+  setbankName(name);
+  setFilteredBanks([]);
+};
+
 
   return (
     <div className="p-6 mt-5 mb-6 bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden">
@@ -129,6 +212,37 @@ const BankDetails = () => {
 
             {(activeModal === 'add' || activeModal === 'edit') && (
               <div className="mt-4 space-y-3">
+                  <div className="relative mb-4">
+                    <span className="absolute -top-3 left-2 text-sm bg-white px-1 text-black">Bank Name</span>
+                    <input
+                      type="text"
+                      className="w-full border border-[#4154f1] rounded-lg p-2"
+                      value={bankName}
+                      onChange={handleBankNameChange}
+                    />
+                    {filteredBanks.length > 0 && (
+                      <ul className="absolute z-10 bg-white border border-gray-300 w-full mt-1 rounded-lg shadow-md">
+                        {filteredBanks.map((bank, index) => (
+                          <li
+                            key={index}
+                            className="p-2 hover:bg-gray-200 cursor-pointer"
+                            onClick={() => selectBank(bank)}
+                          >
+                            {bank}
+                          </li>
+                        ))}
+                      </ul>
+                     )}
+                </div>
+                <div className="relative mb-4">
+                    <span className="absolute -top-3 left-2 text-sm bg-white px-1 text-black">Branch Name</span>
+                    <input
+                        type="text"
+                        className="w-full border border-[#4154f1] rounded-lg p-2"
+                        value={branchName} // Update to the correct state variable
+                        onChange={(e) => setBranchName(e.target.value)} 
+                    />
+                </div>
                 <div className="relative mb-4">
                     <span className="absolute -top-3 left-2 text-sm bg-white px-1 text-black">Account Number</span>
                     <input
@@ -154,24 +268,6 @@ const BankDetails = () => {
                         className="w-full border border-[#4154f1] rounded-lg p-2"
                         value={ifscCode} // Update to the correct state variable
                         onChange={(e) => setIfscCode(e.target.value)} 
-                    />
-                </div>
-                <div className="relative mb-4">
-                    <span className="absolute -top-3 left-2 text-sm bg-white px-1 text-black">Branch Name</span>
-                    <input
-                        type="text"
-                        className="w-full border border-[#4154f1] rounded-lg p-2"
-                        value={branchName} // Update to the correct state variable
-                        onChange={(e) => setBranchName(e.target.value)} 
-                    />
-                </div>
-                <div className="relative mb-4">
-                    <span className="absolute -top-3 left-2 text-sm bg-white px-1 text-black">Bank Name</span>
-                    <input
-                        type="text"
-                        className="w-full border border-[#4154f1] rounded-lg p-2"
-                        value={bankName} // Update to the correct state variable
-                        onChange={(e) => setbankName(e.target.value)} 
                     />
                 </div>
                 <button onClick={activeModal === 'add' ? handleAddBankDetails : handleEditBankDetails} className="bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 transition duration-200 w-full">
