@@ -7,7 +7,7 @@ import { useSelector } from 'react-redux';
 import FyntlLogo1 from '../assets/FyntlLogo1.png';
 
 const Sidebar = () => {
-  const [expanded, setExpanded] = useState(false);
+  const [expanded, setExpanded] = useState(true);
   const [expandedItems, setExpandedItems] = useState({});
   const [hoveredItem, setHoveredItem] = useState(null);
   const { businesses } = useSelector((state) => state.business);

@@ -70,21 +70,21 @@ const InviteUserForm = () => {
 
   return (
     <div>
-      <h2 className="text-xl font-bold mb-4 flex justify-center">Invite User</h2>
+      <h2 className="text-2xl font-bold text-gray-800 text-center flex justify-center mb-4">Add member to manage your business</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         <input
           type="text"
           placeholder="Email or Contact"
           value={userData.contactOrEmail}
           onChange={(e) => setUserData({ ...userData, contactOrEmail: e.target.value })}
-          className="w-full p-2 border rounded"
+          className="w-full p-2 border rounded-lg"
           required
         />
         {errors.contactOrEmail && <p className="text-red-500 text-sm">{errors.contactOrEmail}</p>}
           <select
             value={userData.gstin}
             onChange={(e) => setUserData({ ...userData, gstin: e.target.value })}
-            className="w-full p-2 border rounded"
+            className="w-full p-2 border rounded-lg"
           >
             {userbusiness.map((gst) => (
               <option key={gst} value={gst}>
@@ -94,15 +94,17 @@ const InviteUserForm = () => {
           </select>
 
         {errors.gstin && <p className="text-red-500 text-sm">{errors.gstin}</p>}
-        <button
-          type="submit"
-          className={`mt-5 w-full bg-blue-500 text-white py-2 rounded shadow-md hover:bg-blue-600 transition ${
-            loading ? "bg-gray-400 cursor-not-allowed" : ""
-          }`}
-          disabled={loading}
-        >
-          {loading ? "Inviting..." : "Invite User"}
-        </button>
+        <div className='flex justify-center mt-4'>
+          <button
+            type="submit"
+            className={`mt-5 bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition duration-200 ${
+              loading ? "bg-gray-400 cursor-not-allowed" : ""
+            }`}
+            disabled={loading}
+          >
+            {loading ? "Inviting..." : "Invite User"}
+          </button>
+        </div>
         {message && (
           <p className={`mt-2 text-sm ${message.type === "success" ? "text-green-600" : "text-red-600"}`}>
             {message.text}
@@ -115,7 +117,7 @@ const InviteUserForm = () => {
 
 const InviteUserPage = () => {
   return (
-    <div className="flex justify-center p-8 mt-5">
+    <div className="flex justify-center items-center p-8 mt-5">
       <div className="bg-white border rounded-lg shadow-xl border-gray-200 overflow-hidden w-full max-w-lg p-8">
         <InviteUserForm />
       </div>

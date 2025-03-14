@@ -100,7 +100,7 @@ const Users = () => {
           placeholder="Search by First Party, Second Party, or Product..."
           value={searchTerm}
           onChange={handleSearch}
-          className="mb-4 p-2 border border-gray-300 rounded w-full max-w-md"
+          className="mb-4 p-2 border border-gray-300 rounded-lg w-full max-w-md"
         />
 
         <div className="bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden">
