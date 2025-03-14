@@ -15,6 +15,7 @@ import logoReducer from '../slices/logoSlice.js';
 import toggleReducer from '../slices/toggleSlice.js';
 import qrReducer from '../slices/qrSlice.js';
 import themeReducer from '../slices/themeSlice.js';
+import validityReducer from '../slices/validitySlice.js';
 
 const store = configureStore({
   reducer: {
@@ -33,6 +34,7 @@ const store = configureStore({
     toggle:toggleReducer,
     qr:qrReducer,
     theme: themeReducer,
+    validity:validityReducer,
   },
 });
 
