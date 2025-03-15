@@ -59,32 +59,33 @@ const UpdateEwayCred = () => {
           <div className="flex flex-col items-center justify-center mt-10">
                 <form onSubmit={handleEnableService} className="p-6 mt-5 mb-6 bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden">
                   
-                  <h2 className="text-xl font-bold mb-4 flex justify-center">Update E-Way Services</h2>
+                  <h2 className="text-2xl font-bold text-gray-800 text-center mb-4">Update E-Way Services</h2>
 
                   <input
                     type="text"
-                    placeholder="API Key (X Value)"
+                    placeholder="E-Way User Id"
                     value={credentials.x}
                     onChange={(e) => setCredentials({ ...credentials, x: e.target.value })}
-                    className="w-full p-2 border rounded mb-2"
+                    className="w-full p-2 border rounded-lg mb-2"
                     required
                   />
 
                   <input
                     type="password"
-                    placeholder="Secret Key (Y Value)"
+                    placeholder="Password"
                     value={credentials.y}
                     onChange={(e) => setCredentials({ ...credentials, y: e.target.value })}
-                    className="w-full p-2 border rounded mb-2"
+                    className="w-full p-2 border rounded-lg mb-2"
                     required
                   />
-
-                  <button 
-                    type="submit" 
-                    className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
-                  >
-                    Update Credentials
-                  </button>
+                   <div className='flex justify-center mt-4'>
+                      <button 
+                        type="submit" 
+                        className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition duration-200"
+                      >
+                        Update Credentials
+                      </button>
+                  </div>
                 </form>
           </div>
     </div>

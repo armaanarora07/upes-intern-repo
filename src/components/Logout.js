@@ -1,13 +1,18 @@
-import React, { useState } from "react";
+import React, { useState , useEffect} from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { logout } from "../slices/authSlice.js";
+import { setTitle } from "../slices/navbarSlice.js";
 
 const Logout = () => {
   const [showConfirm, setShowConfirm] = useState(false);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  useEffect(()=>{
+      dispatch(setTitle('Logout'));
+  })
 
   const handleLogout = () => {
     // Clear user session
@@ -19,9 +24,9 @@ const Logout = () => {
   
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen bg-gray-100">
-      <div className="bg-white shadow-lg rounded-lg p-8 text-center max-w-sm">
-        <h2 className="text-2xl font-semibold text-gray-800">Logout</h2>
+    <div className="flex justify-center items-center p-8 mt-16">
+      <div className="w-96 bg-white border border-gray-200 rounded-lg shadow-xl w-full max-w-lg p-8 text-center">
+        <h2 className="text-2xl font-bold text-gray-800 text-center">Logout</h2>
         <p className="text-gray-600 mt-2">
           Are you sure you want to log out?
         </p>
@@ -36,7 +41,7 @@ const Logout = () => {
             </button>
           ) : (
             <div className="space-y-4">
-              <p className="text-gray-700">Please confirm your action:</p>
+              <p className="text-gray-700">Please confirm your action</p>
               <div className="flex justify-center gap-4">
                 <button
                   onClick={handleLogout}

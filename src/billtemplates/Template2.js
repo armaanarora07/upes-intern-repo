@@ -86,7 +86,7 @@ class Template2 {
     const yr = 48; 
     this.doc.setFont("helvetica", "normal");
     this.doc.text("Shipping Address", xr, yr);
-
+    
     this.doc.text(`M/S ${invoiceData.party.trade_name.replace(/^M\/S\s+/i, "")}`,xr, yr+8);
     this.doc.text(`${invoiceData.party.shipping_address.address1}`,xr, yr+12);
     this.doc.text(`${invoiceData.party.shipping_address.address2}`,xr, yr+16);
@@ -124,12 +124,12 @@ class Template2 {
     // Map actual invoice items to table rows
     let tableData = invoiceData.hsn_details.map((item, index) => ({
       sno: (index + 1).toString(),
-      item: item.product_info,
-      hsn: item.hsn_code.toString(),
-      qty: invoiceData.quantities[index].toString(),
-      unit: item.unit,
-      price: invoiceData.rates[index].toString(),
-      amount: item.taxableAmount,
+      item: item.product_info? item.product_info: '',
+      hsn: item.hsn_code ? item.hsn_code.toString(): '',
+      qty: invoiceData.quantities ? invoiceData.quantities[index].toString() : '',
+      unit: item.unit ? item.unit : '',
+      price: invoiceData.rates? invoiceData.rates[index].toString() : '',
+      amount: item.taxableAmount ? item.taxableAmount : '',
     }));
 
     // Define initial capacity for the table (e.g., 10 rows per page)

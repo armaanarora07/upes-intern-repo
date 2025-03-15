@@ -8,10 +8,13 @@ import "react-datepicker/dist/react-datepicker.css";
 import { useSelector, useDispatch } from "react-redux";
 import { selectUserDetails } from "../slices/userdetailsSlice";
 import { setTitle } from "../slices/navbarSlice";
+import BillPreview from "./BillPreview";
 
 const GeneratedBills = () => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [bills, setBills] = useState([]);
+  const [preview,setPreview] = useState(false);
+  const [billdata,setBilldata] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
   const [currentPage, setCurrentPage] = useState(1);  // Pagination state
   const itemsPerPage = 10;  // Show 10 entries per page
@@ -181,12 +184,24 @@ const GeneratedBills = () => {
       console.error("Error deleting transaction:", error.response?.data || error.message);
     }
   }
+
+  const handleViewBill = (bill)=>{
+    setBilldata(bill);
+    console.log(bill);
+    setPreview(true);
+  }
+
   // Calculate the displayed bills based on the current page
   const indexOfLastBill = currentPage * itemsPerPage;
   const indexOfFirstBill = indexOfLastBill - itemsPerPage;
 
+  const sortedBills = bills.sort((a, b) => 
+    new Date(b.created_at) - new Date(a.created_at)
+  );
+
+
   // Filter bills by search term and selected date
-  const filteredBills = bills.filter((bill) => {
+  const filteredBills = sortedBills.filter((bill) => {
     const isDateMatch = selectedDate
       ? new Date(bill.created_at).toLocaleDateString() === selectedDate.toLocaleDateString()
       : true;
@@ -297,7 +312,7 @@ const GeneratedBills = () => {
             <table className="w-full">
               <thead>
                 <tr className="bg-gray-50">
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Bill ID</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Invoice No</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Bill For</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Issue Date</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
@@ -335,7 +350,7 @@ const GeneratedBills = () => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       <div className="flex items-center space-x-4">
-                        <a 
+                        {/*<a 
                           href={bill.downloadlink} 
                           target="_blank" 
                           rel="noopener noreferrer"
@@ -343,7 +358,14 @@ const GeneratedBills = () => {
                           title="View Bill"
                         >
                           <FaEye className="w-5 h-5" />
-                        </a>
+                        </a> */}
+                        <button 
+                          onClick={() => {handleViewBill(bill)}} 
+                          className="text-blue-600 hover:text-blue-800 transition-colors"
+                          title="View Bill"
+                        >
+                         <FaEye className="w-5 h-5" />
+                        </button>
                         <button 
                           onClick={() => handleDeleteBill(bill._id)} 
                           className="text-red-600 hover:text-red-800 transition-colors"
@@ -451,6 +473,13 @@ const GeneratedBills = () => {
           )}
         </div>
       </div>
+
+      <BillPreview
+         open={preview} 
+         onClose={() => setPreview(false)} 
+         billData={billdata} 
+      />
+
     </div>
   );
 };

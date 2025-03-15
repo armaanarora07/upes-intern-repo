@@ -169,15 +169,24 @@ const InviteRegister = () => {
               className="w-5 h-5 text-blue-600 border-gray-300 rounded"
             />
             <label htmlFor="terms" className="text-sm text-gray-600">
-              I accept the{" "}
-              <a
-                href="https://sangrahinnovations.com/privacy.html"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-500 hover:underline"
-              >
-                Terms & Conditions
-              </a>
+                I accept the{" "} 
+                <a
+                  href="https://sangrahinnovations.com/TC-Sangrah.html"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-500 hover:underline"
+                >
+                  Terms & Conditions
+                </a>
+                {" "}and{" "}
+                <a
+                  href="https://sangrahinnovations.com/privacy.html"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-500 hover:underline"
+                >
+                  Privacy Policy
+                </a>
             </label>
           </div>
           )}

@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { login, verifyotp } from "../slices/authSlice.js";
 import { setEway } from "../slices/ewaySlice.js";
+import { setDate } from "../slices/validitySlice.js";
 
 const Login = () => {
   const [phone, setPhone] = useState("");
@@ -51,7 +52,13 @@ const Login = () => {
         setErrorMessage("Failed to send OTP. Try again.");
       }
     } catch (error) {
-      setErrorMessage("Error sending OTP. Try again later.");
+      console.log(error);
+      if(error.response.data.message === "User is not registered .."){
+         setErrorMessage("User is not Registered. Please register to continue !");
+      }else{
+        setErrorMessage("Error Sending OTP. Try again.");
+      }
+      
     }
   };
 
@@ -76,6 +83,7 @@ const Login = () => {
       if (response.status === 200 && response.data.authToken) {
         dispatch(login(response.data.authToken));
         dispatch(setEway(response.data.user.eway_enabled));
+        dispatch(setDate(response.data.user.subscription_till))
         dispatch(verifyotp(true));
         setSuccessMessage("OTP verified successfully.");
         navigate("/dashboard");
@@ -150,14 +158,23 @@ const Login = () => {
                 className="w-5 h-5 text-blue-600 border-gray-300 rounded"
               />
               <label htmlFor="terms" className="text-sm text-gray-600">
-                I accept the{" "}
+                I accept the{" "} 
+                <a
+                  href="https://sangrahinnovations.com/TC-Sangrah.html"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-500 hover:underline"
+                >
+                  Terms & Conditions
+                </a>
+                {" "}and{" "}
                 <a
                   href="https://sangrahinnovations.com/privacy.html"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-blue-500 hover:underline"
                 >
-                  Terms & Conditions
+                  Privacy Policy
                 </a>
               </label>
             </div>

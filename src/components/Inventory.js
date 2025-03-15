@@ -236,9 +236,9 @@ const Inventory = () => {
             });
             setIsModalOpen(true);
           }}
-          className="bg-[#4154f1] text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-blue-700 transition-colors w-full sm:w-auto"
+          className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition duration-200 w-full sm:w-auto"
         >
-          <Plus size={20} /> Add Product
+          Add Product
         </button>
       </div>
       
@@ -577,7 +577,7 @@ const Inventory = () => {
                 </button>
                 <button
                   type="submit"
-                  className="bg-[#4154f1] text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+                  className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition duration-200"
                 >
                   {newProduct._id ? "Update Product" : "Save Product"}
                 </button>

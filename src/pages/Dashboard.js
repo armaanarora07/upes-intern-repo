@@ -48,8 +48,11 @@ const Dashboard = () => {
 
   const [totalSales, setTotalSales] = useState(0);
   const [totalGSTSales, setTotalGSTSales] = useState(0);
+  const [totalGST,setTotalGST] = useState(0);
   const [totalURDSales, setTotalURDSales] = useState(0);
   const [totalURDPurchases, setTotalURDPurchases] = useState(0);
+
+  const {date} = useSelector((state)=>state.validity);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -155,7 +158,13 @@ const Dashboard = () => {
 
   useEffect(()=>{
 
-    const filteredData = filterDataByDateRange(allTransactions,filter); 
+    const selectedTransactions = allTransactions.filter(data => data.first_party === business.gstin )
+
+    const sortedTransactions = selectedTransactions.sort((a, b) => 
+      new Date(b.created_at) - new Date(a.created_at)
+    );
+
+    const filteredData = filterDataByDateRange(sortedTransactions,filter); 
     setTransactions(filteredData);
 
     const sales = transactions.map((txn) => ({
@@ -219,9 +228,19 @@ const Dashboard = () => {
   
     setTotalGSTSales(TotalGSTSales.toFixed(2));
     setGSTSalesData(gstSalesData);
-  
 
-  },[allTransactions,transactions,filterDataByDateRange,filter]);
+    const totalGSTdata = transactions.map((txn)=> txn.tax_value);
+    
+    let totalGST = 0;
+
+    totalGSTdata.forEach(element =>{
+      totalGST += Number(element);
+    })
+
+    setTotalGST(totalGST);
+
+
+  },[allTransactions,transactions,filterDataByDateRange,filter,business]);
   
   const handleDropdown = (value) =>{
     dispatch(setBusiness(value));
@@ -318,41 +337,48 @@ const Dashboard = () => {
                     {legal_name}
                   </h1>
 
-                  <div className="flex space-x-3">
-
-                      {/* Business Selector */}
-                      <div className="flex items-center space-x-3">
-                        <span className="text-gray-700 font-medium">Select Business</span>
-                        <select 
-                          className="border border-gray-300 rounded-lg px-4 py-2 bg-white text-gray-800 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all" 
-                          onChange={(e) => handleDropdown(e.target.value)}
-                        >
-                          {businesses.map((business, key) => (
-                            <option key={key} value={business._id}>
-                              {business.legal_name}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-
-                      {/* Filter Selector */}
-                      <div className="flex items-center space-x-3">
-                        <span className="text-gray-700 font-medium">Filter</span>
-                        <select 
-                          className="border border-gray-300 rounded-lg px-4 py-2 bg-white text-gray-800 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all" 
-                          value={filter}
-                          onChange={(e) => handleFilterDropdown(e.target.value)}
-                        >
-                            {filters.map((filter, key) => (
-                            <option key={key} value={filter.id}>
-                              {filter.name} 
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-
+                  <div className="flex flex-wrap items-center gap-4 p-4 bg-gray-50 rounded-lg shadow-sm">
+  
+                  {/* Business Selector */}
+                  <div className="flex items-center gap-2">
+                    <span className="text-gray-700 font-medium">Select Business</span>
+                    <select 
+                      className="border border-gray-300 rounded-md px-3 py-2 bg-white text-gray-800 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                      onChange={(e) => handleDropdown(e.target.value)}
+                      value={selectedBusiness}
+                    >
+                      {businesses.map((business, key) => (
+                        <option key={key} value={business._id}>
+                          {business.legal_name}
+                        </option>
+                      ))}
+                    </select>
                   </div>
-                  
+
+                  {/* Filter Selector */}
+                  <div className="flex items-center gap-2">
+                    <span className="text-gray-700 font-medium">Filter</span>
+                    <select 
+                      className="border border-gray-300 rounded-md px-3 py-2 bg-white text-gray-800 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                      value={filter}
+                      onChange={(e) => handleFilterDropdown(e.target.value)}
+                    >
+                      {filters.map((filter, key) => (
+                        <option key={key} value={filter.id}>
+                          {filter.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* Validity Section */}
+                  <div className="flex items-center gap-2">
+                    <span className="text-gray-700 font-medium">Validity:</span>
+                    <span className="text-blue-600 font-semibold">{date}</span>
+                  </div>
+
+                </div>
+
                 </div>
 
                 {/* Error message with better positioning */}
@@ -365,10 +391,11 @@ const Dashboard = () => {
               </div>
 
                {/* Analytics Cards */}
-               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
                 {[
                   { label: "Total Sales", value: totalSales },
                   { label: "Total GST Sales", value: totalGSTSales },
+                  { label: "Total GST", value: totalGST },
                   { label: "Total URD Sales", value: totalURDSales },
                   { label: "Total URD Purchases", value: totalURDPurchases }
                 ].map(({ label, value }, index) => (
@@ -401,7 +428,7 @@ const Dashboard = () => {
                       <table className="w-full text-left">
                         <thead>
                           <tr className="bg-gray-50">
-                            <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Bill ID</th>
+                            <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Invoice No</th>
                             <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
                             <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Bill For</th>
                             <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
@@ -701,12 +728,26 @@ const Dashboard = () => {
               </div>
             </>
           ) : (
-            <div className="flex flex-col items-center justify-center p-12 bg-white rounded-xl shadow-sm">
-              <svg className="w-16 h-16 text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-              </svg>
-              <p className="text-gray-600 text-lg">No recent transactions available.</p>
-              <p className="text-gray-500 mt-1">Transactions will appear here once they're recorded in the system.</p>
+            <div className="flex flex-col items-center justify-center p-8 bg-white border rounded-lg shadow-xl border-gray-200 overflow-hidden">
+              {businesses.length === 0? (
+                <div className="text-center">
+                  <p className="text-gray-500 text-lg">No business added to your account.</p>
+                  <button
+                    onClick={() => navigate('/add-business')}
+                    className="mt-3 bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition duration-200"
+                  >
+                    Add Your Business
+                  </button>
+                </div>
+              ) : (
+              <div className="flex flex-col items-center justify-center text-center">
+                <svg className="w-16 h-16 text-gray-300 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                </svg>
+                <p className="text-gray-600 text-lg">No recent transactions available.</p>
+                <p className="text-gray-500 mt-1">Transactions will appear here once recorded in the system.</p>
+              </div>              
+              )}
             </div>
           )}
         </div>

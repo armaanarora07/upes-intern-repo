@@ -130,12 +130,12 @@ const Products = () => {
                     onChange={(e) => handleHSNCode(index, "hsn_code", e.target.value)}
                   >
                     <option value="Select HSN Code">Select HSN Code</option>
-                    {hsnCodes.map((codeObj) => (
+                    {hsnCodes && hsnCodes.map((codeObj) => (
                       <option key={codeObj.hsn} value={codeObj.hsn}>
                         {codeObj.hsn}
                       </option>
                     ))}
-                    <option value="other">Other</option>
+                    <option value={row.custom_hsn}>Other</option>
                   </select>
 
                   {row.hsn_code === "other" && (
@@ -144,7 +144,7 @@ const Products = () => {
                       className="border-2 border-[#EFF0F4] p-2 w-full rounded-md mt-2"
                       placeholder="Enter HSN Code"
                       value={row.custom_hsn || ""}
-                      onChange={(e) => handleInputChange(index, "hsn_code", e.target.value)}
+                      onChange={(e) => handleInputChange(index, "custom_hsn", e.target.value)}
                     />
                   )}
                 </td>
