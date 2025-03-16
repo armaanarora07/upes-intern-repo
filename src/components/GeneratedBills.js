@@ -426,7 +426,7 @@ const GeneratedBills = () => {
                           onClick={() => handlePageClick(pageNum)}
                           className={`relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium ${
                             currentPage === pageNum
-                              ? "z-10 bg-blue-600 text-white border-blue-600"
+                              ? "z-5 bg-blue-600 text-white border-blue-600"
                               : "bg-white text-gray-700 hover:bg-gray-50"
                           } mx-1 rounded-md`}
                         >
