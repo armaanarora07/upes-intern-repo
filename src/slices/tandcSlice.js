@@ -1,4 +1,26 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import axios from "axios";
+
+// Fetch businesses from API
+export const fetchTandC = createAsyncThunk(
+  "tnc/fetch",
+  async (_, { rejectWithValue }) => {
+    
+    const authToken = localStorage.getItem("authToken");
+
+    try {
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/user/tnc`, {
+        headers: { Authorization: `Bearer ${authToken}` },
+      });
+
+      console.log()
+      return response.data.data[0].tnc || "";
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || error.message);
+    }
+  }
+);
+
 
 const loadGSTTandCDetailsFromLocalStorage = () => {
   try {
@@ -35,6 +57,24 @@ const tandcSlice = createSlice({
       state.URDtandcDetails = action.payload;
       localStorage.setItem('URDTermsandConditions', state.URDtandcDetails);
     },
+  },
+  extraReducers: (builder) => {
+        builder
+          .addCase(fetchTandC.pending, (state) => {
+            state.loading = true;
+            state.error = null;
+          })
+          .addCase(fetchTandC.fulfilled, (state, action) => {
+            state.loading = false;
+            state.GSTtandcDetails = action.payload;
+            state.URDtandcDetails = action.payload;
+            localStorage.setItem('GSTTermsandConditions', state.GSTtandcDetails);
+            localStorage.setItem('URDTermsandConditions', state.URDtandcDetails);
+          })
+          .addCase(fetchTandC.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.payload;
+          })
   },
 });
 

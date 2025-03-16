@@ -205,7 +205,7 @@ class Template1 {
     this.doc.setFontSize(8);
     if(invoiceData.bankEnabled && invoiceData.bank){
     this.doc.text("Bank Details", 17, finalY + 24);
-    this.doc.text(`Account Holder Name : ${invoiceData.bank?.accountHolderName}`, 17, finalY + 27);
+    this.doc.text(`UPI ID : ${invoiceData.bank?.upiId}`, 17, finalY + 27);
     this.doc.text(`Account Number : ${invoiceData.bank?.accountNumber}`, 17, finalY + 30);
     this.doc.text(`IFSC Code : ${invoiceData.bank?.ifscCode}`, 17, finalY + 33);
     this.doc.text(`Bank Name : ${invoiceData.bank?.bankName}`, 17, finalY + 36);

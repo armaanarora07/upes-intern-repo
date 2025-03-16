@@ -1,4 +1,28 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import axios from "axios";
+
+
+// Fetch businesses from API
+export const fetchBanks = createAsyncThunk(
+  "bank/fetch",
+  async (_, { rejectWithValue }) => {
+    
+    const authToken = localStorage.getItem("authToken");
+
+    try {
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/user/bank`, {
+        headers: { Authorization: `Bearer ${authToken}` },
+      });
+
+      const data = response.data.data || [];
+      const bankdata = data.map((bank) => ({ accountNumber:bank.ac_no, ifscCode:bank.ifsc,upiId:bank.upi, bankName:bank.bank_name }))
+      return bankdata;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || error.message);
+    }
+  }
+);
+
 
 const loadBankDetailsFromLocalStorage = () => {
   try {
@@ -26,13 +50,10 @@ const bankSlice = createSlice({
     bankDetails: loadBankDetailsFromLocalStorage(),
     selectedGBank: loadSelectedBankDetailsFromLocalStorage(),
     enabled: JSON.parse(localStorage.getItem("Bank-Invoice")) || false, 
+    loading: false,
+    error: null,
   },
   reducers: {
-    addBankDetails: (state, action) => {
-      const newBank = action.payload;
-      state.bankDetails.push(newBank);
-      localStorage.setItem('bankDetails', JSON.stringify(state.bankDetails));
-    },
     SelectedBank: (state, action) => {
       state.selectedGBank = action.payload;
       localStorage.setItem('selectedBankDetails', JSON.stringify(state.selectedGBank));
@@ -40,11 +61,6 @@ const bankSlice = createSlice({
     clearSelectedBank: (state) => {
       state.selectedGBank = [];
       localStorage.removeItem('selectedBankDetails');
-    },
-    editBankDetails: (state, action) => {
-      const { index, updatedBank } = action.payload;
-      state.bankDetails[index] = updatedBank;
-      localStorage.setItem('bankDetails', JSON.stringify(state.bankDetails));
     },
     deleteBankDetails:(state) =>{
       localStorage.removeItem('bankDetails');
@@ -54,7 +70,23 @@ const bankSlice = createSlice({
       localStorage.setItem("Bank-Invoice", JSON.stringify(state.enabled));
     }
   },
+  extraReducers: (builder) => {
+      builder
+        .addCase(fetchBanks.pending, (state) => {
+          state.loading = true;
+          state.error = null;
+        })
+        .addCase(fetchBanks.fulfilled, (state, action) => {
+          state.loading = false;
+          state.bankDetails = action.payload;
+          localStorage.setItem('bankDetails', JSON.stringify(action.payload)); // Store in localStorage
+        })
+        .addCase(fetchBanks.rejected, (state, action) => {
+          state.loading = false;
+          state.error = action.payload;
+        })
+      },
 });
 
-export const { addBankDetails, SelectedBank, clearSelectedBank, editBankDetails, deleteBankDetails, setEnabled } = bankSlice.actions;
+export const { SelectedBank, clearSelectedBank, deleteBankDetails, setEnabled } = bankSlice.actions;
 export default bankSlice.reducer;

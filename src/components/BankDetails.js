@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { addBankDetails, clearSelectedBank, editBankDetails, SelectedBank, setEnabled} from '../slices/bankSlice';
+import { clearSelectedBank, fetchBanks, SelectedBank, setEnabled} from '../slices/bankSlice';
 import { FaEdit, FaTrash, FaTimes } from 'react-icons/fa';
 import { Trash2 } from 'lucide-react';
+import axios from 'axios';
 
 const bankNames = [
   // Public Sector Banks (PSBs)
@@ -71,21 +72,20 @@ const bankNames = [
 const BankDetails = () => {
   const dispatch = useDispatch();
   const { bankDetails, selectedGBank, enabled } = useSelector((state) => state.banks);
+  const authToken = useSelector((state) => state.auth.authToken);
   const [selectedBank, setSelectedBank] = useState(selectedGBank);
   const [activeModal, setActiveModal] = useState(null);
   const [accountNumber, setAccountNumber] = useState('');
-  const [accountHolderName, setAccountHolderName] = useState('');
   const [ifscCode, setIfscCode] = useState('');
-  const [branchName, setBranchName] = useState('');
+  const [upiId, setUpiId] = useState('');
   const [bankName, setbankName] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [editingIndex, setEditingIndex] = useState(null);
 
   const resetForm = () => {
     setAccountNumber('');
-    setAccountHolderName('');
+    setUpiId('');
     setIfscCode('');
-    setBranchName('');
     setbankName('');
     setEditingIndex(null);
   };
@@ -95,15 +95,10 @@ const BankDetails = () => {
     resetForm();
   };
 
-  const handleSelectBank = (bank) =>{
-    setActiveModal('edit');
-    setEditingIndex(bankDetails.indexOf(bank));
-    setAccountNumber(bank.accountNumber);
-    setAccountHolderName(bank.accountHolderName);
-    setIfscCode(bank.ifscCode);
-    setBranchName(bank.branchName);
-    setbankName(bank.bankName);
-  }
+  useEffect(()=>{
+    dispatch(fetchBanks());
+  },[dispatch]);
+
 
   const handleSelection = (bank) =>{
     setSelectedBank(bank);
@@ -111,15 +106,30 @@ const BankDetails = () => {
     closeModal();
   }
 
-  const handleAddBankDetails = () => {
-    dispatch(addBankDetails({ accountHolderName, accountNumber, ifscCode, branchName, bankName }));
-    dispatch(SelectedBank({ accountHolderName, accountNumber, ifscCode, branchName, bankName }));
-    setSelectedBank({ accountHolderName, accountNumber, ifscCode, branchName, bankName });
-    closeModal();
-  };
+  const handleAddBankDetails = async () => {
 
-  const handleEditBankDetails = () => {
-    dispatch(editBankDetails({ index: editingIndex, updatedBank: { accountHolderName, accountNumber, ifscCode, branchName, bankName } }));
+    const reqBody = {
+      ac_no: accountNumber,
+      ifsc: ifscCode,
+      bank_name: bankName,
+      upi_id: upiId
+    }
+
+   try {
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_URL}/user/bank`,
+         reqBody, // Data being sent in POST request
+        {
+          headers: { Authorization: `Bearer ${authToken}` },
+        }
+      );
+      console.log(response.data); // Returning the newly added bank details
+    } catch (error) {
+      console.log(error.message);
+    }
+    dispatch(SelectedBank({ accountNumber, ifscCode,upiId, bankName }));
+    setSelectedBank({ accountNumber, ifscCode,upiId, bankName });
+    dispatch(fetchBanks());
     closeModal();
   };
 
@@ -186,9 +196,8 @@ const selectBank = (name) => {
         <div className="mt-4 p-4 bg-gray-100 rounded-lg">
           <h3 className="font-semibold text-gray-700"><span className="font-semibold">{selectedBank.bankName}</span></h3>
           <p className="text-gray-600">Account Number : <span className="font-semibold">{selectedBank.accountNumber}</span></p>
-          <p className="text-gray-600">Account Holder Name : <span className="font-semibold">{selectedBank.accountHolderName}</span></p>
           <p className="text-gray-600">IFSC Code : <span className="font-semibold">{selectedBank.ifscCode}</span></p>
-          <p className="text-gray-600">Branch Name : <span className="font-semibold">{selectedBank.branchName}</span></p>
+          <p className="text-gray-600">UPI ID : <span className="font-semibold">{selectedBank.upiId}</span></p>
           <div className="flex space-x-2 mt-3">
             <button onClick={handleRemoveBank} className="btn btn-red">
               <Trash2 className="w-5 h-5" />
@@ -210,7 +219,7 @@ const selectBank = (name) => {
               </button>
             </div>
 
-            {(activeModal === 'add' || activeModal === 'edit') && (
+            {(activeModal === 'add') && (
               <div className="mt-4 space-y-3">
                   <div className="relative mb-4">
                     <span className="absolute -top-3 left-2 text-sm bg-white px-1 text-black">Bank Name</span>
@@ -235,30 +244,12 @@ const selectBank = (name) => {
                      )}
                 </div>
                 <div className="relative mb-4">
-                    <span className="absolute -top-3 left-2 text-sm bg-white px-1 text-black">Branch Name</span>
-                    <input
-                        type="text"
-                        className="w-full border border-[#4154f1] rounded-lg p-2"
-                        value={branchName} // Update to the correct state variable
-                        onChange={(e) => setBranchName(e.target.value)} 
-                    />
-                </div>
-                <div className="relative mb-4">
                     <span className="absolute -top-3 left-2 text-sm bg-white px-1 text-black">Account Number</span>
                     <input
                         type="text"
                         className="w-full border border-[#4154f1] rounded-lg p-2"
                         value={accountNumber} // Update to the correct state variable
                         onChange={(e) => setAccountNumber(e.target.value)} 
-                    />
-                </div>
-                <div className="relative mb-4">
-                    <span className="absolute -top-3 left-2 text-sm bg-white px-1 text-black">Account Holder Name</span>
-                    <input
-                        type="text"
-                        className="w-full border border-[#4154f1] rounded-lg p-2"
-                        value={accountHolderName} // Update to the correct state variable
-                        onChange={(e) => setAccountHolderName(e.target.value)} 
                     />
                 </div>
                 <div className="relative mb-4">
@@ -270,26 +261,30 @@ const selectBank = (name) => {
                         onChange={(e) => setIfscCode(e.target.value)} 
                     />
                 </div>
-                <button onClick={activeModal === 'add' ? handleAddBankDetails : handleEditBankDetails} className="bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 transition duration-200 w-full">
-                  {activeModal === 'add' ? 'Save' : 'Update'}
+                <div className="relative mb-4">
+                    <span className="absolute -top-3 left-2 text-sm bg-white px-1 text-black">UPI ID</span>
+                    <input
+                        type="text"
+                        className="w-full border border-[#4154f1] rounded-lg p-2"
+                        value={upiId} // Update to the correct state variable
+                        onChange={(e) => setUpiId(e.target.value)} 
+                    />
+                </div>
+                <button onClick={ handleAddBankDetails } className="bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 transition duration-200 w-full">
+                   Save
                 </button>
               </div>
             )}
 
             {activeModal === 'select' && (
               <div className="mt-4">
-                <input className="w-full border border-[#4154f1] rounded-lg p-2" type="text" placeholder="Search by Name" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
+                <input className="w-full border border-[#4154f1] rounded-lg p-2" type="text" placeholder="Search by Account Number" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
                 <ul className="mt-2 space-y-2 max-h-60 overflow-y-auto border border-gray-300 rounded-lg p-2">
-                  {bankDetails.filter(bank => bank.accountHolderName.toLowerCase().includes(searchTerm.toLowerCase())).map((bank, index) => (
+                  {bankDetails.filter(bank => bank.accountNumber.includes(searchTerm.toLowerCase())).map((bank, index) => (
                     <li key={index} className="cursor-pointer p-2 rounded-lg bg-gray-100 hover:bg-gray-200 flex justify-between items-center">
                       <div onClick={() => { handleSelection(bank); }} className="flex-1">
                         {bank.bankName || ''} - {bank.accountNumber}
                       </div>
-                      <div className="flex-end">
-                        <button onClick={() => { handleSelectBank(bank); }} className="btn btn-yellow">
-                          <FaEdit />
-                        </button>
-                     </div>
                     </li>
                   ))}
                 </ul>
