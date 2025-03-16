@@ -342,7 +342,7 @@ const BillPreview = ({ open, onClose, ewaybillData, billData }) => {
     const billTemplate = new BillTemplate();
     const doc = billTemplate.generateInvoice(invoiceData);
     const timestamp = new Date().toISOString().replace(/[-:.]/g, "");
-    const uniqueName = `eway-added-invoice_${timestamp}.pdf`;
+    const uniqueName = `invoice_${timestamp}.pdf`;
     doc.save(uniqueName);
   };
 
@@ -381,7 +381,7 @@ const BillPreview = ({ open, onClose, ewaybillData, billData }) => {
           </div>
           <button
             className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
-            onClick={()=>{console.log(billData)}}
+            onClick={handleDownloadPDF}
           >
             Download PDF
           </button>
