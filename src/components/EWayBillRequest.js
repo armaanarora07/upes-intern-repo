@@ -188,7 +188,7 @@ const EWayBillRequest = () => {
       <BillPreview
          open={preview} 
          onClose={() => setPreview(false)} 
-         ewayBillData={response} 
+         ewaybillData={response} 
       />
 
     </div>

@@ -221,61 +221,60 @@ const BillPreview = ({ open, onClose, ewaybillData, billData }) => {
 
   useEffect(() => {
 
-     const createBillPreview = () =>{
 
-     if (ewaybillData) {
+     const createEwayBillPreview = (ewaybillData) =>{
 
-        const date = new Date(ewaybillData.bill.created_at);
+      const date = new Date(ewaybillData.bill.created_at);
 
-        const formattedDate = `${date.getDate().toString().padStart(2, '0')}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getFullYear()}`;
+      const formattedDate = `${date.getDate().toString().padStart(2, '0')}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getFullYear()}`;
 
-        const invoiceDataFromGlobal = {
-          firstParty: {
-            gstin: business ? business.gstin : '',
-            legal_name: business ? business.legal_name: '',
-            trade_name: business ? business.trade_name: '',
-            principal_address: business ? business.principal_address: '',
-            shipping_address: business ? business.shipping_address: ''
-          },
-          party: {
-            gstin: ewaybillData.bill ? ewaybillData.bill.second_party : '',
-            legal_name:  ewaybillData.bill ?  ewaybillData.legal_name : '',
-            trade_name:  ewaybillData.bill ? ewaybillData.trade_name:'',
-            shipping_address: ewaybillData.bill ?  ewaybillData.bill.shipping_address:'',
-            invoiceDate: formattedDate || '',
-            invoiceNo: ewaybillData.bill ? ewaybillData.bill.sn_no : '',
-            phoneNo: '',
-          },
-          quantities: ewaybillData.bill.quantity.map((q) => q),
-          hsn_details: ewaybillData.bill.hsns.map((hsn) => ({
-            hsn_code: hsn.hsn_code,
-            product_info: hsn.product_info,
-            cgst: hsn.cgst,
-            sgst: hsn.sgst,
-            unit: hsn.unit,
-          })),
-          rates: ewaybillData.bill.rate.map((r) => r),
-          tandc: GSTtandcDetails,
-          signature: signature,
-          stamp: stamp,
-          logo:logo,
-          qr:qr,
-          bank: selectedGBank,
-          signatureEnabled:signatureEnabled,
-          stampEnabled:stampEnabled,
-          bankEnabled:bankEnabled,
-          attestationSelection:attestationSelection,
-          ewayNumber:ewaybillData.eway_no,
-          vehicleNumber:ewaybillData.vehicle_no
-        };
-  
-        const calculatedInvoice = calculateInvoiceTotals(invoiceDataFromGlobal);
-        setInvoiceData(calculatedInvoice);
-        generatePreview(calculatedInvoice);
+      const invoiceDataFromGlobal = {
+        firstParty: {
+          gstin: business ? business.gstin : '',
+          legal_name: business ? business.legal_name: '',
+          trade_name: business ? business.trade_name: '',
+          principal_address: business ? business.principal_address: '',
+          shipping_address: business ? business.shipping_address: ''
+        },
+        party: {
+          gstin: ewaybillData.bill ? ewaybillData.bill.second_party : '',
+          legal_name:  ewaybillData.bill ?  ewaybillData.legal_name : '',
+          trade_name:  ewaybillData.bill ? ewaybillData.trade_name:'',
+          principal_address: ewaybillData.bill ?  ewaybillData.bill.shipping_address:'',
+          shipping_address: ewaybillData.bill ?  ewaybillData.bill.shipping_address:'',
+          invoiceDate:formattedDate || '',
+          invoiceNo: ewaybillData.bill ? ewaybillData.bill.sn_no : '',
+          phoneNo: '',
+        },
+        quantities: ewaybillData.bill.quantity.map((q) => q),
+        hsn_details: ewaybillData.bill.hsns.map((hsn) => ({
+          hsn_code: hsn.hsn_code,
+          product_info: hsn.product_info,
+          cgst: hsn.cgst,
+          sgst: hsn.sgst,
+          unit: hsn.unit,
+        })),
+        rates: ewaybillData.bill.rate.map((r) => r),
+        tandc: GSTtandcDetails,
+        signature: signature,
+        stamp: stamp,
+        logo:logo,
+        qr:qr,
+        bank: selectedGBank,
+        signatureEnabled:signatureEnabled,
+        stampEnabled:stampEnabled,
+        bankEnabled:bankEnabled,
+        attestationSelection:attestationSelection,
+        ewayNumber:ewaybillData.eway_no,
+        vehicleNumber:ewaybillData.vehicle_no
+      };
 
-      }
-      
-      if(billData){
+      const calculatedInvoice = calculateInvoiceTotals(invoiceDataFromGlobal);
+      setInvoiceData(calculatedInvoice);
+      generatePreview(calculatedInvoice);
+     }
+
+     const createBillPreview = (billData) =>{
 
         const invoiceDataFromGlobal = {
           firstParty: {
@@ -320,11 +319,13 @@ const BillPreview = ({ open, onClose, ewaybillData, billData }) => {
         setInvoiceData(calculatedInvoice);
         generatePreview(calculatedInvoice);
 
+      } 
+
+      if(ewaybillData){
+        createEwayBillPreview(ewaybillData);
+      }else if(billData){
+        createBillPreview(billData);
       }
-
-    } 
-
-      createBillPreview(ewaybillData,billData);
 
   }, [ewaybillData, selectedTemplate, billData]);
 
