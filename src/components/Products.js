@@ -1,5 +1,4 @@
-// Products.js
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { FaEdit, FaTrash } from 'react-icons/fa';
@@ -8,52 +7,124 @@ import { addRow, removeRow, updateRow } from '../slices/productSlice';
 const Products = () => {
   const dispatch = useDispatch();
   const { rows } = useSelector((state) => state.products);
-  const { businesses,selectedBusiness } = useSelector((state) => state.business);
-  const authToken = useSelector((state) => state.auth.authToken); // access from global auth state 
-  const business = businesses?.find((b)=> b._id === selectedBusiness) || {};
-  const hsnCodes = business.hsns;
-
-  const handleInputChange = (index, field, value) => {
-    dispatch(updateRow({ index, field, value }));
-  };
-
-  const handleHSNCode = async (index, field, value) =>{
-
-    dispatch(updateRow({ index, field, value }));
-
-    if(value === "Select HSN Code" || value === "other"){
-      handleInputChange(index, "product_info", '');
-    }
-
-    if (field === "hsn_code" && value !== "other" && value !== "Select HSN Code") {
-      try {
-        const response = await axios.get(`${process.env.REACT_APP_API_URL}/user/hsn?hsn_code=${value}`, 
-          {
+  const { businesses, selectedBusiness } = useSelector((state) => state.business);
+  const authToken = useSelector((state) => state.auth.authToken);
+  const business = businesses?.find((b) => b._id === selectedBusiness) || {};
+  const [hsnData, setHsnData] = useState([]);
+  
+  // Add state for suggestions and active field
+  const [suggestions, setSuggestions] = useState([]);
+  const [activeRowIndex, setActiveRowIndex] = useState(null);
+  const suggestionRef = useRef(null);
+  
+  // Maximum number of suggestions to show
+  const MAX_SUGGESTIONS = 20; // Increased from default
+  
+  // Fetch HSN data when component mounts
+  useEffect(() => {
+    const fetchHsnData = async () => {
+      if (business.gstin) {
+        try {
+          const response = await axios.get(`${process.env.REACT_APP_API_URL}/user/hsn/local?gstin=${business.gstin}`, {
             headers: {
               Authorization: `Bearer ${authToken}`,
               "Content-Type": "application/json",
             },
+          });
+          
+          if (response.data.status && response.data.data) {
+            setHsnData(response.data.data);
           }
-        );
-        const productInfo = response.data?.product_info?.[0] || "No product info available";
-
-        // Split by "OR" first, then take the first option
-        let parts = productInfo.split(/\s+OR\s+/);
-    
-        // Split the first part by comma and take the first meaningful chunk
-        let shortProductInfo = parts[0].split(",")[0].trim();
-
-        handleInputChange(index, "product_info", shortProductInfo);
-
-        console.log(shortProductInfo);
-
-      } catch (error) {
-        console.error("Error fetching product info:", error);
-        handleInputChange(index, "product_info", '');
+        } catch (error) {
+          console.error("Error fetching HSN data:", error);
+        }
       }
-   }
+    };
+    
+    fetchHsnData();
+  }, [business.gstin, authToken]);
 
-  }
+  // Add click outside handler to close suggestions
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (suggestionRef.current && !suggestionRef.current.contains(event.target)) {
+        setSuggestions([]);
+        setActiveRowIndex(null);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  const handleInputChange = (index, field, value) => {
+    dispatch(updateRow({ index, field, value }));
+    
+    // Show suggestions only when editing HSN code
+    if (field === "hsn_code") {
+      // Set the active row and filter suggestions
+      setActiveRowIndex(index);
+      
+      if (value) {
+        // Get all HSN codes that start with the input value
+        const filteredSuggestions = hsnData
+          .filter(item => item.hsn.toString().startsWith(value))
+          .map(item => item.hsn);
+          
+        // Get unique HSN codes
+        const uniqueSuggestions = [...new Set(filteredSuggestions)];
+        
+        // Sort suggestions numerically and limit to MAX_SUGGESTIONS
+        const sortedSuggestions = uniqueSuggestions
+          .sort((a, b) => parseInt(a) - parseInt(b))
+          .slice(0, MAX_SUGGESTIONS);
+          
+        setSuggestions(sortedSuggestions);
+      } else {
+        setSuggestions([]);
+      }
+      
+      // Don't populate fields on partial matches, only when exact match
+      const exactMatch = hsnData.find(item => item.hsn === value);
+      if (exactMatch) {
+        populateFields(index, exactMatch);
+      } else {
+        clearPopulatedFields(index);
+      }
+    }
+  };
+  
+  // Function to select a suggestion
+  const handleSelectSuggestion = (index, hsnCode) => {
+    // Update the HSN code field
+    dispatch(updateRow({ index, field: "hsn_code", value: hsnCode }));
+    
+    // Find and populate the HSN data
+    const matchedHsn = hsnData.find(item => item.hsn === hsnCode);
+    if (matchedHsn) {
+      populateFields(index, matchedHsn);
+    }
+    
+    // Clear suggestions
+    setSuggestions([]);
+    setActiveRowIndex(null);
+  };
+  
+  // Function to populate fields based on HSN data
+  const populateFields = (index, hsnData) => {
+    dispatch(updateRow({ index, field: "product_info", value: hsnData.productName }));
+    dispatch(updateRow({ index, field: "taxPercent", value: hsnData.gst_rate }));
+    dispatch(updateRow({ index, field: "unit", value: hsnData.unit }));
+  };
+  
+  // Function to clear auto-populated fields when HSN doesn't match
+  const clearPopulatedFields = (index) => {
+    dispatch(updateRow({ index, field: "product_info", value: "" }));
+    dispatch(updateRow({ index, field: "taxPercent", value: 0 }));
+    // Don't reset unit as user might want to keep it
+  };
 
   const totalQuantity = rows.reduce(
     (sum, row) => sum + (Number(row.quantity) || 0),
@@ -112,7 +183,7 @@ const Products = () => {
                     onChange={(e) => handleInputChange(index, "product_info", e.target.value)}
                   />
                 </td>
-                {/*<td className="p-1 border-r-2 border-black">
+                <td className="p-1 border-r-2 border-black relative">
                   <input
                     type="text"
                     className="border-2 border-[#EFF0F4] p-2 w-full rounded-md"
@@ -120,35 +191,26 @@ const Products = () => {
                     value={row.hsn_code}
                     onChange={(e) => handleInputChange(index, "hsn_code", e.target.value)}
                   />
-                </td>*/}
-
-                 {/* DropDown to Select HSN Codes*/}
-                 <td className="p-1 border-r-2 border-black">
-                  <select
-                    className="border-2 border-[#EFF0F4] p-2 w-full rounded-md"
-                    value={row.hsn_code}
-                    onChange={(e) => handleHSNCode(index, "hsn_code", e.target.value)}
-                  >
-                    <option value="Select HSN Code">Select HSN Code</option>
-                    {hsnCodes && hsnCodes.map((codeObj) => (
-                      <option key={codeObj.hsn} value={codeObj.hsn}>
-                        {codeObj.hsn}
-                      </option>
-                    ))}
-                    <option value={row.custom_hsn}>Other</option>
-                  </select>
-
-                  {row.hsn_code === "other" && (
-                    <input
-                      type="text"
-                      className="border-2 border-[#EFF0F4] p-2 w-full rounded-md mt-2"
-                      placeholder="Enter HSN Code"
-                      value={row.custom_hsn || ""}
-                      onChange={(e) => handleInputChange(index, "custom_hsn", e.target.value)}
-                    />
+                  {/* Autocomplete suggestions dropdown */}
+                  {suggestions.length > 0 && activeRowIndex === index && (
+                    <div 
+                      ref={suggestionRef}
+                      className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto"
+                    >
+                      <ul>
+                        {suggestions.map((suggestion, i) => (
+                          <li 
+                            key={i}
+                            className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm"
+                            onClick={() => handleSelectSuggestion(index, suggestion)}
+                          >
+                            {suggestion}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
                   )}
                 </td>
-
                 <td className="p-1 border-r-2 border-black">
                   <input
                     type="number"
@@ -167,6 +229,7 @@ const Products = () => {
                     <option value="Kgs">Kgs</option>
                     <option value="L">L</option>
                     <option value="Pcs">Pcs</option>
+                    <option value="Nos">Nos</option>
                   </select>
                 </td>
                 <td className="p-1 border-r-2 border-black">

@@ -1,15 +1,15 @@
-import React, { useState,useEffect } from 'react';
-import { useLocation,useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { FaBriefcase,FaCheckCircle, FaTrashAlt, FaPlus, FaMapMarkerAlt, FaEdit } from 'react-icons/fa';
+import { FaBriefcase, FaCheckCircle, FaTrashAlt, FaPlus, FaMapMarkerAlt, FaEdit } from 'react-icons/fa';
 import { useSelector, useDispatch } from "react-redux";
-import {fetchBusinesses} from '../slices/businessSlice.js';
+import { fetchBusinesses } from '../slices/businessSlice.js';
 import { setTitle } from '../slices/navbarSlice.js';
 
 const UpdateBusiness = () => {
   const [gstin, setGstin] = useState(''); 
   const [skippedgstin, setSkippedGstin] = useState(''); 
-  const [username,setUsername] = useState('');
+  const [username, setUsername] = useState('');
   const [legalName, setLegalName] = useState('');
   const [tradeName, setTradeName] = useState('');
   const [shippingAddress1, setShippingAddress1] = useState('');
@@ -17,7 +17,11 @@ const UpdateBusiness = () => {
   const [city, setCity] = useState('');
   const [state, setState] = useState('');
   const [pincode, setPincode] = useState('');
-  const [hsnCode, setHsnCode] = useState();
+  const [hsnCode, setHsnCode] = useState('');
+  const [productName, setProductName] = useState('');
+  const [gstRate, setGstRate] = useState(18);
+  const [unit, setUnit] = useState('Nos');
+  const [showAddHsnDetailsPopup, setShowAddHsnDetailsPopup] = useState(false);
   const authToken = useSelector((state) => state.auth.authToken); // access from global auth state 
   const location = useLocation();
   const [showHsnPopup, setShowHsnPopup] = useState(false);
@@ -99,6 +103,11 @@ const UpdateBusiness = () => {
     setShowHsnPopup(true); // Show the popup
   };
 
+  const handleShowAddHsnDetailsPopup = () => {
+    setShowAddHsnDetailsPopup(true); // Show the Add HSN Details popup
+    setShowHsnPopup(false); // Close the HSN list popup
+  };
+
   const handleShowAddressPopup = () => {
     setShowAddressPopup(true); // Show the address popup
   };
@@ -107,8 +116,7 @@ const UpdateBusiness = () => {
     setShowAddSkippedBillPopup(true); // Show the Add Skipped Bill popup
   };
 
-  const handleAddHsnCode = async (hsnCode) =>{
-
+  const handleAddHsnCode = async (hsnCode) => {
     const requestBody = {
       gstin: gstin, // Use the current GSTIN
       hsn: hsnCode, // HSN code to be added
@@ -123,13 +131,51 @@ const UpdateBusiness = () => {
       });
 
     } catch (error) {
-      console.error('Error updating serial number:', error);
-      alert('Failed to Update Serial Number');
+      console.error('Error updating HSN code:', error);
+      alert('Failed to Update HSN Code');
     }
     setHsnCode('');
     dispatch(fetchBusinesses());
-
   }
+
+  const handleAddHsnDetails = async () => {
+    // Validate form inputs
+    if (!hsnCode || !productName || !gstRate || !unit) {
+      alert('Please fill all the required fields');
+      return;
+    }
+
+    const requestBody = {
+      gstin: gstin,
+      hsn: hsnCode,
+      productName: productName,
+      gst_rate: gstRate,
+      unit: unit
+    };
+
+    try {
+      const response = await axios.put(`${process.env.REACT_APP_API_URL}/user/hsn`, requestBody, {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.status === 200) {
+        setShowAddHsnDetailsPopup(false);
+        // Reset form fields
+        setHsnCode('');
+        setProductName('');
+        setGstRate(18);
+        setUnit('Nos');
+        // Refresh business data
+        dispatch(fetchBusinesses());
+      }
+    } catch (error) {
+      console.error('Error adding HSN details:', error);
+      alert('Failed to add HSN details');
+    }
+  };
 
   const handleDeleteHsnCode = async (hsn) => {
 
@@ -330,16 +376,104 @@ const UpdateBusiness = () => {
               />
             </div>
             <div className="flex space-x-4 mt-4">
-               <button className="bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 transition duration-200 w-full"
-               onClick={()=>{handleAddHsnCode(hsnCode)}}
-               >
+              <button className="bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 transition duration-200 w-full"
+                onClick={()=>{handleAddHsnCode(hsnCode)}}
+              >
                 Add HSN
+              </button>
+              <button 
+                className="bg-green-500 text-white p-2 rounded-lg hover:bg-green-600 transition duration-200 w-full"
+                onClick={handleShowAddHsnDetailsPopup} // Show Add HSN Details popup
+              >
+                Add HSN Details
               </button>
               <button 
                 className="bg-gray-300 text-black p-2 rounded-lg hover:bg-gray-400 transition duration-200 w-full"
                 onClick={() => setShowHsnPopup(false)} // Close popup
               >
                 Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Add HSN Details Popup */}
+      {showAddHsnDetailsPopup && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-1/3">
+            <h2 className="font-semibold text-lg mb-4 text-center">Add HSN Details</h2>
+            
+            <div className="relative mb-4">
+              <span className="absolute -top-3 left-2 text-sm bg-white px-1 text-black">HSN Code *</span>
+              <input
+                type="text"
+                className="w-full border border-[#4154f1] rounded-lg p-2"
+                value={hsnCode}
+                onChange={(e) => setHsnCode(e.target.value)}
+                required
+              />
+            </div>
+
+            <div className="relative mb-4">
+              <span className="absolute -top-3 left-2 text-sm bg-white px-1 text-black">Product Name *</span>
+              <input
+                type="text"
+                className="w-full border border-[#4154f1] rounded-lg p-2"
+                value={productName}
+                onChange={(e) => setProductName(e.target.value)}
+                required
+                placeholder="e.g. Optical fibres & bundles, optical fibre cables"
+              />
+            </div>
+
+            <div className="relative mb-4">
+              <span className="absolute -top-3 left-2 text-sm bg-white px-1 text-black">GST Rate (%) *</span>
+              <select
+                className="w-full border border-[#4154f1] rounded-lg p-2"
+                value={gstRate}
+                onChange={(e) => setGstRate(Number(e.target.value))}
+                required
+              >
+                <option value={0}>0%</option>
+                <option value={5}>5%</option>
+                <option value={12}>12%</option>
+                <option value={18}>18%</option>
+                <option value={28}>28%</option>
+              </select>
+            </div>
+
+            <div className="relative mb-4">
+              <span className="absolute -top-3 left-2 text-sm bg-white px-1 text-black">Unit *</span>
+              <select
+                className="w-full border border-[#4154f1] rounded-lg p-2"
+                value={unit}
+                onChange={(e) => setUnit(e.target.value)}
+                required
+              >
+                <option value="Nos">Nos</option>
+                <option value="Kgs">Kgs</option>
+                <option value="Pcs">PCS</option>
+                <option value="Mtr">Mtr</option>
+                <option value="Ltr">Ltr</option>
+              </select>
+            </div>
+
+            <div className="flex space-x-4 mt-4">
+              <button 
+                className="bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 transition duration-200 w-full"
+                onClick={handleAddHsnDetails}
+              >
+                Save HSN Details
+              </button>
+              <button 
+                className="bg-gray-300 text-black p-2 rounded-lg hover:bg-gray-400 transition duration-200 w-full"
+                onClick={() => {
+                  setShowAddHsnDetailsPopup(false);
+                  setShowHsnPopup(true); // Return to HSN list popup
+                }}
+              >
+                Cancel
               </button>
             </div>
           </div>
