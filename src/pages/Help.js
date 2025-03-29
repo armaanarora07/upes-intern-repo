@@ -10,11 +10,11 @@ function Help() {
   })
 
   return (
-    <div className='p-8'>
+    <div className='p-8 min-h-screen dark:bg-gray-800'>
 
-    <div className='p-6 mt-5 mb-6 bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden'>
-       <h2 className="text-2xl font-bold text-gray-800 flex justify-center">Please Reach out to us !</h2>
-       <p className="text-2xl font-medium text-gray-800 flex justify-center">Email : info@sangrahinnovations.com</p>
+    <div className='p-6 mt-5 mb-6 bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden dark:bg-gray-800 dark:border-gray-700'>
+       <h2 className="text-2xl font-bold text-gray-800 flex justify-center dark:text-gray-200">Please Reach out to us !</h2>
+       <p className="text-2xl font-medium text-gray-800 flex justify-center dark:text-gray-200">Email : info@sangrahinnovations.com</p>
     </div>
   </div>
   )

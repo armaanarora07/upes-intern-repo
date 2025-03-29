@@ -100,7 +100,7 @@ const Sidebar = () => {
     >
       {/* Toggle button - increased size */}
       <button 
-        className="absolute -right-4 top-18 mt-4 bg-white rounded-lg p-2 shadow-md z-10 hover:bg-gray-50"
+        className="absolute -right-4 top-18 mt-4 bg-white rounded-lg p-2 shadow-md z-10 hover:bg-gray-50 dark:bg-gray-400 dark:text-gray-200 dark:hover:bg-gray-600 dark:border-gray-700"
         onClick={toggleSidebar}
       >
         {expanded ? 

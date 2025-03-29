@@ -232,22 +232,22 @@ const GeneratedBills = () => {
   };
 
   return (
-    <div className="p-8">
+    <div className="p-8 min-h-screen dark:bg-gray-800">
     <div className="mt-3">
       {errorMessage && <p className="text-red-500">{errorMessage}</p>}
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-16 px-4 py-2 mb-3">
-        <div className="bg-white shadow-xl border rounded-3xl p-6 w-full h-40 transform transition-all duration-300 hover:scale-105">
-          <h2 className="text-5xl text-center text-gray-800 mt-2">{totalBills}</h2>
-          <p className="text-center text-black text-[16px] font-medium mt-4">Total Bills Generated</p>
+        <div className="bg-white shadow-xl border rounded-3xl p-6 w-full h-40 transform transition-all duration-300 hover:scale-105 dark:bg-gray-800 dark:border-gray-700">
+          <h2 className="text-5xl text-center text-gray-800 mt-2 dark:text-gray-200">{totalBills}</h2>
+          <p className="text-center text-black text-[16px] font-medium mt-4 dark:text-gray-200">Total Bills Generated</p>
         </div>
-        <div className="bg-white shadow-xl border rounded-3xl p-6 w-full h-40 transform transition-all duration-300 hover:scale-105">
-          <h2 className="text-5xl text-center text-gray-800 mt-2">{lastMonthBills}</h2>
-          <p className="text-center text-black text-[16px] font-medium mt-4">Bills Generated Last Month</p>
+        <div className="bg-white shadow-xl border rounded-3xl p-6 w-full h-40 transform transition-all duration-300 hover:scale-105 dark:bg-gray-800 dark:border-gray-700">
+          <h2 className="text-5xl text-center text-gray-800 mt-2 dark:text-gray-200">{lastMonthBills}</h2>
+          <p className="text-center text-black text-[16px] font-medium mt-4 dark:text-gray-200">Bills Generated Last Month</p>
         </div>
-        <div className="bg-white shadow-xl border rounded-3xl p-6 w-full h-40 transform transition-all duration-300 hover:scale-105">
-          <h2 className="text-5xl text-center text-gray-800 mt-2">{thisMonthBills}</h2>
-          <p className="text-center text-black text-[16px] font-medium mt-4">Bills Generated This Month</p>
+        <div className="bg-white shadow-xl border rounded-3xl p-6 w-full h-40 transform transition-all duration-300 hover:scale-105 dark:bg-gray-800 dark:border-gray-700">
+          <h2 className="text-5xl text-center text-gray-800 mt-2 dark:text-gray-200">{thisMonthBills}</h2>
+          <p className="text-center text-black text-[16px] font-medium mt-4 dark:text-gray-200">Bills Generated This Month</p>
         </div>
       </div>
       
@@ -264,7 +264,7 @@ const GeneratedBills = () => {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Search by Bill ID"
-              className="w-full border border-[#4154f1] rounded-lg p-2 pl-10"
+              className="w-full border border-[#4154f1] rounded-lg p-2 pl-10 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4154f1]"
             />
           </div>
         </div>
@@ -276,7 +276,7 @@ const GeneratedBills = () => {
             onChange={(date) => setSelectedDate(date)}
             dateFormat="dd/MM/yyyy"
             placeholderText="Filter by date"
-            className="w-full border border-[#4154f1] rounded-lg p-2"
+            className="w-full border border-[#4154f1] rounded-lg p-2 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4154f1]"
           />
           <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400">
             <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -291,7 +291,7 @@ const GeneratedBills = () => {
             setSearchTerm('');
             setSelectedDate(null);
           }}
-          className="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+          className="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4154f1]"
         >
           <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
@@ -301,40 +301,40 @@ const GeneratedBills = () => {
       </div>
       
 
-      <div className="bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden">
+      <div className="bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden dark:bg-gray-800 dark:border-gray-700">
           {/* Table Header */}
           <div className="px-6 py-4 border-b border-gray-200">
-            <h2 className="text-lg font-semibold text-gray-800">Generated Bills</h2>
+            <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-200">Generated Bills</h2>
           </div>
           
           {/* Table Container */}
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="bg-gray-50">
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Invoice No</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Bill For</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Issue Date</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">E-way</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
+                <tr className="bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-200">Invoice No</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-200">Bill For</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-200">Issue Date</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-200">Total</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-200">Status</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-200">E-way</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-200">Action</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-200">
+              <tbody className="divide-y divide-gray-200 dark:bg-gray-800 dark:border-gray-700">
                 {currentBills.map((bill) => (
-                  <tr key={bill._id} className="hover:bg-gray-50 transition-colors">
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{bill.sn_no}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{bill.name}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <tr key={bill._id} className="hover:bg-gray-50 transition-colors dark:hover:bg-gray-600">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-200">{bill.sn_no}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-200">{bill.name}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-200">
                       {new Date(bill.created_at).toLocaleString([], { hour12: true, timeStyle: 'short', dateStyle: 'medium' })}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">₹ {bill.total_value ? bill.total_value.toLocaleString() : "N/A"}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-200">₹ {bill.total_value ? bill.total_value.toLocaleString() : "N/A"}</td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                         bill.generated 
-                          ? "bg-green-100 text-green-800" 
-                          : "bg-red-100 text-red-800"
+                          ? "bg-green-100 text-green-800 dark:bg-green-200" 
+                          : "bg-red-100 text-red-800 dark:bg-red-200"
                       }`}>
                         {bill.generated ? "Generated" : "Not Generated"}
                       </span>
@@ -342,8 +342,8 @@ const GeneratedBills = () => {
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                         bill.eway_status === 'done' 
-                          ? "bg-green-100 text-green-800" 
-                          : "bg-red-100 text-red-800"
+                          ? "bg-green-100 text-green-800 dark:bg-green-200" 
+                          : "bg-red-100 text-red-800 dark:bg-red-200"
                       }`}>
                         {bill.eway_status === 'done' ? "Generated" : "Not Generated"}
                       </span>
@@ -361,14 +361,14 @@ const GeneratedBills = () => {
                         </a> */}
                         <button 
                           onClick={() => {handleViewBill(bill)}} 
-                          className="text-blue-600 hover:text-blue-800 transition-colors"
+                          className="text-blue-600 hover:text-blue-800 transition-colors dark:text-gray-200"
                           title="View Bill"
                         >
                          <FaEye className="w-5 h-5" />
                         </button>
                         <button 
                           onClick={() => handleDeleteBill(bill._id)} 
-                          className="text-red-600 hover:text-red-800 transition-colors"
+                          className="text-red-600 hover:text-red-800 transition-colors dark:text-gray-200"
                           title="Delete Bill"
                         >
                          <Trash2 className="w-5 h-5" />
@@ -394,7 +394,7 @@ const GeneratedBills = () => {
           
           {/* Pagination Controls - Improved UI */}
           {currentBills.length > 0 && (
-            <div className="px-6 py-4 bg-gray-50 border-t border-gray-200 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div className="px-6 py-4 bg-gray-50 border-t border-gray-200 flex flex-col sm:flex-row justify-between items-center gap-4 dark:bg-gray-800 dark:border-gray-700">
               <div className="flex items-center">
                 <button
                   onClick={handlePreviousPage}
@@ -426,7 +426,7 @@ const GeneratedBills = () => {
                           onClick={() => handlePageClick(pageNum)}
                           className={`relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium ${
                             currentPage === pageNum
-                              ? "z-5 bg-blue-600 text-white border-blue-600"
+                              ? "z-5 bg-blue-600 text-white border-blue-600 dark:bg-blue-800 dark:text-gray-200 dark:hover:bg-blue-700 dark:border-blue-800"
                               : "bg-white text-gray-700 hover:bg-gray-50"
                           } mx-1 rounded-md`}
                         >
@@ -440,7 +440,7 @@ const GeneratedBills = () => {
                       return (
                         <span
                           key={index}
-                          className="relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700"
+                          className="relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-200"
                         >
                           ...
                         </span>
@@ -466,7 +466,7 @@ const GeneratedBills = () => {
                 </button>
               </div>
               
-              <div className="text-sm text-gray-600">
+              <div className="text-sm text-gray-600 dark:text-gray-200">
                 Page {currentPage} of {totalPages} • Showing {currentBills.length} bills
               </div>
             </div>

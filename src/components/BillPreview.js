@@ -349,12 +349,12 @@ const BillPreview = ({ open, onClose, ewaybillData, billData }) => {
 
   return (
     <div className={`mt-16 fixed inset-0 flex items-center justify-center bg-opacity-50 ${open ? "block" : "hidden"}`}>
-      <div className="bg-white border border-gray p-5 rounded-lg shadow-lg w-full max-w-4xl">
+      <div className="bg-white border border-gray p-5 rounded-lg shadow-lg w-full max-w-4xl dark:bg-gray-800 dark:border-gray-700">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl font-bold">Invoice Preview</h2>
+          <h2 className="text-2xl font-bold dark:text-gray-200">Invoice Preview</h2>
           <button
             onClick={onClose}
-            className="px-4 py-2 bg-red-500 text-white font-bold rounded hover:bg-red-600 transition duration-200"
+            className="px-4 py-2 bg-red-500 text-white font-bold rounded hover:bg-red-600 transition duration-200 dark:bg-red-800 dark:text-gray-200 dark:hover:bg-red-700 dark:border-red-800"
           >
             Close
           </button>
@@ -369,7 +369,7 @@ const BillPreview = ({ open, onClose, ewaybillData, billData }) => {
         </div>
         <div className="flex justify-between mt-4">
           <div>
-            <label className="text-xl font-bold">Select Template</label>
+            <label className="text-xl font-bold dark:text-gray-200">Select Template</label>
             <select
               value={selectedTemplate}
               onChange={handleTemplateChange}
@@ -381,7 +381,7 @@ const BillPreview = ({ open, onClose, ewaybillData, billData }) => {
             </select>
           </div>
           <button
-            className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+            className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 dark:bg-blue-800 dark:text-gray-200 dark:hover:bg-blue-700 dark:border-blue-800"
             onClick={handleDownloadPDF}
           >
             Download PDF

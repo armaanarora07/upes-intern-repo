@@ -55,18 +55,18 @@ const UpdateEwayCred = () => {
   };
 
   return (
-    <div className="p-8">
-          <div className="flex flex-col items-center justify-center mt-10">
-                <form onSubmit={handleEnableService} className="p-6 mt-5 mb-6 bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden">
+    <div className="p-8 min-h-screen dark:bg-gray-800">
+          <div className="flex flex-col items-center justify-center mt-10 ">
+                <form onSubmit={handleEnableService} className="p-6 mt-5 mb-6 bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden dark:bg-gray-800 dark:border-gray-700">
                   
-                  <h2 className="text-2xl font-bold text-gray-800 text-center mb-4">Update E-Way Services</h2>
+                  <h2 className="text-2xl font-bold text-gray-800 text-center mb-4 dark:text-gray-200">Update E-Way Services</h2>
 
                   <input
                     type="text"
                     placeholder="E-Way User Id"
                     value={credentials.x}
                     onChange={(e) => setCredentials({ ...credentials, x: e.target.value })}
-                    className="w-full p-2 border rounded-lg mb-2"
+                    className="w-full p-2 border rounded-lg mb-2 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4154f1]"
                     required
                   />
 
@@ -75,13 +75,13 @@ const UpdateEwayCred = () => {
                     placeholder="Password"
                     value={credentials.y}
                     onChange={(e) => setCredentials({ ...credentials, y: e.target.value })}
-                    className="w-full p-2 border rounded-lg mb-2"
+                    className="w-full p-2 border rounded-lg mb-2 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4154f1]"
                     required
                   />
                    <div className='flex justify-center mt-4'>
                       <button 
                         type="submit" 
-                        className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition duration-200"
+                        className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition duration-200 dark:bg-blue-800 dark:text-gray-200 dark:hover:bg-blue-700 dark:border-blue-800"
                       >
                         Update Credentials
                       </button>

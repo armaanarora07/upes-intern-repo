@@ -267,11 +267,11 @@ const UpdateBusiness = () => {
 
 
   return (
-    <div className='p-8'>
+    <div className='p-8 min-h-screen dark:bg-gray-800'>
      
-     <div className="p-6 mt-5 mb-6 bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden">
+     <div className="p-6 mt-5 mb-6 bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden dark:bg-gray-800 dark:border-gray-700">
       
-      <div className="text-2xl font-bold text-gray-800 mt-3">
+      <div className="text-2xl font-bold text-gray-800 mt-3 dark:text-gray-200">
         My Business Details 
       </div>
   
@@ -280,32 +280,32 @@ const UpdateBusiness = () => {
           <div className="space-y-4 relative mt-4">
 
             <div className="flex justify-between items-center">
-              <span className="font-semibold">UserName</span>
-              <span className="text-gray-700">{username}</span>
+              <span className="font-semibold dark:text-gray-200">UserName</span>
+              <span className="text-gray-700 dark:text-gray-200">{username}</span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="font-semibold">GSTIN</span>
-              <span className="text-gray-700">{gstin}</span>
+              <span className="font-semibold dark:text-gray-200">GSTIN</span>
+              <span className="text-gray-700 dark:text-gray-200">{gstin}</span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="font-semibold">Legal Name</span>
-              <span className="text-gray-700">{legalName}</span>
+              <span className="font-semibold dark:text-gray-200">Legal Name</span>
+              <span className="text-gray-700 dark:text-gray-200">{legalName}</span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="font-semibold">Trade Name</span>
-              <span className="text-gray-700">{tradeName}</span>
+              <span className="font-semibold dark:text-gray-200">Trade Name</span>
+              <span className="text-gray-700 dark:text-gray-200">{tradeName}</span>
             </div>
             <div className="flex items-center">
-              <span className="font-semibold mr-2">Serial Number</span>
+              <span className="font-semibold mr-2 dark:text-gray-200">Serial Number</span>
               <div className="flex items-center">
                 <input
                   type="number"
-                  className="border border-[#4154f1] rounded-lg p-1 w-1/3 text-gray-700"
+                  className="border border-[#4154f1] rounded-lg p-1 w-1/3 text-gray-700 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4154f1]"
                   value={serialNo}
                   onChange={(e) => setSerialNo(e.target.value)}
                 />
                 <button 
-                  className="ml-2 text-blue-500 hover:text-blue-700"
+                  className="ml-2 text-blue-500 hover:text-blue-700 dark:text-gray-200"
                   onClick={handleEditSnNo} // Call the edit function on click
                 >
                   {isUpdated ? <FaCheckCircle className="text-green-500" /> : <FaEdit />} {/* Show check icon if updated */}
@@ -351,32 +351,32 @@ const UpdateBusiness = () => {
       {/* HSN Code Popup */}
       {showHsnPopup && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-1/3"> {/* Increased width of the popup */}
-            <h2 className="font-semibold text-lg mb-4 text-center">Available HSN Codes</h2>
+          <div className="bg-white p-6 rounded-lg shadow-lg w-1/3 dark:bg-gray-800 dark:border-gray-700"> {/* Increased width of the popup */}
+            <h2 className="font-semibold text-lg mb-4 text-center dark:text-gray-200">Available HSN Codes</h2>
             <div className="mb-4 border-b pb-4 h-48 overflow-y-auto"> {/* Added bottom border and padding */}
               {availableHsnCodes.map((code, index) => (
-                <div key={index} className="flex justify-between items-center mb-2 p-2 hover:bg-gray-100 rounded"> {/* Added hover effect and padding */}
+                <div key={index} className="flex justify-between items-center mb-2 p-2 hover:bg-gray-100 rounded dark:text-gray-200 dark:hover:bg-gray-600"> {/* Added hover effect and padding */}
                   <span>{code.hsn}</span>
                   <FaTrashAlt 
-                    className="text-red-500 cursor-pointer" 
+                    className="text-red-500 cursor-pointer dark:text-gray-200" 
                     onClick={() => handleDeleteHsnCode(code.hsn)} 
                   />
                 </div>
               ))}
             </div>
             <div className="relative mb-4">
-              <span className="absolute -top-3 left-2 text-sm bg-white px-1 text-black">
+              <span className="absolute -top-3 left-2 text-sm bg-white px-1 text-black dark:bg-gray-800 dark:text-gray-200">
                 HSN Code
               </span>
               <input
                 type="text"
-                className="w-full border border-[#4154f1] rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500" // Added focus styles
+                className="w-full border border-[#4154f1] rounded-lg p-2 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4154f1]" // Added focus styles
                 value={hsnCode}
                 onChange={(e) => setHsnCode(e.target.value)} 
               />
             </div>
             <div className="flex space-x-4 mt-4">
-              <button className="bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 transition duration-200 w-full"
+              <button className="bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 transition duration-200 w-full dark:bg-blue-800 dark:text-gray-200 dark:hover:bg-blue-700"
                 onClick={()=>{handleAddHsnCode(hsnCode)}}
               >
                 Add HSN
@@ -401,14 +401,14 @@ const UpdateBusiness = () => {
       {/* Add HSN Details Popup */}
       {showAddHsnDetailsPopup && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-1/3">
-            <h2 className="font-semibold text-lg mb-4 text-center">Add HSN Details</h2>
+          <div className="bg-white p-6 rounded-lg shadow-lg w-1/3 dark:bg-gray-800 dark:border-gray-700">
+            <h2 className="font-semibold text-lg mb-4 text-center dark:text-gray-200">Add HSN Details</h2>
             
             <div className="relative mb-4">
-              <span className="absolute -top-3 left-2 text-sm bg-white px-1 text-black">HSN Code *</span>
+              <span className="absolute -top-3 left-2 text-sm bg-white px-1 text-black dark:bg-gray-800 dark:text-gray-200">HSN Code *</span>
               <input
                 type="text"
-                className="w-full border border-[#4154f1] rounded-lg p-2"
+                className="w-full border border-[#4154f1] rounded-lg p-2 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4154f1]"
                 value={hsnCode}
                 onChange={(e) => setHsnCode(e.target.value)}
                 required
@@ -416,10 +416,10 @@ const UpdateBusiness = () => {
             </div>
 
             <div className="relative mb-4">
-              <span className="absolute -top-3 left-2 text-sm bg-white px-1 text-black">Product Name *</span>
+              <span className="absolute -top-3 left-2 text-sm bg-white px-1 text-black dark:bg-gray-800 dark:text-gray-200">Product Name *</span>
               <input
                 type="text"
-                className="w-full border border-[#4154f1] rounded-lg p-2"
+                className="w-full border border-[#4154f1] rounded-lg p-2 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4154f1]"
                 value={productName}
                 onChange={(e) => setProductName(e.target.value)}
                 required
@@ -428,9 +428,9 @@ const UpdateBusiness = () => {
             </div>
 
             <div className="relative mb-4">
-              <span className="absolute -top-3 left-2 text-sm bg-white px-1 text-black">GST Rate (%) *</span>
+              <span className="absolute -top-3 left-2 text-sm bg-white px-1 text-black dark:bg-gray-800 dark:text-gray-200">GST Rate (%) *</span>
               <select
-                className="w-full border border-[#4154f1] rounded-lg p-2"
+                className="w-full border border-[#4154f1] rounded-lg p-2 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4154f1]"
                 value={gstRate}
                 onChange={(e) => setGstRate(Number(e.target.value))}
                 required
@@ -444,9 +444,9 @@ const UpdateBusiness = () => {
             </div>
 
             <div className="relative mb-4">
-              <span className="absolute -top-3 left-2 text-sm bg-white px-1 text-black">Unit *</span>
+              <span className="absolute -top-3 left-2 text-sm bg-white px-1 text-black dark:bg-gray-800 dark:text-gray-200">Unit *</span>
               <select
-                className="w-full border border-[#4154f1] rounded-lg p-2"
+                className="w-full border border-[#4154f1] rounded-lg p-2 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4154f1]"
                 value={unit}
                 onChange={(e) => setUnit(e.target.value)}
                 required
@@ -461,7 +461,7 @@ const UpdateBusiness = () => {
 
             <div className="flex space-x-4 mt-4">
               <button 
-                className="bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 transition duration-200 w-full"
+                className="bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 transition duration-200 w-full dark:bg-blue-800 dark:text-gray-200 dark:hover:bg-blue-700"
                 onClick={handleAddHsnDetails}
               >
                 Save HSN Details
@@ -483,60 +483,60 @@ const UpdateBusiness = () => {
       {/* Address Popup */}
       {showAddressPopup && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-1/3">
-            <h2 className="font-semibold text-lg mb-4 text-center">Update Shipping Address</h2>
+          <div className="bg-white p-6 rounded-lg shadow-lg w-1/3 dark:bg-gray-800 dark:border-gray-700">
+            <h2 className="font-semibold text-lg mb-4 text-center dark:text-gray-200">Update Shipping Address</h2>
             <div className="relative mb-4">
-              <span className="absolute -top-3 left-2 text-sm bg-white px-1 text-black">Flat, House no, Building, Company, Apartment</span>
+              <span className="absolute -top-3 left-2 text-sm bg-white px-1 text-black dark:bg-gray-800 dark:text-gray-200">Flat, House no, Building, Company, Apartment</span>
               <input
                 type="text"
-                className="w-full border border-[#4154f1] rounded-lg p-2"
+                className="w-full border border-[#4154f1] rounded-lg p-2 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4154f1]"
                 value={shippingAddress1}
                 onChange={(e) => setShippingAddress1(e.target.value)} 
               />
             </div>
 
             <div className="relative mb-4">
-              <span className="absolute -top-3 left-2 text-sm bg-white px-1 text-black">Area, Street, Sector, Village, Landmarks</span>
+              <span className="absolute -top-3 left-2 text-sm bg-white px-1 text-black dark:bg-gray-800 dark:text-gray-200">Area, Street, Sector, Village, Landmarks</span>
               <input
                 type="text"
-                className="w-full border border-[#4154f1] rounded-lg p-2"
+                className="w-full border border-[#4154f1] rounded-lg p-2 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4154f1]"
                 value={shippingAddress2}
                 onChange={(e) => setShippingAddress2(e.target.value)} 
               />
             </div>
 
             <div className="relative mb-4">
-              <span className="absolute -top-3 left-2 text-sm bg-white px-1 text-black">City</span>
+              <span className="absolute -top-3 left-2 text-sm bg-white px-1 text-black dark:bg-gray-800 dark:text-gray-200">City</span>
               <input
                 type="text"
-                className="w-full border border-[#4154f1] rounded-lg p-2"
+                className="w-full border border-[#4154f1] rounded-lg p-2 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4154f1]"
                 value={city} // Update to the correct state variable
                 onChange={(e) => setCity(e.target.value)} 
               />
             </div>
 
             <div className="relative mb-4">
-              <span className="absolute -top-3 left-2 text-sm bg-white px-1 text-black">State</span>
+              <span className="absolute -top-3 left-2 text-sm bg-white px-1 text-black dark:bg-gray-800 dark:text-gray-200">State</span>
               <input
                 type="text"
-                className="w-full border border-[#4154f1] rounded-lg p-2"
+                className="w-full border border-[#4154f1] rounded-lg p-2 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4154f1]"
                 value={state} // Update to the correct state variable
                 onChange={(e) => setState(e.target.value)} 
               />
             </div>
 
             <div className="relative mb-4">
-              <span className="absolute -top-3 left-2 text-sm bg-white px-1 text-black">PinCode</span>
+              <span className="absolute -top-3 left-2 text-sm bg-white px-1 text-black dark:bg-gray-800 dark:text-gray-200">PinCode</span>
               <input
                 type="text"
-                className="w-full border border-[#4154f1] rounded-lg p-2"
+                className="w-full border border-[#4154f1] rounded-lg p-2 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4154f1]"
                 value={pincode} // Update to the correct state variable
                 onChange={(e) => setPincode(e.target.value)} 
               />
             </div>
 
             <div className="flex space-x-4 mt-4">
-              <button className="bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 transition duration-200 w-full" onClick={() => handleShippingAddress()}>
+              <button className="bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 transition duration-200 w-full dark:bg-blue-800 dark:text-gray-200 dark:hover:bg-blue-700" onClick={() => handleShippingAddress()}>
                 Save Address
               </button>
               <button className="bg-gray-300 text-black p-2 rounded-lg hover:bg-gray-400 transition duration-200 w-full" onClick={() => setShowAddressPopup(false)}>

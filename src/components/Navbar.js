@@ -1,6 +1,7 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { toggleTheme } from "../slices/themeSlice.js";
+import { Moon, Sun } from "lucide-react";
 
 const Navbar = () => {
   const { title } = useSelector((state) => state.navbar);
@@ -17,14 +18,20 @@ const Navbar = () => {
       </h1>
 
       {/* Dark Mode Toggle Button */}
-      {/*
+      
       <button
         onClick={() => dispatch(toggleTheme())}
-        className="p-2 rounded-md border dark:bg-gray-700 dark:text-white bg-gray-200 text-black"
+        className="w-12 h-12 flex items-center justify-center rounded-full bg-gray-400 dark:bg-gray-600 shadow-md transition-all duration-300 hover:scale-105 active:scale-95"
       >
-        {theme === "dark" ? "☀️ Light Mode" : "🌙 Dark Mode"}
+        {theme === "dark" ? (
+          <Sun className="w-6 h-6 text-white" />
+        ) : (
+          <Moon className="w-6 h-6 text-gray-800" />
+        )}
+
       </button>
-      */}
+
+      
     </nav>
   );
 };

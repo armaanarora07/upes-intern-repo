@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { FaEdit, FaTrash } from 'react-icons/fa';
 import { addRow, removeRow, updateRow } from '../slices/productSlice';
+import { Trash2 } from 'lucide-react';
 
 const Products = () => {
   const dispatch = useDispatch();
@@ -142,42 +143,42 @@ const Products = () => {
   );
 
   return (
-    <div className="p-6 mt-5 mb-6 bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden">
+    <div className="p-6 mt-5 mb-6 bg-white border dark:bg-gray-800 dark:border-gray-700 rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden">
       <div className="mt-4 flex justify-between">
-        <h2 className="text-2xl font-bold text-gray-800">Items Details</h2>
+        <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-200">Items Details</h2>
         <button
           onClick={() => dispatch(addRow())}
-          className="flex items-center bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 transition duration-200 mb-4"
+          className="flex items-center text-white p-2 rounded-lg hover:bg-blue-600 bg-blue-500 text-white transition duration-200 mb-4 dark:bg-blue-800 dark:text-gray-200 dark:hover:bg-blue-700"
         >
           <FaEdit className="mr-1 text-white" /> Add item
         </button>
       </div>
       <div className="w-full">
-        <table className="min-w-full bg-[#F9FAFC] shadow-md">
-          <thead className="bg-gray-100 text-[#51535e]">
+        <table className="min-w-full bg-[#F9FAFC] dark:bg-gray-800 dark:border-gray-700 shadow-md">
+          <thead className="bg-gray-100 text-[#51535e] dark:bg-gray-800 dark:border-gray-700 shadow-md">
             <tr>
-              <th className="border-b-2 border-r-2 border-black text-black font-medium text-lg w-16" rowSpan="2">S No.</th>
-              <th className="border-b-2 border-r-2 border-black text-black font-medium text-lg w-80" rowSpan="2">Item Name</th>
-              <th className="border-b-2 border-r-2 border-black text-black font-medium text-lg w-28" rowSpan="2">HSN Code</th>
-              <th className="border-b-2 border-r-2 border-black text-black font-medium text-lg w-28" rowSpan="2">Quantity</th>
-              <th className="border-b-2 border-r-2 border-black text-black font-medium text-lg w-28" rowSpan="2">Unit</th>
-              <th className="border-b-2 border-r-2 border-black text-black font-medium text-lg w-40" rowSpan="2">Price</th>
-              <th className="border-b-2 border-r-2 border-black text-black font-medium text-lg w-36" colSpan="2">Tax (%)</th>
-              <th className="border-b-2 border-black font-medium text-black text-lg w-36" rowSpan="2">Amount</th>
+              <th className="border-b-2 border-r-2 border-black text-black font-medium text-lg w-16 dark:text-gray-200" rowSpan="2">S No.</th>
+              <th className="border-b-2 border-r-2 border-black text-black font-medium text-lg w-80 dark:text-gray-200" rowSpan="2">Item Name</th>
+              <th className="border-b-2 border-r-2 border-black text-black font-medium text-lg w-28 dark:text-gray-200" rowSpan="2">HSN Code</th>
+              <th className="border-b-2 border-r-2 border-black text-black font-medium text-lg w-28 dark:text-gray-200" rowSpan="2">Quantity</th>
+              <th className="border-b-2 border-r-2 border-black text-black font-medium text-lg w-28 dark:text-gray-200" rowSpan="2">Unit</th>
+              <th className="border-b-2 border-r-2 border-black text-black font-medium text-lg w-40 dark:text-gray-200" rowSpan="2">Price</th>
+              <th className="border-b-2 border-r-2 border-black text-black font-medium text-lg w-36 dark:text-gray-200" colSpan="2">Tax (%)</th>
+              <th className="border-b-2 border-black font-medium text-black text-lg w-36 dark:text-gray-200" rowSpan="2">Amount</th>
             </tr>
             <tr>
-              <th className="border-b-2 border-r-2 border-black text-black font-normal text-lg">Percent (%)</th>
-              <th className="border-b-2 border-r-2 border-black text-black font-normal text-lg">Amount</th>
+              <th className="border-b-2 border-r-2 border-black text-black font-normal text-lg dark:text-gray-200">Percent (%)</th>
+              <th className="border-b-2 border-r-2 border-black text-black font-normal text-lg dark:text-gray-200">Amount</th>
             </tr>
           </thead>
           <tbody>
             {rows.map((row, index) => (
-              <tr key={row.id} className="border-t">
-                <td className="p-1 border-r-2 border-black text-center">{index + 1}</td>
-                <td className="p-1 border-r-2 border-black">
+              <tr key={row.id} className="border-t dark:bg-gray-800 dark:border-gray-900">
+                <td className="p-1 border-r-2 border-black text-center dark:text-gray-200">{index + 1}</td>
+                <td className="p-1 border-r-2 border-black dark:text-gray-200">
                   <input
                     type="text"
-                    className="border-2 border-[#EFF0F4] p-2 w-full rounded-md"
+                    className="border-2 border-[#EFF0F4] p-2 w-full rounded-md dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-[#4154f1]"
                     placeholder="Item Name"
                     value={row.product_info}
                     onChange={(e) => handleInputChange(index, "product_info", e.target.value)}
@@ -186,7 +187,7 @@ const Products = () => {
                 <td className="p-1 border-r-2 border-black relative">
                   <input
                     type="text"
-                    className="border-2 border-[#EFF0F4] p-2 w-full rounded-md"
+                    className="border-2 border-[#EFF0F4] p-2 w-full rounded-md dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-[#4154f1]"
                     placeholder="HSN Code"
                     value={row.hsn_code}
                     onChange={(e) => handleInputChange(index, "hsn_code", e.target.value)}
@@ -195,13 +196,13 @@ const Products = () => {
                   {suggestions.length > 0 && activeRowIndex === index && (
                     <div 
                       ref={suggestionRef}
-                      className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto"
+                      className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200"
                     >
                       <ul>
                         {suggestions.map((suggestion, i) => (
                           <li 
                             key={i}
-                            className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm"
+                            className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200"
                             onClick={() => handleSelectSuggestion(index, suggestion)}
                           >
                             {suggestion}
@@ -211,10 +212,10 @@ const Products = () => {
                     </div>
                   )}
                 </td>
-                <td className="p-1 border-r-2 border-black">
+                <td className="p-1 border-r-2 border-black ">
                   <input
                     type="number"
-                    className="border-2 border-[#EFF0F4] p-2 w-full rounded-md"
+                    className="border-2 border-[#EFF0F4] p-2 w-full rounded-md dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-[#4154f1]"
                     placeholder="Qty"
                     value={row.quantity}
                     onChange={(e) => handleInputChange(index, "quantity", Number(e.target.value))}
@@ -222,7 +223,7 @@ const Products = () => {
                 </td>
                 <td className="p-1 border-r-2 border-black">
                   <select
-                    className="border-2 border-[#EFF0F4] p-2 w-full rounded-md"
+                    className="border-2 border-[#EFF0F4] p-2 w-full rounded-md dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-[#4154f1]"
                     value={row.unit}
                     onChange={(e) => handleInputChange(index, "unit", e.target.value)}
                   >
@@ -235,7 +236,7 @@ const Products = () => {
                 <td className="p-1 border-r-2 border-black">
                   <input
                     type="number"
-                    className="border-2 border-[#EFF0F4] p-2 w-full rounded-md"
+                    className="border-2 border-[#EFF0F4] p-2 w-full rounded-md dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-[#4154f1]"
                     placeholder="Price"
                     value={row.price}
                     onChange={(e) => handleInputChange(index, "price", Number(e.target.value))}
@@ -244,7 +245,7 @@ const Products = () => {
                 <td className="p-1 border-r-2 border-black">
                   <input
                     type="number"
-                    className="border-2 border-[#EFF0F4] p-2 w-full rounded-md"
+                    className="border-2 border-[#EFF0F4] p-2 w-full rounded-md dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-[#4154f1]"
                     placeholder="Tax %"
                     value={row.taxPercent}
                     onChange={(e) => handleInputChange(index, "taxPercent", Number(e.target.value))}
@@ -253,7 +254,7 @@ const Products = () => {
                 <td className="p-1 border-r-2 border-black">
                   <input
                     type="number"
-                    className="border-2 border-[#EFF0F4] p-2 w-full rounded-md"
+                    className="border-2 border-[#EFF0F4] p-2 w-full rounded-md dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-[#4154f1]"
                     placeholder="Tax Amount"
                     value={row.taxAmount}
                     readOnly
@@ -262,21 +263,21 @@ const Products = () => {
                 <td className="p-1 flex justify-between items-center">
                   <input
                     type="number"
-                    className="border-2 border-[#EFF0F4] p-2 w-full rounded-md"
+                    className="border-2 border-[#EFF0F4] p-2 w-full rounded-md dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-[#4154f1]"
                     placeholder="Amount"
                     value={row.amount}
                     readOnly
                   />
                   <button 
                     onClick={() => dispatch(removeRow(index))} 
-                    className="text-black hover:text-gray-700 flex items-center ml-2"
+                    className="text-black hover:text-gray-700 flex items-center ml-2 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-[#4154f1]"
                   >
-                    <FaTrash className="mr-1" />
+                    <Trash2 className="w-5 h-5" />
                   </button>
                 </td>
               </tr>
             ))}
-            <tr className="font-semibold bg-[#989baaa7] text-black">
+            <tr className="font-semibold bg-[#989baaa7] text-black dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-[#4154f1]">
               <td colSpan="3" className="p-3 text-right border-r-2 border-black">
                 TOTAL
               </td>

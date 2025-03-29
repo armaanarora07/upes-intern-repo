@@ -165,27 +165,27 @@ const selectBank = (name) => {
 
 
   return (
-    <div className="p-6 mt-5 mb-6 bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden">
+    <div className="p-6 mt-5 mb-6 bg-white border dark:bg-gray-800 dark:border-gray-700 rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden">
       <div className="mt-4 flex justify-between">
 
         <div className='flex space-x-3'>
-        <h2 className="text-2xl font-bold text-gray-800">Bank Details</h2>
+        <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-200">Bank Details</h2>
         <label className="flex items-center cursor-pointer">
           <input type="checkbox" className="hidden" checked={enabled} onChange={handleToggle} />
           <div 
-            className="w-12 h-6 flex items-center rounded-full p-1 transition" 
+            className="w-12 h-6 flex items-center rounded-full p-1 transition dark:bg-gray-800 dark:border-gray-700" 
             style={{ backgroundColor: enabled ? '#3B82F6' : '#6B7280' }} // Blue when enabled, Gray when disabled
           >
-            <div className={`bg-white w-5 h-5 rounded-full shadow-md transform transition ${enabled ? 'translate-x-6' : 'translate-x-0'}`}></div>
+            <div className={`bg-white w-5 h-5 rounded-full shadow-md transform transition dark:bg-gray-800 dark:border-gray-700 ${enabled ? 'translate-x-6' : 'translate-x-0'}`}></div>
           </div>
         </label>
         </div>
 
         <div className="flex space-x-3">
-          <button onClick={() => setActiveModal('add')} className="bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 transition duration-200">
+          <button onClick={() => setActiveModal('add')} className="bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 transition duration-200 dark:bg-blue-800 dark:text-gray-200 dark:hover:bg-blue-700">
             Add new Bank details
           </button>
-          <button onClick={() => setActiveModal('select')} className="bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 transition duration-200">
+          <button onClick={() => setActiveModal('select')} className="bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 transition duration-200 dark:bg-blue-800 dark:text-gray-200 dark:hover:bg-blue-700">
             Select Bank
           </button>
         </div>
@@ -193,13 +193,13 @@ const selectBank = (name) => {
       </div>
       
       {selectedBank ? (
-        <div className="mt-4 p-4 bg-gray-100 rounded-lg">
-          <h3 className="font-semibold text-gray-700"><span className="font-semibold">{selectedBank.bankName}</span></h3>
-          <p className="text-gray-600">Account Number : <span className="font-semibold">{selectedBank.accountNumber}</span></p>
-          <p className="text-gray-600">IFSC Code : <span className="font-semibold">{selectedBank.ifscCode}</span></p>
-          <p className="text-gray-600">UPI ID : <span className="font-semibold">{selectedBank.upiId}</span></p>
+        <div className="mt-4 p-4 bg-gray-100 rounded-lg dark:bg-gray-600 dark:border-gray-700">
+          <h3 className="font-semibold text-gray-700 dark:text-gray-200"><span className="font-semibold">{selectedBank.bankName}</span></h3>
+          <p className="text-gray-600 dark:text-gray-200">Account Number : <span className="font-semibold">{selectedBank.accountNumber}</span></p>
+          <p className="text-gray-600 dark:text-gray-200">IFSC Code : <span className="font-semibold">{selectedBank.ifscCode}</span></p>
+          <p className="text-gray-600 dark:text-gray-200">UPI ID : <span className="font-semibold">{selectedBank.upiId}</span></p>
           <div className="flex space-x-2 mt-3">
-            <button onClick={handleRemoveBank} className="btn btn-red">
+            <button onClick={handleRemoveBank} className="btn btn-red dark:text-gray-200">
               <Trash2 className="w-5 h-5" />
             </button>
           </div>
@@ -211,21 +211,21 @@ const selectBank = (name) => {
       {/* Modal Component */}
       {activeModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-96 max-h-[80vh] overflow-y-auto">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-96 max-h-[80vh] overflow-y-auto dark:bg-gray-800 dark:border-gray-700">
             <div className="flex justify-between items-center border-b pb-2">
-              <h2 className="text-lg font-semibold">{activeModal === 'add' ? 'Add Bank' : activeModal === 'edit' ? 'Edit Bank' : 'Select Bank'}</h2>
+              <h2 className="text-lg font-semibold dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200">{activeModal === 'add' ? 'Add Bank' : activeModal === 'edit' ? 'Edit Bank' : 'Select Bank'}</h2>
               <button onClick={closeModal} className="text-gray-500 hover:text-gray-700">
                 <FaTimes />
               </button>
             </div>
 
             {(activeModal === 'add') && (
-              <div className="mt-4 space-y-3">
+              <div className="mt-4 space-y-4 dark:bg-gray-800">
                   <div className="relative mb-4">
-                    <span className="absolute -top-3 left-2 text-sm bg-white px-1 text-black">Bank Name</span>
+                    <span className="absolute -top-3 left-2 text-sm bg-white px-1 text-black dark:bg-gray-800 dark:text-white">Bank Name</span>
                     <input
                       type="text"
-                      className="w-full border border-[#4154f1] rounded-lg p-2"
+                      className="w-full border border-[#4154f1] rounded-lg p-2 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4154f1]"
                       value={bankName}
                       onChange={handleBankNameChange}
                     />
@@ -234,7 +234,7 @@ const selectBank = (name) => {
                         {filteredBanks.map((bank, index) => (
                           <li
                             key={index}
-                            className="p-2 hover:bg-gray-200 cursor-pointer"
+                            className="p-2 hover:bg-gray-200 cursor-pointer dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4154f1]"
                             onClick={() => selectBank(bank)}
                           >
                             {bank}
@@ -244,33 +244,33 @@ const selectBank = (name) => {
                      )}
                 </div>
                 <div className="relative mb-4">
-                    <span className="absolute -top-3 left-2 text-sm bg-white px-1 text-black">Account Number</span>
+                    <span className="absolute -top-3 left-2 text-sm bg-white px-1 text-black dark:bg-gray-800 dark:text-white">Account Number</span>
                     <input
                         type="text"
-                        className="w-full border border-[#4154f1] rounded-lg p-2"
+                        className="w-full border border-[#4154f1] rounded-lg p-2 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4154f1]"
                         value={accountNumber} // Update to the correct state variable
                         onChange={(e) => setAccountNumber(e.target.value)} 
                     />
                 </div>
                 <div className="relative mb-4">
-                    <span className="absolute -top-3 left-2 text-sm bg-white px-1 text-black">IFSC Code</span>
+                    <span className="absolute -top-3 left-2 text-sm bg-white px-1 text-black dark:bg-gray-800 dark:text-white">IFSC Code</span>
                     <input
                         type="text"
-                        className="w-full border border-[#4154f1] rounded-lg p-2"
+                        className="w-full border border-[#4154f1] rounded-lg p-2 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4154f1]"
                         value={ifscCode} // Update to the correct state variable
                         onChange={(e) => setIfscCode(e.target.value)} 
                     />
                 </div>
                 <div className="relative mb-4">
-                    <span className="absolute -top-3 left-2 text-sm bg-white px-1 text-black">UPI ID</span>
+                    <span className="absolute -top-3 left-2 text-sm bg-white px-1 text-black dark:bg-gray-800 dark:text-white">UPI ID</span>
                     <input
                         type="text"
-                        className="w-full border border-[#4154f1] rounded-lg p-2"
+                        className="w-full border border-[#4154f1] rounded-lg p-2 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4154f1]"
                         value={upiId} // Update to the correct state variable
                         onChange={(e) => setUpiId(e.target.value)} 
                     />
                 </div>
-                <button onClick={ handleAddBankDetails } className="bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 transition duration-200 w-full">
+                <button onClick={ handleAddBankDetails } className="bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 transition duration-200 w-full dark:bg-blue-800 dark:text-blue-200 dark:hover:bg-blue-700">
                    Save
                 </button>
               </div>
@@ -278,10 +278,10 @@ const selectBank = (name) => {
 
             {activeModal === 'select' && (
               <div className="mt-4">
-                <input className="w-full border border-[#4154f1] rounded-lg p-2" type="text" placeholder="Search by Account Number" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
-                <ul className="mt-2 space-y-2 max-h-60 overflow-y-auto border border-gray-300 rounded-lg p-2">
+                <input className="w-full border border-[#4154f1] rounded-lg p-2 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4154f1]" type="text" placeholder="Search by Account Number" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
+                <ul className="mt-2 space-y-2 max-h-60 overflow-y-auto border border-gray-300 rounded-lg p-2 dark:border-gray-600 dark:bg-gray-800">
                   {bankDetails.filter(bank => bank.accountNumber.includes(searchTerm.toLowerCase())).map((bank, index) => (
-                    <li key={index} className="cursor-pointer p-2 rounded-lg bg-gray-100 hover:bg-gray-200 flex justify-between items-center">
+                    <li key={index} className="cursor-pointer p-2 rounded-lg bg-gray-100 hover:bg-gray-200 flex justify-between items-center dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200">
                       <div onClick={() => { handleSelection(bank); }} className="flex-1">
                         {bank.bankName || ''} - {bank.accountNumber}
                       </div>

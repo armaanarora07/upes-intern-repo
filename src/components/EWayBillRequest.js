@@ -90,46 +90,46 @@ const EWayBillRequest = () => {
   };
 
   return (
-    <div className="p-8">
+    <div className="p-8 min-h-screen dark:bg-gray-800">
       <div className="mt-5">
         <div className="flex flex-col items-center justify-center">
-          <div className="p-6 mt-5 mb-6 bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden">
-          <h2 className="text-xl font-bold mb-4 flex justify-center">Request E-Way Bill</h2>
+          <div className="p-6 mt-5 mb-6 bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden dark:bg-gray-800 dark:border-gray-700">
+          <h2 className="text-xl font-bold mb-4 flex justify-center dark:text-gray-200">Request E-Way Bill</h2>
 
           <form onSubmit={handleSubmit} className="w-96 mb-5">
-            <label className="block mb-2">
+            <label className="block mb-2 dark:text-gray-200">
               Transporter Id
               <input
                 type="text"
                 value={TransporterId}
                 onChange={(e) => setTransporterId(e.target.value)}
-                className="w-full p-2 border rounded"
+                className="w-full p-2 border rounded-lg dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4154f1]"
               />
             </label>
-            <h3 className="text-center my-2">OR</h3>
-            <label className="block mb-2">
+            <h3 className="text-center my-2 dark:text-gray-200">OR</h3>
+            <label className="block mb-2 dark:text-gray-200">
               Vehicle No
               <input
                 type="text"
                 value={vehicleNo}
                 onChange={(e) => setVehicleNo(e.target.value)}
-                className="w-full p-2 border rounded"
+                className="w-full p-2 border rounded-lg dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4154f1]"
               />
             </label>
 
-            <label className="block mb-4">
+            <label className="block mb-4 dark:text-gray-200">
               Document No
               <input
                 type="text"
                 value={docNo}
                 onChange={(e) => setDocNo(e.target.value)}
-                className="w-full p-2 border rounded"
+                className="w-full p-2 border rounded-lg dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4154f1]"
               />
             </label>
 
             <button
               type="submit"
-              className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
+              className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 dark:bg-blue-800 dark:text-gray-200 dark:hover:bg-blue-700 dark:border-blue-800"
               disabled={loading}
             >
               {loading ? "Sending..." : "Submit Request"}
@@ -142,21 +142,21 @@ const EWayBillRequest = () => {
       {/* Modal for Response or Error */}
       {showModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-opacity-50">
-          <div className="bg-white p-6 rounded-lg shadow-md text-center w-1/3 min-h-[300px] relative">
+          <div className="bg-white p-6 rounded-lg shadow-md text-center w-1/3 min-h-[300px] relative dark:bg-gray-800 dark:border-gray-700">
             {response ? (
               <>
-                <h3 className="text-xl font-semibold mb-4">E-Way Bill Generated Successfully!</h3>
-                <p><strong>E-Way No:</strong> {response.eway_no}</p>
-                <p><strong>Vehicle No:</strong> {response.vehicle_no}</p>
+                <h3 className="text-xl font-semibold mb-4 dark:text-gray-200">E-Way Bill Generated Successfully!</h3>
+                <p className="dark:text-gray-200"><strong>E-Way No:</strong> {response.eway_no}</p>
+                <p className="dark:text-gray-200"><strong>Vehicle No:</strong> {response.vehicle_no}</p>
                 <div className="mt-4 flex flex-col gap-3">
                   <button
-                    className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
+                    className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 dark:bg-blue-800 dark:text-gray-200 dark:hover:bg-blue-700 dark:border-blue-800"
                     onClick={onDownloadBill}
                   >
                     View E-Way Bill
                   </button>
                   <button
-                    className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
+                    className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 dark:bg-blue-800 dark:text-gray-200 dark:hover:bg-blue-700 dark:border-blue-800"
                     onClick={onAddToGST}
                   >
                     Add E-Way to GST Bill

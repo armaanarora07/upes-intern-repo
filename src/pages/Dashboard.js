@@ -312,14 +312,14 @@ const Dashboard = () => {
 
   if (loading) {
     return (
-      <div className="p-8 mt-10">
+      <div className="p-8 mt-10 min-h-screen dark:bg-gray-800  dark:text-gray-200">
         <p>Loading data...</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen p-8">
+    <div className="p-8 min-h-screen dark:bg-gray-800">
 
       <div className="max-w-7xl mx-auto">
   
@@ -329,21 +329,21 @@ const Dashboard = () => {
           {allTransactions.length > 0 ? (
             <>
               {/* Header with improved alignment */}
-              <div className="px-6 py-5 mb-6 bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden">
+              <div className="px-6 py-5 mb-6 bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden dark:bg-gray-800 dark:border-gray-700">
 
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                   {/* Business Name */}
-                  <h1 className="text-2xl font-bold text-gray-800">
+                  <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-200">
                     {legal_name}
                   </h1>
 
-                  <div className="flex flex-wrap items-center gap-4 p-4 bg-gray-50 rounded-lg shadow-sm">
+                  <div className="flex flex-wrap items-center gap-4 p-4 bg-gray-50 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
   
                   {/* Business Selector */}
                   <div className="flex items-center gap-2">
-                    <span className="text-gray-700 font-medium">Select Business</span>
+                    <span className="text-gray-700 font-medium dark:text-gray-200">Select Business</span>
                     <select 
-                      className="border border-gray-300 rounded-md px-3 py-2 bg-white text-gray-800 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                      className="border border-gray-300 rounded-md px-3 py-2 bg-white text-gray-800 transition-all dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-[#4154f1]"
                       onChange={(e) => handleDropdown(e.target.value)}
                       value={selectedBusiness}
                     >
@@ -357,9 +357,9 @@ const Dashboard = () => {
 
                   {/* Filter Selector */}
                   <div className="flex items-center gap-2">
-                    <span className="text-gray-700 font-medium">Filter</span>
+                    <span className="text-gray-700 font-medium dark:text-gray-200">Filter</span>
                     <select 
-                      className="border border-gray-300 rounded-md px-3 py-2 bg-white text-gray-800 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                      className="border border-gray-300 rounded-md px-3 py-2 bg-white text-gray-800 transition-all dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-[#4154f1]"
                       value={filter}
                       onChange={(e) => handleFilterDropdown(e.target.value)}
                     >
@@ -373,8 +373,8 @@ const Dashboard = () => {
 
                   {/* Validity Section */}
                   <div className="flex items-center gap-2">
-                    <span className="text-gray-700 font-medium">Validity:</span>
-                    <span className="text-blue-600 font-semibold">{date}</span>
+                    <span className="text-gray-700 font-medium dark:text-gray-200">Validity:</span>
+                    <span className="text-blue-600 font-semibold dark:text-gray-200">{date}</span>
                   </div>
 
                 </div>
@@ -401,16 +401,16 @@ const Dashboard = () => {
                 ].map(({ label, value }, index) => (
                   <div
                     key={index}
-                    className="bg-white shadow-lg border rounded-3xl p-6 w-full h-40 transform transition-all duration-300 hover:scale-105"
+                    className="bg-white shadow-lg border rounded-3xl p-6 w-full h-40 transform transition-all duration-300 hover:scale-105 dark:bg-gray-800 dark:border-gray-700"
                   >
-                    <h2 className="text-4xl text-center text-gray-800 mt-2">
+                    <h2 className="text-4xl text-center text-gray-800 mt-2 dark:text-gray-200">
                       {new Intl.NumberFormat("en-IN", {
                         style: "currency",
                         currency: "INR",
                         minimumFractionDigits: 2
                       }).format(value)}
                     </h2>
-                    <p className="text-center text-black text-lg font-medium mt-4">
+                    <p className="text-center text-black text-lg font-medium mt-4 dark:text-gray-200">
                       {label}
                     </p>
                   </div>
@@ -419,37 +419,37 @@ const Dashboard = () => {
 
               {/* Latest Transactions Card - Improved styling */}
               <div className="mb-6">
-                <div className="bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden">
+                <div className="bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden dark:bg-gray-800 dark:border-gray-700">
                   <div className="px-6 py-4 border-b border-gray-200">
-                    <h2 className="text-lg font-semibold text-gray-800">Latest Transactions</h2>
+                    <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-200">Latest Transactions</h2>
                   </div>
                   <div className="p-6">
                     <div className="overflow-x-auto">
-                      <table className="w-full text-left">
+                      <table className="w-full text-left dark:bg-gray-800 dark:border-gray-700">
                         <thead>
-                          <tr className="bg-gray-50">
-                            <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Invoice No</th>
-                            <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                            <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Bill For</th>
-                            <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+                          <tr className="bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
+                            <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-200">Invoice No</th>
+                            <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-200">Date</th>
+                            <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-200">Bill For</th>
+                            <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-200">Amount</th>
                           </tr>
                         </thead>
-                        <tbody className="divide-y divide-gray-200">
+                        <tbody className="divide-y divide-gray-200 dark:bg-gray-800 dark:border-gray-700">
                           {transactions.slice(0, 5).map((txn, index) => (
-                            <tr key={index} className="hover:bg-gray-50 transition-colors">
-                              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{txn.sn_no || "N/A"}</td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            <tr key={index} className="hover:bg-gray-50 transition-colors dark:hover:bg-gray-600">
+                              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-200">{txn.sn_no || "N/A"}</td>
+                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-200">
                                 {txn.created_at ? new Date(txn.created_at).toLocaleDateString() : "N/A"}
                               </td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{txn.name || "N/A"}</td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">₹ {txn.total_value ? txn.total_value.toLocaleString() : "0"}</td>
+                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-200">{txn.name || "N/A"}</td>
+                              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-200">₹ {txn.total_value ? txn.total_value.toLocaleString() : "0"}</td>
                             </tr>
                           ))}
                         </tbody>
                       </table>
                     </div>
                     <div className="mt-4 text-right">
-                      <Link to="/generated-bills" className="inline-flex items-center text-sm font-medium text-blue-600 hover:text-blue-800">
+                      <Link to="/generated-bills" className="inline-flex items-center text-sm font-medium text-blue-600 hover:text-blue-800 dark:text-gray-200">
                         See All Transactions
                         <svg className="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path>
@@ -463,9 +463,9 @@ const Dashboard = () => {
               {/* Charts Grid - Improved layout and responsiveness */}
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Total Sales Report */}
-                <div className="bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden">
+                <div className="bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden dark:bg-gray-800 dark:border-gray-700">
                   <div className="px-6 py-4 border-b border-gray-200">
-                    <h2 className="text-lg font-semibold text-gray-800">Total Sales Report</h2>
+                    <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-200">Total Sales Report</h2>
                   </div>
                   <div className="p-6 h-80">
                     {salesData ? (
@@ -522,16 +522,16 @@ const Dashboard = () => {
                       />
                     ) : (
                       <div className="flex items-center justify-center h-full">
-                        <p className="text-gray-500">No sales data available.</p>
+                        <p className="text-gray-500 dark:text-gray-200">No sales data available.</p>
                       </div>
                     )}
                   </div>
                 </div>
   
                 {/* GST Sales Report */}
-                <div className="bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden">
+                <div className="bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden dark:bg-gray-800 dark:border-gray-700">
                   <div className="px-6 py-4 border-b border-gray-200">
-                    <h2 className="text-lg font-semibold text-gray-800">GST Sales Report</h2>
+                    <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-200">GST Sales Report</h2>
                   </div>
                   <div className="p-6 h-80">
                     {GSTSalesData ? (
@@ -588,16 +588,16 @@ const Dashboard = () => {
                       />
                     ) : (
                       <div className="flex items-center justify-center h-full">
-                        <p className="text-gray-500">No GST sales data available.</p>
+                        <p className="text-gray-500 dark:text-gray-200">No GST sales data available.</p>
                       </div>
                     )}
                   </div>
                 </div>
   
                 {/* URD Sales Report */}
-                <div className="bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden">
+                <div className="bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden dark:bg-gray-800 dark:border-gray-700">
                   <div className="px-6 py-4 border-b border-gray-200">
-                    <h2 className="text-lg font-semibold text-gray-800">URD Sales Report</h2>
+                    <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-200">URD Sales Report</h2>
                   </div>
                   <div className="p-6 h-80">
                     {URDSalesData ? (
@@ -654,16 +654,16 @@ const Dashboard = () => {
                       />
                     ) : (
                       <div className="flex items-center justify-center h-full">
-                        <p className="text-gray-500">No URD sales data available.</p>
+                        <p className="text-gray-500 dark:text-gray-200">No URD sales data available.</p>
                       </div>
                     )}
                   </div>
                 </div>
   
                 {/* URD Purchases Report */}
-                <div className="bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden">
+                <div className="bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden dark:bg-gray-800 dark:border-gray-700">
                   <div className="px-6 py-4 border-b border-gray-200">
-                    <h2 className="text-lg font-semibold text-gray-800">URD Purchases Report</h2>
+                    <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-200">URD Purchases Report</h2>
                   </div>
                   <div className="p-6 h-80">
                     {URDPurchaseData ? (
@@ -720,7 +720,7 @@ const Dashboard = () => {
                       />
                     ) : (
                       <div className="flex items-center justify-center h-full">
-                        <p className="text-gray-500">No URD Purchases data available.</p>
+                        <p className="text-gray-500 dark:text-gray-200">No URD Purchases data available.</p>
                       </div>
                     )}
                   </div>
@@ -728,10 +728,10 @@ const Dashboard = () => {
               </div>
             </>
           ) : (
-            <div className="flex flex-col items-center justify-center p-8 bg-white border rounded-lg shadow-xl border-gray-200 overflow-hidden">
+            <div className="flex flex-col items-center justify-center p-8 bg-white border rounded-lg shadow-xl border-gray-200 overflow-hidden dark:bg-gray-800 dark:border-gray-700">
               {businesses.length === 0? (
                 <div className="text-center">
-                  <p className="text-gray-500 text-lg">No business added to your account.</p>
+                  <p className="text-gray-500 text-lg dark:text-gray-200">No business added to your account.</p>
                   <button
                     onClick={() => navigate('/add-business')}
                     className="mt-3 bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition duration-200"
@@ -744,8 +744,8 @@ const Dashboard = () => {
                 <svg className="w-16 h-16 text-gray-300 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                 </svg>
-                <p className="text-gray-600 text-lg">No recent transactions available.</p>
-                <p className="text-gray-500 mt-1">Transactions will appear here once recorded in the system.</p>
+                <p className="text-gray-600 text-lg dark:text-gray-200">No recent transactions available.</p>
+                <p className="text-gray-500 mt-1 dark:text-gray-200">Transactions will appear here once recorded in the system.</p>
               </div>              
               )}
             </div>
