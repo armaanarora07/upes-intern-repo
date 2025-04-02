@@ -6,7 +6,6 @@ import GeneratedBills from "./components/GeneratedBills";
 import EwayBills from "./components/EwayBills";
 import EWayBillRequest from "./components/EWayBillRequest";
 import Payments from "./components/Payments";
-import Activity from "./components/Activity";
 import Users from "./components/Users";
 import Messages from "./components/Messages";
 import Help from "./pages/Help";
@@ -67,7 +66,6 @@ function Home() {
             <Route path="/update-eway" element={<UpdateEwayCred/>} />
             <Route path="eway-transactions" element={<EWayTransactions/>}/>
             <Route path="/payments" element={<Payments />} />
-            <Route path="/activity" element={<Activity />} />
             <Route path="/users" element={<Users />} />
             <Route path="/messages" element={<Messages />} />
             <Route path="/help" element={<Help/>} />

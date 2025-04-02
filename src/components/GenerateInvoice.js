@@ -461,9 +461,9 @@ const InvoicePage = () => {
   return (
     <div className="flex flex-col lg:flex-row w-full p-8 lg:space-x-6">
       {/* Left Pane - PDF Preview */}
-      <div className="flex-1 p-6 bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden mt-2">
+      <div className="flex-1 p-6 bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden mt-2 dark:bg-gray-800 dark:border-gray-700">
 
-        <div className="text-2xl font-bold text-gray-800 mb-3">
+        <div className="text-2xl font-bold text-gray-800 mb-3 dark:text-gray-200">
           Invoice Preview
         </div>
 
@@ -477,14 +477,14 @@ const InvoicePage = () => {
       </div>
 
       {/* Right Pane - Controls */}
-      <div className="w-full lg:w-1/3 h-auto p-6 bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden flex flex-col items-center mt-2">
-        <div className="text-2xl font-bold text-gray-800 mb-3">
+      <div className="w-full lg:w-1/3 h-auto p-6 bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden flex flex-col items-center mt-2 dark:bg-gray-800 dark:border-gray-700">
+        <div className="text-2xl font-bold text-gray-800 mb-3 dark:text-gray-200">
           Customize Invoice
         </div>
         
         {/* Template Selection */}
         <div className="w-full max-w-sm mb-6">
-          <label className="block text-gray-700 text-xl font-bold mb-2">Select Template</label>
+          <label className="block text-gray-700 text-xl font-bold mb-2 dark:text-gray-200">Select Template</label>
           <select
             value={selectedTemplate}
             onChange={handleTemplateChange}
@@ -501,7 +501,7 @@ const InvoicePage = () => {
         {/* Action Buttons */}
         <div className="flex flex-col space-y-4 w-full">
           <button
-            className="px-6 py-3 bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 transition duration-200"
+            className="px-6 py-3 bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 transition duration-200  dark:bg-blue-800 dark:text-gray-200 dark:hover:bg-blue-700 dark:border-blue-800"
             onClick={addBill}
           >
             Generate Invoice

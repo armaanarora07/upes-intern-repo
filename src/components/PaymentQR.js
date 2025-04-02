@@ -33,13 +33,13 @@ const PaymentQR = () => {
 
   return (
     <div className='w-1/2'>
-       <h2 className="text-2xl font-bold text-gray-800">Add Payment QR</h2>
+       <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-200">Add Payment QR</h2>
        <div className="flex items-center p-2">
         <div className="w-1/3 border border-gray-300 rounded-lg p-4 h-32 flex items-center justify-center">
             {imagePreview ? (
             <img src={imagePreview} alt="Image Preview" className="rounded-lg w-full h-full object-contain" />
             ) : (
-            <span className="text-gray-400">Upload QR</span>
+            <span className="text-gray-400 dark:text-gray-200">Upload QR</span>
             )}
         </div>
         <div className="ml-4 flex items-center">
@@ -59,7 +59,7 @@ const PaymentQR = () => {
             {imagePreview && ( // Conditionally render the Remove button
             <button 
                 onClick={handleRemoveImage} 
-                className="ml-2 bg-white-500 text-black p-2 rounded-lg hover:bg-white-600 transition duration-200"
+                className="ml-2 bg-white-500 text-black p-2 rounded-lg hover:bg-white-600 transition duration-200 dark:bg-blue-800 dark:text-gray-200 dark:hover:bg-blue-700 dark:border-blue-800"
             >
                 <FaTrash/>
             </button>

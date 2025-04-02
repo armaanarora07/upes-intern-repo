@@ -89,52 +89,52 @@ const Users = () => {
   const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem);
   const totalPages = Math.ceil(filteredData.length / itemsPerPage);
 
-  if (loading) return <div className="text-center mt-10">Loading...</div>;
-  if (error) return <div className="text-center mt-10 text-red-500">Error: {error}</div>;
+  if (loading) return <div className="text-center mt-10 min-h-screen dark:bg-gray-800 dark:text-gray-200">Loading...</div>;
+  if (error) return <div className="text-center mt-10 text-red-500 min-h-screen dark:bg-gray-800 dark:text-gray-200">Error: {error}</div>;
 
   return (
-    <div className="p-8">
+    <div className="p-8 min-h-screen dark:bg-gray-800">
       <div className='mt-5'>
         <input
           type="text"
           placeholder="Search by First Party, Second Party, or Product..."
           value={searchTerm}
           onChange={handleSearch}
-          className="mb-4 p-2 border border-gray-300 rounded-lg w-full max-w-md"
+          className="mb-4 p-2 border border-gray-300 rounded-lg w-full max-w-md dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4154f1]"
         />
 
-        <div className="bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden">
+        <div className="bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden dark:bg-gray-800 dark:border-gray-700">
           {/* Table Header */}
           <div className="px-6 py-4 border-b border-gray-200">
-            <h2 className="text-lg font-semibold text-gray-800">Users Transactions</h2>
+            <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-200">Users Transactions</h2>
           </div>
           
           {/* Table Container */}
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="bg-gray-50">
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">S.No</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">First Party</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Second Party</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rate</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Quantity</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Value</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Download</th>
+                <tr className="bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-200">S.No</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-200">First Party</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-200">Second Party</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-200">Product</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-200">Rate</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-200">Quantity</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-200">Total Value</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-200">Download</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-200">
+              <tbody className="divide-y divide-gray-200 dark:bg-gray-800 dark:border-gray-700">
                 {currentItems.map((item) => (
-                  <tr key={item._id} className="hover:bg-gray-50 transition-colors">
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{item.sn_no}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.first_party}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.second_party}</td>
-                    <td className="px-6 py-4 text-sm text-gray-500 break-words">{item.products?.join(', ')}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.rate?.join(', ')}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.quantity?.join(', ')}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">₹ {item.total_value ? item.total_value.toLocaleString() : "N/A"}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <tr key={item._id} className="hover:bg-gray-50 transition-colors dark:hover:bg-gray-600">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-200">{item.sn_no}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-200">{item.first_party}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-200">{item.second_party}</td>
+                    <td className="px-6 py-4 text-sm text-gray-500 break-words dark:text-gray-200">{item.products?.join(', ')}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-200">{item.rate?.join(', ')}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-200">{item.quantity?.join(', ')}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-200">₹ {item.total_value ? item.total_value.toLocaleString() : "N/A"}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-200">
                       <a 
                         href={item.downloadlink} 
                         target="_blank" 
@@ -156,14 +156,14 @@ const Users = () => {
               <svg className="w-16 h-16 text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
               </svg>
-              <p className="text-gray-600 text-lg">No transactions found</p>
-              <p className="text-gray-500 mt-1">Any user transactions will appear here</p>
+              <p className="text-gray-600 text-lg dark:text-gray-200">No transactions found</p>
+              <p className="text-gray-500 mt-1 dark:text-gray-200">Any user transactions will appear here</p>
             </div>
           )}
           
           {/* Pagination Controls */}
           {filteredData.length > 0 && totalPages > 1 && (
-            <div className="px-6 py-4 bg-gray-50 border-t border-gray-200 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div className="px-6 py-4 bg-gray-50 border-t border-gray-200 flex flex-col sm:flex-row justify-between items-center gap-4 dark:bg-gray-800 dark:border-gray-700">
               <div className="flex items-center">
                 <button
                   onClick={handlePreviousPage}
@@ -195,7 +195,7 @@ const Users = () => {
                           onClick={() => handlePageClick(pageNum)}
                           className={`relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium ${
                             currentPage === pageNum
-                              ? "z-10 bg-blue-600 text-white border-blue-600"
+                              ? "z-10 bg-blue-600 text-white border-blue-600 dark:hover:bg-blue-700 dark:border-blue-800"
                               : "bg-white text-gray-700 hover:bg-gray-50"
                           } mx-1 rounded-md`}
                         >
@@ -209,7 +209,7 @@ const Users = () => {
                       return (
                         <span
                           key={index}
-                          className="relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700"
+                          className="relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-200"
                         >
                           ...
                         </span>
@@ -235,7 +235,7 @@ const Users = () => {
                 </button>
               </div>
               
-              <div className="text-sm text-gray-600">
+              <div className="text-sm text-gray-600 dark:text-gray-200">
                 Page {currentPage} of {totalPages} • Showing {currentItems.length} of {filteredData.length} transactions
               </div>
             </div>

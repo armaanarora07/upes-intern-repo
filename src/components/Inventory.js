@@ -183,30 +183,30 @@ const Inventory = () => {
   };
 
   return (
-    <div className="p-8">
+    <div className="p-8 min-h-screen dark:bg-gray-800">
       <div className="mt-3">
       {/* Analytics Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 px-4 py-2 mb-6">
-        <div className="bg-white shadow-xl border rounded-3xl p-6 w-full h-40 transform transition-all duration-300 hover:scale-105">
-          <h2 className="text-5xl text-center text-gray-800 mt-2">{totalItems}</h2>
-          <p className="text-center text-black text-[16px] font-medium mt-4">Total Products</p>
+        <div className="bg-white shadow-xl border rounded-3xl p-6 w-full h-40 transform transition-all duration-300 hover:scale-105 dark:bg-gray-800 dark:border-gray-700">
+          <h2 className="text-5xl text-center text-gray-800 mt-2 dark:text-gray-200">{totalItems}</h2>
+          <p className="text-center text-black text-[16px] font-medium mt-4 dark:text-gray-200">Total Products</p>
         </div>
-        <div className="bg-white shadow-xl border rounded-3xl p-6 w-full h-40 transform transition-all duration-300 hover:scale-105">
-          <h2 className="text-5xl text-center text-gray-800 mt-2">{totalStock}</h2>
-          <p className="text-center text-black text-[16px] font-medium mt-4">Total Stock Items</p>
+        <div className="bg-white shadow-xl border rounded-3xl p-6 w-full h-40 transform transition-all duration-300 hover:scale-105 dark:bg-gray-800 dark:border-gray-700">
+          <h2 className="text-5xl text-center text-gray-800 mt-2 dark:text-gray-200">{totalStock}</h2>
+          <p className="text-center text-black text-[16px] font-medium mt-4 dark:text-gray-200">Total Stock Items</p>
         </div>
-        <div className="bg-white shadow-xl border rounded-3xl p-6 w-full h-40 transform transition-all duration-300 hover:scale-105">
-          <h2 className="text-5xl text-center text-amber-500 mt-2">{lowStockItems}</h2>
-          <p className="text-center text-black text-[16px] font-medium mt-4">Low Stock Items</p>
+        <div className="bg-white shadow-xl border rounded-3xl p-6 w-full h-40 transform transition-all duration-300 hover:scale-105 dark:bg-gray-800 dark:border-gray-700">
+          <h2 className="text-5xl text-center text-amber-500 mt-2 dark:text-gray-200">{lowStockItems}</h2>
+          <p className="text-center text-black text-[16px] font-medium mt-4 dark:text-gray-200">Low Stock Items</p>
         </div>
-        <div className="bg-white shadow-xl border rounded-3xl p-6 w-full h-40 transform transition-all duration-300 hover:scale-105">
-          <h2 className="text-5xl text-center text-red-500 mt-2">{outOfStockItems}</h2>
-          <p className="text-center text-black text-[16px] font-medium mt-4">Out of Stock Items</p>
+        <div className="bg-white shadow-xl border rounded-3xl p-6 w-full h-40 transform transition-all duration-300 hover:scale-105 dark:bg-gray-800 dark:border-gray-700">
+          <h2 className="text-5xl text-center text-red-500 mt-2 dark:text-gray-200">{outOfStockItems}</h2>
+          <p className="text-center text-black text-[16px] font-medium mt-4 dark:text-gray-200">Out of Stock Items</p>
         </div>
       </div>
 
       {/* Search and Add Product */}
-      <div className="flex flex-col sm:flex-row justify-between items-center gap-3 p-4 bg-white rounded-t-xl shadow-sm">
+      <div className="flex flex-col sm:flex-row justify-between items-center gap-3 p-4 bg-white rounded-t-xl shadow-sm dark:bg-gray-800 dark:border-gray-700">
         <div className="relative w-full sm:w-auto">
           <Search
             className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
@@ -217,7 +217,7 @@ const Inventory = () => {
             placeholder="Search products..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full border border-[#4154f1] rounded-lg p-2 pl-10"
+            className="w-full border border-[#4154f1] rounded-lg p-2 pl-10 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4154f1]"
           />
         </div>
         
@@ -236,17 +236,17 @@ const Inventory = () => {
             });
             setIsModalOpen(true);
           }}
-          className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition duration-200 w-full sm:w-auto"
+          className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition duration-200 w-full sm:w-auto dark:bg-blue-800 dark:text-gray-200 dark:hover:bg-blue-700 dark:border-blue-800"
         >
           Add Product
         </button>
       </div>
       
       {/* Main Content */}
-      <div className="bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden">
+      <div className="bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden dark:bg-gray-800 dark:border-gray-700">
         {/* Table Header */}
         <div className="px-6 py-4 border-b border-gray-200">
-          <h2 className="text-lg font-semibold text-gray-800">Product Inventory</h2>
+          <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-200">Product Inventory</h2>
         </div>
         
         {/* Table Container */}
@@ -264,48 +264,48 @@ const Inventory = () => {
 
             <table className="w-full">
               <thead>
-                <tr className="bg-gray-50">
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">HSN Code</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stock</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">GST Rate</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
+                <tr className="bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-200">Name</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-200">HSN Code</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-200">Stock</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-200">Price</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-200">GST Rate</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-200">Action</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-200">
+              <tbody className="divide-y divide-gray-200 dark:bg-gray-800 dark:border-gray-700">
                 {currentProducts.map((product) => (
-                  <tr key={product._id} className="hover:bg-gray-50 transition-colors">
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{product.name}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{product.hsn_code}</td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                  <tr key={product._id} className="hover:bg-gray-50 transition-colors dark:hover:bg-gray-600">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-200">{product.name}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-200">{product.hsn_code}</td>
+                    <td className="px-6 py-4 whitespace-nowrap  dark:text-gray-200">
                       <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                         product.quantity === 0 
-                          ? "bg-red-100 text-red-800" 
+                          ? "bg-red-100 text-red-800 dark:bg-red-200" 
                           : product.quantity < 10 
-                          ? "bg-yellow-100 text-yellow-800"
-                          : "bg-green-100 text-green-800"
+                          ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-200"
+                          : "bg-green-100 text-green-800 dark:bg-green-200"
                       }`}>
                         {product.quantity} {product.unit_metrics}
                       </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">₹{product.price}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{product.gst_rate}%</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-200">₹{product.price}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-200">{product.gst_rate}%</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-200">
                       <div className="flex items-center space-x-4">
                         <button
                           onClick={() => {
                             setNewProduct(product);
                             setIsModalOpen(true);
                           }}
-                          className="text-blue-600 hover:text-blue-800 transition-colors"
+                          className="text-blue-600 hover:text-blue-800 transition-colors dark:text-gray-200"
                           title="Edit Product"
                         >
                           <Edit className="w-5 h-5" />
                         </button>
                         <button
                           onClick={() => handleDelete(product._id)}
-                          className="text-red-600 hover:text-red-800 transition-colors"
+                          className="text-red-600 hover:text-red-800 transition-colors dark:text-gray-200"
                           title="Delete Product"
                         >
                           <Trash2 className="w-5 h-5" />
@@ -320,7 +320,7 @@ const Inventory = () => {
         
         {/* Pagination Controls */}
         {currentProducts.length > 0 && (
-          <div className="px-6 py-4 bg-gray-50 border-t border-gray-200 flex flex-col sm:flex-row justify-between items-center gap-4">
+          <div className="px-6 py-4 bg-gray-50 border-t border-gray-200 flex flex-col sm:flex-row justify-between items-center gap-4 dark:bg-gray-800 dark:border-gray-700">
             <div className="flex items-center">
               <button
                 onClick={handlePreviousPage}
@@ -349,7 +349,7 @@ const Inventory = () => {
                         onClick={() => handlePageClick(pageNum)}
                         className={`relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium ${
                           currentPage === pageNum
-                            ? "z-10 bg-blue-600 text-white border-blue-600"
+                            ? "z-10 bg-blue-600 text-white border-blue-600 dark:hover:bg-blue-700 dark:border-blue-800"
                             : "bg-white text-gray-700 hover:bg-gray-50"
                         } mx-1 rounded-md`}
                       >
@@ -363,7 +363,7 @@ const Inventory = () => {
                     return (
                       <span
                         key={index}
-                        className="relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700"
+                        className="relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-200"
                       >
                         ...
                       </span>
@@ -387,7 +387,7 @@ const Inventory = () => {
               </button>
             </div>
             
-            <div className="text-sm text-gray-600">
+            <div className="text-sm text-gray-600 dark:text-gray-200">
               Page {currentPage} of {totalPages} • Showing {currentProducts.length} products
             </div>
           </div>
@@ -397,7 +397,7 @@ const Inventory = () => {
       {/* Modal for Add/Edit Product */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-xl shadow-xl w-full max-w-3xl relative">
+          <div className="bg-white p-6 rounded-xl shadow-xl w-full max-w-3xl relative dark:bg-gray-800 dark:border-gray-700">
             <button
               onClick={() => setIsModalOpen(false)}
               className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
@@ -417,7 +417,7 @@ const Inventory = () => {
               className="grid grid-cols-1 md:grid-cols-2 gap-4"
             >
               <div>
-                <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1 dark:bg-gray-800 dark:text-gray-200">
                   Product Name
                 </label>
                 <input
@@ -427,12 +427,12 @@ const Inventory = () => {
                   onChange={(e) =>
                     setNewProduct({ ...newProduct, name: e.target.value })
                   }
-                  className="border border-gray-300 p-2 rounded-lg w-full focus:ring-blue-500 focus:border-blue-500"
+                  className="border border-gray-300 p-2 rounded-lg w-full focus:ring-blue-500 focus:border-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4154f1]"
                   required
                 />
               </div>
               <div>
-                <label htmlFor="serial_no" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="serial_no" className="block text-sm font-medium text-gray-700 mb-1 dark:bg-gray-800 dark:text-gray-200">
                   Serial Number
                 </label>
                 <input
@@ -442,11 +442,11 @@ const Inventory = () => {
                   onChange={(e) =>
                     setNewProduct({ ...newProduct, serial_no: e.target.value })
                   }
-                  className="border border-gray-300 p-2 rounded-lg w-full focus:ring-blue-500 focus:border-blue-500"
+                  className="border border-gray-300 p-2 rounded-lg w-full focus:ring-blue-500 focus:border-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4154f1]"
                 />
               </div>
               <div>
-                <label htmlFor="hsn_code" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="hsn_code" className="block text-sm font-medium text-gray-700 mb-1 dark:bg-gray-800 dark:text-gray-200">
                   HSN Code
                 </label>
                 <input
@@ -456,12 +456,12 @@ const Inventory = () => {
                   onChange={(e) =>
                     setNewProduct({ ...newProduct, hsn_code: e.target.value })
                   }
-                  className="border border-gray-300 p-2 rounded-lg w-full focus:ring-blue-500 focus:border-blue-500"
+                  className="border border-gray-300 p-2 rounded-lg w-full focus:ring-blue-500 focus:border-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4154f1]"
                   required
                 />
               </div>
               <div>
-                <label htmlFor="quantity" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="quantity" className="block text-sm font-medium text-gray-700 mb-1 dark:bg-gray-800 dark:text-gray-200">
                   Quantity
                 </label>
                 <input
@@ -474,12 +474,12 @@ const Inventory = () => {
                       quantity: parseInt(e.target.value, 10),
                     })
                   }
-                  className="border border-gray-300 p-2 rounded-lg w-full focus:ring-blue-500 focus:border-blue-500"
+                  className="border border-gray-300 p-2 rounded-lg w-full focus:ring-blue-500 focus:border-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4154f1]"
                   required
                 />
               </div>
               <div>
-                <label htmlFor="price" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="price" className="block text-sm font-medium text-gray-700 mb-1 dark:bg-gray-800 dark:text-gray-200">
                   Price
                 </label>
                 <div className="relative rounded-lg shadow-sm">
@@ -496,13 +496,13 @@ const Inventory = () => {
                         price: parseFloat(e.target.value),
                       })
                     }
-                    className="border border-gray-300 p-2 pl-8 rounded-lg w-full focus:ring-blue-500 focus:border-blue-500"
+                    className="border border-gray-300 p-2 pl-8 rounded-lg w-full focus:ring-blue-500 focus:border-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4154f1]"
                     required
                   />
                 </div>
               </div>
               <div>
-                <label htmlFor="gst_rate" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="gst_rate" className="block text-sm font-medium text-gray-700 mb-1 dark:bg-gray-800 dark:text-gray-200">
                   GST Rate (%)
                 </label>
                 <input
@@ -515,14 +515,14 @@ const Inventory = () => {
                       gst_rate: parseFloat(e.target.value),
                     })
                   }
-                  className="border border-gray-300 p-2 rounded-lg w-full focus:ring-blue-500 focus:border-blue-500"
+                  className="border border-gray-300 p-2 rounded-lg w-full focus:ring-blue-500 focus:border-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4154f1]"
                   required
                 />
               </div>
               <div>
                 <label
                   htmlFor="unit_metrics"
-                  className="block text-sm font-medium text-gray-700 mb-1"
+                  className="block text-sm font-medium text-gray-700 mb-1 dark:bg-gray-800 dark:text-gray-200"
                 >
                   Unit Metrics
                 </label>
@@ -535,7 +535,7 @@ const Inventory = () => {
                       unit_metrics: e.target.value,
                     })
                   }
-                  className="border border-gray-300 p-2 rounded-lg w-full focus:ring-blue-500 focus:border-blue-500"
+                  className="border border-gray-300 p-2 rounded-lg w-full focus:ring-blue-500 focus:border-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4154f1]"
                 >
                   <option value="Pcs">Pieces (Pcs)</option>
                   <option value="Kg">Kilograms (Kg)</option>
@@ -551,7 +551,7 @@ const Inventory = () => {
               <div className="md:col-span-2">
                 <label
                   htmlFor="description"
-                  className="block text-sm font-medium text-gray-700 mb-1"
+                  className="block text-sm font-medium text-gray-700 mb-1 dark:bg-gray-800 dark:text-gray-200"
                 >
                   Description
                 </label>
@@ -564,7 +564,7 @@ const Inventory = () => {
                       description: e.target.value,
                     })
                   }
-                  className="border border-gray-300 p-2 rounded-lg w-full h-24 focus:ring-blue-500 focus:border-blue-500"
+                  className="border border-gray-300 p-2 rounded-lg w-full h-24 focus:ring-blue-500 focus:border-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4154f1]"
                 ></textarea>
               </div>
               <div className="md:col-span-2 flex justify-end space-x-4 mt-4">
@@ -577,7 +577,7 @@ const Inventory = () => {
                 </button>
                 <button
                   type="submit"
-                  className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition duration-200"
+                  className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition duration-200 dark:bg-blue-800 dark:text-gray-200 dark:hover:bg-blue-700 dark:border-blue-800"
                 >
                   {newProduct._id ? "Update Product" : "Save Product"}
                 </button>

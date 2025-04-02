@@ -69,51 +69,56 @@ const AddBusiness = () => {
   };
 
   return (
-    <div className='flex justify-center items-center p-8 mt-5'>
-      <div className='w-96 p-6 bg-white border border-gray-200 rounded-lg shadow-xl w-full max-w-lg p-8'>
-        <h2 className="text-2xl font-bold text-gray-800 text-center">Add Business</h2>
+    <div className='p-8 min-h-screen dark:bg-gray-800'>
+       <div className='mt-5'>
+            <div className='flex justify-center'>
+              <div className='p-8 bg-white border border-gray-200 rounded-lg shadow-xl w-full max-w-lg p-8 h-1/2 dark:bg-gray-800 dark:border-gray-700'>
+                <h2 className="text-2xl font-bold text-gray-800 text-center dark:text-gray-200">Add Business</h2>
 
-        <div className="relative mt-4">
-          <span className="absolute -top-3 left-2 text-sm bg-white px-1 text-black">GSTIN Number</span>
-          <input
-            type="text"
-            className="w-full border border-blue-500 rounded-lg p-2"
-            value={gstin}
-            onChange={handleGstinChange}
-            required
-          />
-          {status && (
-            <span className={`absolute right-2 top-2 ${isVerified ? 'text-green-500' : 'text-red-500'}`}>
-              {isVerified ? <FaCheckCircle /> : <FaTimesCircle />}
-            </span>
-          )}
-        </div>
+                <div className="relative mt-4">
+                  <span className="absolute -top-3 left-2 text-sm bg-white px-1 text-black dark:bg-gray-800 dark:text-gray-200">GSTIN Number</span>
+                  <input
+                    type="text"
+                    className="w-full border border-blue-500 rounded-lg p-2 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4154f1]"
+                    value={gstin}
+                    onChange={handleGstinChange}
+                    required
+                  />
+                  {status && (
+                    <span className={`absolute right-2 top-2 ${isVerified ? 'text-green-500' : 'text-red-500'}`}>
+                      {isVerified ? <FaCheckCircle /> : <FaTimesCircle />}
+                    </span>
+                  )}
+                </div>
 
-        {isVerified && businessDetails ? (
-          <div className='mt-4 p-4 border rounded-lg bg-gray-50'>
-            <p><strong>Trade Name:</strong> {businessDetails.trade_name}</p>
-            <p><strong>Legal Name:</strong> {businessDetails.legal_name}</p>
-            <p><strong>Legal Name:</strong> {businessDetails.gstin}</p>
+                {isVerified && businessDetails ? (
+                  <div className='mt-4 p-4 border rounded-lg bg-gray-50'>
+                    <p><strong>Trade Name:</strong> {businessDetails.trade_name}</p>
+                    <p><strong>Legal Name:</strong> {businessDetails.legal_name}</p>
+                    <p><strong>Legal Name:</strong> {businessDetails.gstin}</p>
+                  </div>
+                ):(errorMessage && (
+                  <div className='mt-4 p-4 border rounded-lg bg-gray-50'>
+                    <p>{errorMessage}</p>
+                  </div>
+                ))}
+
+                {successMessage && (
+                  <div className='mt-4 p-4 border rounded-lg bg-gray-50'>
+                    <p>{successMessage}</p>
+                  </div>
+                )}
+
+                <div className='flex justify-center mt-4'>
+                  <button className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition duration-200 dark:bg-blue-800 dark:text-gray-200 dark:hover:bg-blue-700" onClick={handleAddBusiness}>
+                    Add Business
+                  </button>
+                </div>
+              </div>
           </div>
-        ):(errorMessage && (
-          <div className='mt-4 p-4 border rounded-lg bg-gray-50'>
-            <p>{errorMessage}</p>
-          </div>
-        ))}
-
-        {successMessage && (
-          <div className='mt-4 p-4 border rounded-lg bg-gray-50'>
-            <p>{successMessage}</p>
-          </div>
-        )}
-
-        <div className='flex justify-center mt-4'>
-          <button className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition duration-200" onClick={handleAddBusiness}>
-            Add Business
-          </button>
-        </div>
-      </div>
+       </div>
     </div>
+    
   );
 };
 

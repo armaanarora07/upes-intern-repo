@@ -70,21 +70,21 @@ const InviteUserForm = () => {
 
   return (
     <div>
-      <h2 className="text-2xl font-bold text-gray-800 text-center flex justify-center mb-4">Add member to manage your business</h2>
+      <h2 className="text-2xl font-bold text-gray-800 text-center flex justify-center mb-4 dark:text-gray-200">Add member to manage your business</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         <input
           type="text"
           placeholder="Email or Contact"
           value={userData.contactOrEmail}
           onChange={(e) => setUserData({ ...userData, contactOrEmail: e.target.value })}
-          className="w-full p-2 border rounded-lg"
+          className="w-full p-2 border rounded-lg dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4154f1]"
           required
         />
         {errors.contactOrEmail && <p className="text-red-500 text-sm">{errors.contactOrEmail}</p>}
           <select
             value={userData.gstin}
             onChange={(e) => setUserData({ ...userData, gstin: e.target.value })}
-            className="w-full p-2 border rounded-lg"
+            className="w-full p-2 border rounded-lg dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4154f1]"
           >
             {userbusiness.map((gst) => (
               <option key={gst} value={gst}>
@@ -97,7 +97,7 @@ const InviteUserForm = () => {
         <div className='flex justify-center mt-4'>
           <button
             type="submit"
-            className={`mt-5 bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition duration-200 ${
+            className={`mt-5 bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition duration-200 dark:bg-blue-800 dark:text-gray-200 dark:hover:bg-blue-700 dark:border-blue-800${
               loading ? "bg-gray-400 cursor-not-allowed" : ""
             }`}
             disabled={loading}
@@ -117,9 +117,13 @@ const InviteUserForm = () => {
 
 const InviteUserPage = () => {
   return (
-    <div className="flex justify-center items-center p-8 mt-5">
-      <div className="bg-white border rounded-lg shadow-xl border-gray-200 overflow-hidden w-full max-w-lg p-8">
-        <InviteUserForm />
+    <div className="p-8 min-h-screen dark:bg-gray-800">
+      <div className="mt-5">
+          <div className="flex flex-col items-center justify-center">
+            <div className="bg-white border rounded-lg shadow-xl border-gray-200 overflow-hidden w-full max-w-lg p-8 dark:bg-gray-800 dark:border-gray-700">
+               <InviteUserForm />
+            </div>
+          </div>
       </div>
     </div>
   );

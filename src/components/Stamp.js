@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {setStamp, removeStamp, toggle} from '../slices/stampSlice';
-import { FaTrash} from 'react-icons/fa';
+import { Trash2 } from 'lucide-react';
 
 const Stamp = () => {
   const dispatch = useDispatch();
@@ -38,15 +38,15 @@ const Stamp = () => {
   return (
     <div className='w-1/2'>
 
-       <div className='flex space-x-3'>
-        <h2 className="text-2xl font-bold text-gray-800">Stamp</h2>
+       <div className='flex space-x-3 dark:bg-gray-800 dark:border-gray-700'>
+        <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-200">Stamp</h2>
         <label className="flex items-center cursor-pointer">
           <input type="checkbox" className="hidden" checked={enabled} onChange={handleToggle} />
           <div 
-            className="w-12 h-6 flex items-center rounded-full p-1 transition" 
+            className="w-12 h-6 flex items-center rounded-full p-1 transition dark:bg-gray-800 dark:border-gray-700" 
             style={{ backgroundColor: enabled ? '#3B82F6' : '#6B7280' }} // Blue when enabled, Gray when disabled
           >
-            <div className={`bg-white w-5 h-5 rounded-full shadow-md transform transition ${enabled ? 'translate-x-6' : 'translate-x-0'}`}></div>
+            <div className={`bg-white w-5 h-5 rounded-full shadow-md transform transition dark:bg-gray-800 dark:border-gray-700 ${enabled ? 'translate-x-6' : 'translate-x-0'}`}></div>
           </div>
         </label>
         </div>
@@ -62,7 +62,7 @@ const Stamp = () => {
         <div className="ml-4 flex items-center">
             <button
             onClick={() => fileInputRef.current.click()} // Trigger file input click
-            className="bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 transition duration-200"
+            className="bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 transition duration-200 dark:bg-blue-800 dark:text-blue-200 dark:hover:bg-blue-700"
             >
             Upload
             </button>
@@ -76,9 +76,9 @@ const Stamp = () => {
             {imagePreview && ( // Conditionally render the Remove button
             <button 
                 onClick={handleRemoveImage} 
-                className="ml-2 bg-white-500 text-black p-2 rounded-lg hover:bg-white-600 transition duration-200"
+                className="ml-2 bg-white-500 text-black p-2 rounded-lg hover:bg-white-600 transition duration-200  dark:text-gray-200"
             >
-                <FaTrash/>
+                 <Trash2 className="w-5 h-5" />
             </button>
             )}
         </div>

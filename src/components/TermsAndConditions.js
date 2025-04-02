@@ -45,11 +45,11 @@ const TermsAndConditions = () => {
   },[dispatch]);
 
   return (
-    <div className="p-6 mt-5 mb-6 bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden">
-        <h2 className="text-2xl font-bold text-gray-800">Terms and Conditions</h2>
+    <div className="p-6 mt-5 mb-6 bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden dark:bg-gray-800 dark:border-gray-700">
+        <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-200">Terms and Conditions</h2>
         <div>
          <textarea
-            className="w-full border border-[#4154f1] rounded-lg p-2 m-2"
+            className="w-full border border-[#4154f1] rounded-lg p-2 m-2 dark:bg-gray-600 dark:border-gray-700 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-[#4154f1]"
             value={terms} // Update to the correct state variable
             onChange={(e) => handletextChange(e) } 
             placeholder="Enter terms and conditions here..."
