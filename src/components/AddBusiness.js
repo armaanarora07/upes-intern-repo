@@ -56,7 +56,7 @@ const AddBusiness = () => {
       return;
     }
     try {
-      const response = await axios.post(`${process.env.REACT_APP_API_URL}/user/business`, { status: "yes" }, {
+      const response = await axios.put(`${process.env.REACT_APP_API_URL}/user/business`, { status: "yes" }, {
         headers: { Authorization: `Bearer ${authToken}`, "Content-Type": "application/json" },
       });
       if (response.status === 200) {
