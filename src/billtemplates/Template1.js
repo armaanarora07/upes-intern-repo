@@ -64,7 +64,7 @@ class Template1 {
   drawInvoiceDetailsBlock(invoiceData) {
     this.doc.rect(100, 35, 95, 40, "S");
     this.doc.text(`Invoice No. : ${invoiceData.party.invoiceNo}`, 102, 40);
-    this.doc.text(`Invoice Date : ${invoiceData.party.invoiceDate}`, 150, 40);
+    this.doc.text(`Invoice Date : ${new Date(invoiceData.party.invoiceDate).toLocaleDateString('en-CA')}`, 150, 40);
     this.doc.text("Chalan No. :", 102, 46);
     this.doc.text("Chalan Date :", 150, 46);
     this.doc.text("P.O.No. :", 102, 52);
@@ -250,7 +250,7 @@ class Template1 {
     
     // Company name
     const tradeName = invoiceData.firstParty.trade_name.replace(/^M\/S\s+/i, "");
-    this.doc.text(`for ${tradeName}`, 170, finalY + 95, { align: "center" });
+    this.doc.text(`for ${tradeName}`, 130, finalY + 95, { align: "left" });
   }
 
   generateInvoice(invoiceData) {
