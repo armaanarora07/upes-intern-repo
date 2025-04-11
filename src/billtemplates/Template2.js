@@ -8,10 +8,11 @@ class Template2 {
   }
 
   generateFullHeader(invoiceData) {
+
+    console.log(invoiceData);
     this.doc.setFont("helvetica");
     this.doc.setFontSize(10);
     this.doc.text(`GSTIN : ${invoiceData.firstParty.gstin}`, 15, 15);
-
     this.doc.setFontSize(10);
     this.doc.setFont("helvetica", "italic");
     this.doc.text("Original Copy", 175, 15);
@@ -72,7 +73,6 @@ class Template2 {
     const yl = 48; 
     this.doc.setFont("helvetica", "normal");
     this.doc.text("Billed To", xl, yl);
-
     this.doc.text(`M/S ${invoiceData.party.trade_name.replace(/^M\/S\s+/i, "")}`,xl, yl+8);
     this.doc.text(`${invoiceData.party.principal_address.address1}`,xl, yl+12);
     this.doc.text(`${invoiceData.party.principal_address.address2}`,xl, yl+16);

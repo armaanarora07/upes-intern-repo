@@ -282,6 +282,9 @@ const InvoicePage = () => {
         unit: row.unit,
       })),
       rates: rows.map((row) => row.price),
+      terms : GSTtandcDetails,
+      bank : selectedGBank
+      //
     };
 
     console.log(body);
@@ -391,6 +394,8 @@ const InvoicePage = () => {
         unit: row.unit,
       })),
       rates: rows.map((row) => row.price),
+      terms : GSTtandcDetails,
+      bank : selectedGBank
     };
   
     try {

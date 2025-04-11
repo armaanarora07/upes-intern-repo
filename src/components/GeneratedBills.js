@@ -134,7 +134,7 @@ const GeneratedBills = () => {
         gstin: gstDetails.gstin,
         legal_name: gstDetails.legalName,
         trade_name: gstDetails.tradeName,
-        principal_address: gstDetails.principalAddress,
+        principal_address: gstDetails.billedTo,
         shipping_address: gstDetails.shippingAddress,
         invoiceDate: userDetails.invoiceDate,
         invoiceNo:userDetails.invoiceNo,
@@ -187,7 +187,7 @@ const GeneratedBills = () => {
 
   const handleViewBill = (bill)=>{
     setBilldata(bill);
-    console.log(bill);
+    //console.log({abc : bill});
     setPreview(true);
   }
 
