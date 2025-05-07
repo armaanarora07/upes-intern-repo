@@ -254,7 +254,7 @@ class Template2 {
 
     this.doc.line(10,finalY+63,pageWidth/2,finalY+63); // line
 
-    const inputText = invoiceData.tandc;
+    const inputText = typeof invoiceData.tandc == 'Array'? invoiceData.tandc.join('\n') : invoiceData.tandc;
 
     const points = inputText.split("\n");
 

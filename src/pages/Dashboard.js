@@ -88,26 +88,26 @@ const Dashboard = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-
-      if (!authToken) {
-        setErrorMessage("You need to log in first.");
-        setLoading(false);
-        return;
-      }
-
+      if (!authToken || !filter) return;
+  
+      setLoading(true);
+  
+      const { fromDate, toDate } = getDateRange(filter);
+  
       try {
-        // Fetch transactions data
-        const transactionResponse = await axios.get(`${process.env.REACT_APP_API_URL}/user/myTransactions`, {
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/user/myTransactions`, {
           headers: {
             Authorization: `Bearer ${authToken}`,
             "Content-Type": "application/json",
           },
+          params: {
+            fromDate,
+            toDate,
+          },
         });
-
-        const transactions = transactionResponse.data?.data || [];
-        
+  
+        const transactions = response.data?.data || [];
         setAllTransactions(transactions);
-       
       } catch (error) {
         if (error.response) {
           setErrorMessage(error.response.data.message || "An error occurred on the server.");
@@ -120,11 +120,44 @@ const Dashboard = () => {
         setLoading(false);
       }
     };
-        
+  
     fetchData();
+  }, [authToken, filter]);
 
-  }, [authToken]);
-
+  function getDateRange(filter) {
+    const today = new Date();
+    let fromDate, toDate = new Date();
+  
+    switch (filter) {
+      case 'today':
+        fromDate = new Date();
+        break;
+      case 'thisWeek':
+        fromDate = new Date(today.setDate(today.getDate() - today.getDay() + 1));
+        break;
+      case 'thisMonth':
+        fromDate = new Date(today.getFullYear(), today.getMonth(), 1);
+        break;
+      case 'thisQuarter':
+        fromDate = new Date(today.getFullYear(), Math.floor(today.getMonth() / 3) * 3, 1);
+        break;
+      case 'currentFinancialYear':
+        fromDate = new Date(today.getMonth() < 3 ? today.getFullYear() - 1 : today.getFullYear(), 3, 1);
+        break;
+      case 'previousFinancialYear':
+        fromDate = new Date(today.getMonth() < 3 ? today.getFullYear() - 2 : today.getFullYear() - 1, 3, 1);
+        toDate = new Date(today.getMonth() < 3 ? today.getFullYear() - 1 : today.getFullYear(), 2, 31);
+        break;
+      default:
+        fromDate = null;
+    }
+  
+    return {
+      fromDate: fromDate?.toISOString().split("T")[0],
+      toDate: toDate?.toISOString().split("T")[0],
+    };
+  }
+  
   function filterDataByDateRange(data, range) {
     const today = new Date();
     const startOfWeek = new Date(today.setDate(today.getDate() - today.getDay() + 1)); // Monday
@@ -250,6 +283,10 @@ const Dashboard = () => {
     setFilter(value);
   }
 
+  const handleFilterChange = (newFilter) => {
+    setFilter(newFilter);
+  };
+
   const chartData = salesData
     ? {
         labels: salesData.map((item) => item.date),
@@ -361,13 +398,23 @@ const Dashboard = () => {
                     <select 
                       className="border border-gray-300 rounded-md px-3 py-2 bg-white text-gray-800 transition-all dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-[#4154f1]"
                       value={filter}
-                      onChange={(e) => handleFilterDropdown(e.target.value)}
+                      onChange={(e) => handleFilterChange(e.target.value)}
                     >
                       {filters.map((filter, key) => (
                         <option key={key} value={filter.id}>
                           {filter.name}
                         </option>
-                      ))}
+                      ))
+                        /* filters.map((filter, key) => (
+                          <button
+                            key={filter.id}
+                            onClick={() => handleFilterChange(filter.id)}
+                            className={filter === filter.id ? "active-filter" : ""}
+                          >
+                            {filter.name}
+                          </button>
+                        )) */
+                      }
                     </select>
                   </div>
 
