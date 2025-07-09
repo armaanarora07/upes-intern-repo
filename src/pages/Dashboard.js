@@ -362,7 +362,21 @@ const Dashboard = () => {
   
         {/* Dashboard Content */}
         <div className="p-6">
-
+        {/* Filter Dropdown - Always visible */}
+        <div className="flex items-center justify-end gap-2 mb-6">
+          <span className="text-gray-700 font-medium dark:text-gray-200">Filter</span>
+          <select 
+            className="border border-gray-300 rounded-md px-3 py-2 bg-white text-gray-800 transition-all dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-[#4154f1]"
+            value={filter}
+            onChange={(e) => handleFilterChange(e.target.value)}
+          >
+            {filters.map((filter, key) => (
+              <option key={key} value={filter.id}>
+                {filter.name}
+              </option>
+            ))}
+          </select>
+        </div>
           {allTransactions.length > 0 ? (
             <>
               {/* Header with improved alignment */}
@@ -393,30 +407,7 @@ const Dashboard = () => {
                   </div>
 
                   {/* Filter Selector */}
-                  <div className="flex items-center gap-2">
-                    <span className="text-gray-700 font-medium dark:text-gray-200">Filter</span>
-                    <select 
-                      className="border border-gray-300 rounded-md px-3 py-2 bg-white text-gray-800 transition-all dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-[#4154f1]"
-                      value={filter}
-                      onChange={(e) => handleFilterChange(e.target.value)}
-                    >
-                      {filters.map((filter, key) => (
-                        <option key={key} value={filter.id}>
-                          {filter.name}
-                        </option>
-                      ))
-                        /* filters.map((filter, key) => (
-                          <button
-                            key={filter.id}
-                            onClick={() => handleFilterChange(filter.id)}
-                            className={filter === filter.id ? "active-filter" : ""}
-                          >
-                            {filter.name}
-                          </button>
-                        )) */
-                      }
-                    </select>
-                  </div>
+                  
 
                   {/* Validity Section */}
                   <div className="flex items-center gap-2">
