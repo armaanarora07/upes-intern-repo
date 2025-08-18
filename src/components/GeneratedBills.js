@@ -11,7 +11,20 @@ import { setTitle } from "../slices/navbarSlice";
 import BillPreview from "./BillPreview";
 
 const GeneratedBills = () => {
-  const [selectedDate, setSelectedDate] = useState(null);
+  // Replace single date with date range (start and end dates)
+// This allows filtering bills between two dates instead of just one specific date
+  // changes
+  // const [selectedDate, setSelectedDate] = useState(null);
+  //changes made by Sagar
+  const [dateRange, setDateRange] = useState({
+  startDate: null,
+  endDate: null
+});
+
+  // ADDITION: Add state for delete confirmation modal - Made by Sagar
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [billToDelete, setBillToDelete] = useState(null);
+
   const [bills, setBills] = useState([]);
   const [preview,setPreview] = useState(false);
   const [billdata,setBilldata] = useState(null);
@@ -163,14 +176,23 @@ const GeneratedBills = () => {
 
   }
 
-  const handleDeleteBill = async (transactionId) =>{
+  // MODIFICATION: Update delete handling to use confirmation modal - Made by Sagar
+  // This function now shows the confirmation modal instead of deleting immediately
+  const confirmDelete = (bill) => {
+    setBillToDelete(bill);
+    setShowDeleteModal(true);
+  };
 
+  // The actual delete function now called after confirmation
+  const handleDeleteBill = async (transactionId) =>{
     try {
+      setShowDeleteModal(false); // Close the modal
+      
       const response = await axios.delete(
         `${process.env.REACT_APP_API_URL}/user/transaction`,
         {
           headers: {
-            Authorization: `Bearer ${authToken}`, // Replace with your actual token
+            Authorization: `Bearer ${authToken}`,
           },
           data: {
             transaction_id: transactionId,
@@ -179,7 +201,11 @@ const GeneratedBills = () => {
       );
   
       console.log("Response:", response.data);
-      window.location.reload(); 
+      // Update local state instead of reloading the page
+      if (response.data.status) {
+        setBills(bills.filter(bill => bill._id !== transactionId));
+        // Optional: Show success message
+      }
     } catch (error) {
       console.error("Error deleting transaction:", error.response?.data || error.message);
     }
@@ -200,15 +226,30 @@ const GeneratedBills = () => {
   );
 
 
-  // Filter bills by search term and selected date
-  const filteredBills = sortedBills.filter((bill) => {
-    const isDateMatch = selectedDate
-      ? new Date(bill.created_at).toLocaleDateString() === selectedDate.toLocaleDateString()
-      : true;
-    const isSearchMatch = bill.sn_no.toLowerCase().includes(searchTerm.toLowerCase());
+  //Update the filtering logic to use date range instead of single date
+// This checks if a bill's date falls within the selected start and end dates
+  // const filteredBills = sortedBills.filter((bill) => {
+  //   const isDateMatch = selectedDate
+  //     ? new Date(bill.created_at).toLocaleDateString() === selectedDate.toLocaleDateString()
+  //     : true;
+  //   const isSearchMatch = bill.sn_no.toLowerCase().includes(searchTerm.toLowerCase());
 
-    return isDateMatch && isSearchMatch;
-  });
+  //   return isDateMatch && isSearchMatch;
+  // });
+
+  // With this: change by Sagar 
+const filteredBills = sortedBills.filter((bill) => {
+  const billDate = new Date(bill.created_at);
+  
+  // Date range check
+  const isDateInRange = (!dateRange.startDate || billDate >= dateRange.startDate) && 
+                        (!dateRange.endDate || billDate <= new Date(dateRange.endDate.setHours(23, 59, 59, 999)));
+  
+  // Search term check
+  const isSearchMatch = bill.sn_no.toLowerCase().includes(searchTerm.toLowerCase());
+
+  return isDateInRange && isSearchMatch;
+});
 
   const currentBills = filteredBills.slice(indexOfFirstBill, indexOfLastBill);
 
@@ -270,7 +311,10 @@ const GeneratedBills = () => {
         </div>
 
         {/* Date Picker */}
-        <div className="relative w-full sm:w-auto">
+        {/* // Replace single date picker with start and end date pickers 
+// This provides UI for selecting both the start and end dates of the range
+// Replace the single DatePicker section: */}
+        {/* <div className="relative w-full sm:w-auto">
           <DatePicker
             selected={selectedDate}
             onChange={(date) => setSelectedDate(date)}
@@ -283,13 +327,57 @@ const GeneratedBills = () => {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
             </svg>
           </div>
-        </div>
+        </div> */}
+
+        {/* // With this date range picker: */}
+<div className="flex items-center space-x-2 w-full sm:w-auto">
+  <div className="relative w-full">
+    <DatePicker
+      selected={dateRange.startDate}
+      onChange={(date) => setDateRange(prev => ({ ...prev, startDate: date }))}
+      selectsStart
+      startDate={dateRange.startDate}
+      endDate={dateRange.endDate}
+      dateFormat="dd/MM/yyyy"
+      placeholderText="Start Date"
+      className="w-full border border-[#4154f1] rounded-lg p-2 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4154f1]"
+    />
+    <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+      <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+      </svg>
+    </div>
+  </div>
+  
+  <span className="text-gray-500 dark:text-gray-400">to</span>
+  
+  <div className="relative w-full">
+    <DatePicker
+      selected={dateRange.endDate}
+      onChange={(date) => setDateRange(prev => ({ ...prev, endDate: date }))}
+      selectsEnd
+      startDate={dateRange.startDate}
+      endDate={dateRange.endDate}
+      minDate={dateRange.startDate}
+      dateFormat="dd/MM/yyyy"
+      placeholderText="End Date"
+      className="w-full border border-[#4154f1] rounded-lg p-2 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4154f1]"
+    />
+    <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+      <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+      </svg>
+    </div>
+  </div>
+</div>
+
 
         {/* Optional: Clear Filters Button */}
         <button 
           onClick={() => {
             setSearchTerm('');
-            setSelectedDate(null);
+            // setSelectedDate(null);Update the clear filters button to reset the date range instead of single date
+            setDateRange({startDate: null, endDate: null}); //change by Sagar
           }}
           className="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4154f1]"
         >
@@ -350,15 +438,6 @@ const GeneratedBills = () => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       <div className="flex items-center space-x-4">
-                        {/*<a 
-                          href={bill.downloadlink} 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          className="text-blue-600 hover:text-blue-800 transition-colors"
-                          title="View Bill"
-                        >
-                          <FaEye className="w-5 h-5" />
-                        </a> */}
                         <button 
                           onClick={() => {handleViewBill(bill)}} 
                           className="text-blue-600 hover:text-blue-800 transition-colors dark:text-gray-200"
@@ -366,8 +445,9 @@ const GeneratedBills = () => {
                         >
                          <FaEye className="w-5 h-5" />
                         </button>
+                        {/* MODIFICATION: Changed direct delete to use confirmation - Made by Sagar */}
                         <button 
-                          onClick={() => handleDeleteBill(bill._id)} 
+                          onClick={() => confirmDelete(bill)} 
                           className="text-red-600 hover:text-red-800 transition-colors dark:text-gray-200"
                           title="Delete Bill"
                         >
@@ -479,6 +559,67 @@ const GeneratedBills = () => {
          onClose={() => setPreview(false)} 
          billData={billdata} 
       />
+
+      {/* ADDITION: Delete Confirmation Modal - Made by Sagar */}
+      {showDeleteModal && (
+        <div className="fixed inset-0 z-50 overflow-y-auto">
+          <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            {/* Background overlay */}
+            <div 
+              className="fixed inset-0 transition-opacity" 
+              aria-hidden="true"
+              onClick={() => setShowDeleteModal(false)}
+            >
+              <div className="absolute inset-0 bg-gray-500 opacity-75 dark:bg-gray-900 dark:opacity-80"></div>
+            </div>
+
+            {/* Modal panel */}
+            <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+            <div 
+              className="inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
+              role="dialog" 
+              aria-modal="true" 
+              aria-labelledby="modal-headline"
+            >
+              <div className="bg-white dark:bg-gray-800 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                <div className="sm:flex sm:items-start">
+                  <div className="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 dark:bg-red-900 sm:mx-0 sm:h-10 sm:w-10">
+                    <svg className="h-6 w-6 text-red-600 dark:text-red-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                  </div>
+                  <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                    <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100" id="modal-headline">
+                      Delete Invoice
+                    </h3>
+                    <div className="mt-2">
+                      <p className="text-sm text-gray-500 dark:text-gray-300">
+                        Are you sure you want to delete invoice <span className="font-semibold text-gray-700 dark:text-gray-200">{billToDelete?.sn_no}</span>? This action cannot be undone.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="bg-gray-50 dark:bg-gray-700 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                <button 
+                  type="button" 
+                  className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm"
+                  onClick={() => handleDeleteBill(billToDelete?._id)}
+                >
+                  Delete
+                </button>
+                <button 
+                  type="button" 
+                  className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white dark:bg-gray-800 dark:text-gray-100 dark:border-gray-600 text-base font-medium text-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
+                  onClick={() => setShowDeleteModal(false)}
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
     </div>
   );

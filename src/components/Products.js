@@ -88,11 +88,18 @@ const Products = () => {
       }
       
       // Don't populate fields on partial matches, only when exact match
-      const exactMatch = hsnData.find(item => item.hsn === value);
+    //   const exactMatch = hsnData.find(item => item.hsn === value);
+    //   if (exactMatch) {
+    //     populateFields(index, exactMatch);
+    //   } else {
+    //     clearPopulatedFields(index);
+    //   }
+    // }
+      // issue resolved of disappering of name when hsn code is entered - by sagar
+      // Only populate fields on an exact match, otherwise do nothing.
+     const exactMatch = hsnData.find(item => item.hsn === value);
       if (exactMatch) {
         populateFields(index, exactMatch);
-      } else {
-        clearPopulatedFields(index);
       }
     }
   };

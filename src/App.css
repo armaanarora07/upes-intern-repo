@@ -36,3 +36,20 @@
     transform: rotate(360deg);
   }
 } */
+
+/* Custom slick scrollbar for dropdowns --> added by armaan */
+.slick-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #4154f1 #23272f;
+}
+
+.slick-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  background: #23272f;
+  border-radius: 8px;
+}
+
+.slick-scrollbar::-webkit-scrollbar-thumb {
+  background: #4154f1;
+  border-radius: 8px;
+}

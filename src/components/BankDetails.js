@@ -81,6 +81,7 @@ const BankDetails = () => {
   const [bankName, setbankName] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [editingIndex, setEditingIndex] = useState(null);
+  const [errors, setErrors] = useState({}); //  new line added by armaan
 
   const resetForm = () => {
     setAccountNumber('');
@@ -106,7 +107,50 @@ const BankDetails = () => {
     closeModal();
   }
 
-  const handleAddBankDetails = async () => {
+  // const handleAddBankDetails = async () => {
+
+  //   const reqBody = {
+  //     ac_no: accountNumber,
+  //     ifsc: ifscCode,
+  //     bank_name: bankName,
+  //     upi_id: upiId
+  //   }
+
+const handleAddBankDetails = async () => {
+    const newErrors = {};
+
+    // Bank Name: Should only contain letters and spaces.
+    if (!bankName.trim()) {
+      newErrors.bankName = 'Bank name is required.';
+    } else if (!/^[a-zA-Z\s]+$/.test(bankName)) {
+      newErrors.bankName = 'Bank name can only contain letters and spaces.';
+    }
+
+    // Account Number: Should be numeric and between 9-18 digits.
+    if (!accountNumber.trim()) {
+      newErrors.accountNumber = 'Account number is required.';
+    } else if (!/^\d{9,18}$/.test(accountNumber)) {
+      newErrors.accountNumber = 'Enter a valid account number (9-18 digits).';
+    }
+
+    // IFSC Code: Should be 11 characters, first 4 alphabetic, 5th is 0, last 6 alphanumeric.
+    if (!ifscCode.trim()) {
+      newErrors.ifscCode = 'IFSC code is required.';
+    } else if (!/^[A-Z]{4}0[A-Z0-9]{6}$/.test(ifscCode)) {
+      newErrors.ifscCode = 'Enter a valid 11-character IFSC code.';
+    }
+    
+    // UPI ID: Should follow a standard format like username@handle.
+    if (upiId && !/^[a-zA-Z0-9.\-_]{2,256}@[a-zA-Z]{2,64}$/.test(upiId)) {
+        newErrors.upiId = 'Enter a valid UPI ID (e.g., yourname@bank).';
+    }
+
+
+    setErrors(newErrors);
+
+    if (Object.keys(newErrors).length > 0) {
+      return; // Stop if there are errors
+    }
 
     const reqBody = {
       ac_no: accountNumber,
@@ -118,12 +162,12 @@ const BankDetails = () => {
    try {
       const response = await axios.post(
         `${process.env.REACT_APP_API_URL}/user/bank`,
-         reqBody, // Data being sent in POST request
+         reqBody,
         {
           headers: { Authorization: `Bearer ${authToken}` },
         }
       );
-      console.log(response.data); // Returning the newly added bank details
+      console.log(response.data);
     } catch (error) {
       console.log(error.message);
     }
@@ -221,7 +265,8 @@ const selectBank = (name) => {
 
             {(activeModal === 'add') && (
               <div className="mt-4 space-y-4 dark:bg-gray-800">
-                  <div className="relative mb-4">
+                {/* // replaced */}
+                  {/* <div className="relative mb-4">
                     <span className="absolute -top-3 left-2 text-sm bg-white px-1 text-black dark:bg-gray-800 dark:text-white">Bank Name</span>
                     <input
                       type="text"
@@ -260,7 +305,76 @@ const selectBank = (name) => {
                         value={ifscCode} // Update to the correct state variable
                         onChange={(e) => setIfscCode(e.target.value)} 
                     />
+                </div> */}
+                {/* //replaced */}
+              {/* //This new block, includes inline validation logic and displays error messages - by armaan */}
+                <div className="relative mb-4">
+                    <span className="absolute -top-3 left-2 text-sm bg-white px-1 text-black dark:bg-gray-800 dark:text-white">Bank Name</span>
+                    {/* <input
+                      type="text"
+                      className="w-full border border-[#4154f1] rounded-lg p-2 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4154f1]"
+                      value={bankName}
+                      onChange={(e) => {
+                        const value = e.target.value.replace(/[0-9]/g, ''); // Remove numbers
+                        setbankName(value);
+                        handleBankNameChange(e);
+                      }}
+                    /> */}
+                      {/* //This updated version, which now only allows letters and spaces - by armaan */}
+                    <input
+                      type="text"
+                      className="w-full border border-[#4154f1] rounded-lg p-2 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4154f1]"
+                      value={bankName}
+                      onChange={(e) => {
+                        const value = e.target.value.replace(/[^a-zA-Z\s]/g, ''); // Allow only letters and spaces
+                        setbankName(value);
+                        handleBankNameChange({ target: { value } }); // Pass the sanitized value to the handler
+                      }}
+                    />
+                    {errors.bankName && <p className="text-red-500 text-xs mt-1">{errors.bankName}</p>}
+                    {filteredBanks.length > 0 && (
+                      <ul className="absolute z-10 bg-white border border-gray-300 w-full mt-1 rounded-lg shadow-md">
+                        {filteredBanks.map((bank, index) => (
+                          <li
+                            key={index}
+                            className="p-2 hover:bg-gray-200 cursor-pointer dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4154f1]"
+                            onClick={() => selectBank(bank)}
+                          >
+                            {bank}
+                          </li>
+                        ))}
+                      </ul>
+                     )}
                 </div>
+                <div className="relative mb-4">
+                    <span className="absolute -top-3 left-2 text-sm bg-white px-1 text-black dark:bg-gray-800 dark:text-white">Account Number</span>
+                    <input
+                        type="text"
+                        className="w-full border border-[#4154f1] rounded-lg p-2 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4154f1]"
+                        value={accountNumber}
+                        maxLength={18}
+                        onChange={(e) => {
+                          const value = e.target.value.replace(/[^0-9]/g, ''); // Allow only numbers
+                          setAccountNumber(value);
+                        }}
+                    />
+                    {errors.accountNumber && <p className="text-red-500 text-xs mt-1">{errors.accountNumber}</p>}
+                </div>
+                <div className="relative mb-4">
+                    <span className="absolute -top-3 left-2 text-sm bg-white px-1 text-black dark:bg-gray-800 dark:text-white">IFSC Code</span>
+                    <input
+                        type="text"
+                        className="w-full border border-[#4154f1] rounded-lg p-2 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4154f1]"
+                        value={ifscCode}
+                        maxLength={11}
+                        onChange={(e) => {
+                          const value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, ''); // Allow only uppercase letters and numbers
+                          setIfscCode(value);
+                        }}
+                    />
+                    {errors.ifscCode && <p className="text-red-500 text-xs mt-1">{errors.ifscCode}</p>}
+                </div>
+
                 <div className="relative mb-4">
                     <span className="absolute -top-3 left-2 text-sm bg-white px-1 text-black dark:bg-gray-800 dark:text-white">UPI ID</span>
                     <input
@@ -269,6 +383,8 @@ const selectBank = (name) => {
                         value={upiId} // Update to the correct state variable
                         onChange={(e) => setUpiId(e.target.value)} 
                     />
+                    {/* This line adds the error message display */}
+                    {errors.upiId && <p className="text-red-500 text-xs mt-1">{errors.upiId}</p>}
                 </div>
                 <button onClick={ handleAddBankDetails } className="bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 transition duration-200 w-full dark:bg-blue-800 dark:text-blue-200 dark:hover:bg-blue-700">
                    Save
