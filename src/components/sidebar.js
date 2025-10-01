@@ -247,7 +247,18 @@ export default Sidebar;
 // Small helper component to render a collapsed-state active indicator
 const SidebarLink = ({ item, expanded }) => {
   const location = useLocation();
-  const isActive = location.pathname === item.path;
+  // Treat item as active when the current pathname equals the item path
+  // or starts with it (so subroutes also mark the parent active).
+  // Also treat root '/' and unknown root as Dashboard active when item.path === '/dashboard'.
+  const pathname = location.pathname || '/';
+  let isActive = false;
+
+  if (item.path === '/dashboard') {
+    // Dashboard should be active for '/', '/dashboard', and default route
+    isActive = pathname === '/' || pathname === '/dashboard' || pathname.startsWith('/dashboard');
+  } else {
+    isActive = pathname === item.path || pathname.startsWith(item.path + '/') || pathname.startsWith(item.path);
+  }
   const base = `flex items-center ${expanded ? 'px-4 py-2.5' : 'px-0 py-3 flex-col justify-center'} rounded-md`;
   const activeClass = isActive ? (expanded ? 'bg-white/10 text-white font-semibold border-l-4 border-blue-400' : '') : 'text-gray-300 font-medium hover:bg-gray-700';
 

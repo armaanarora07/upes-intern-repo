@@ -351,7 +351,29 @@ const Dashboard = () => {
     return (
       <div className="p-8 mt-10 min-h-screen dark:bg-gray-800  dark:text-gray-200">
         <div className="flex items-center space-x-3">
-          <div className="w-5 h-5 border-2 border-t-2 border-gray-300 rounded-full animate-spin" />
+          {/* Fidget-style spinner (SVG) - uses inline SMIL animations for smooth orbit */}
+          <svg
+            width="32"
+            height="32"
+            viewBox="0 0 100 100"
+            aria-hidden="true"
+            className="flex-shrink-0"
+          >
+            <g transform="translate(50,50)">
+              <g>
+                <circle cx="30" cy="0" r="6" fill="#4154f1">
+                  <animateTransform attributeName="transform" type="rotate" from="0 0 0" to="360 0 0" dur="1s" repeatCount="indefinite" />
+                </circle>
+                <circle cx="-30" cy="0" r="6" fill="#60a5fa">
+                  <animateTransform attributeName="transform" type="rotate" from="0 0 0" to="-360 0 0" dur="1s" repeatCount="indefinite" begin="0.15s" />
+                </circle>
+                <circle cx="0" cy="30" r="6" fill="#93c5fd">
+                  <animateTransform attributeName="transform" type="rotate" from="0 0 0" to="360 0 0" dur="1s" repeatCount="indefinite" begin="0.3s" />
+                </circle>
+              </g>
+            </g>
+          </svg>
+
           <p>Loading data...</p>
         </div>
       </div>
@@ -383,7 +405,7 @@ const Dashboard = () => {
           {allTransactions.length > 0 ? (
             <>
               {/* Header with improved alignment */}
-              <div className="px-6 py-5 mb-6 bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden dark:bg-gray-800 dark:border-gray-700">
+              <div className="px-6 py-5 mb-6 bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden dark:bg-gray-800 dark:border-gray-700">
 
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                   {/* Business Name */}
@@ -460,7 +482,7 @@ const Dashboard = () => {
 
               {/* Latest Transactions Card - Improved styling */}
               <div className="mb-6">
-                <div className="bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden dark:bg-gray-800 dark:border-gray-700">
+                <div className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden dark:bg-gray-800 dark:border-gray-700">
                   <div className="px-6 py-4 border-b border-gray-200">
                     <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-200">Latest Transactions</h2>
                   </div>
@@ -504,7 +526,7 @@ const Dashboard = () => {
               {/* Charts Grid - Improved layout and responsiveness */}
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Total Sales Report */}
-                <div className="bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden dark:bg-gray-800 dark:border-gray-700">
+                <div className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden dark:bg-gray-800 dark:border-gray-700">
                   <div className="px-6 py-4 border-b border-gray-200">
                     <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-200">Total Sales Report</h2>
                   </div>
@@ -570,7 +592,7 @@ const Dashboard = () => {
                 </div>
   
                 {/* GST Sales Report */}
-                <div className="bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden dark:bg-gray-800 dark:border-gray-700">
+                <div className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden dark:bg-gray-800 dark:border-gray-700">
                   <div className="px-6 py-4 border-b border-gray-200">
                     <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-200">GST Sales Report</h2>
                   </div>
@@ -636,7 +658,7 @@ const Dashboard = () => {
                 </div>
   
                 {/* URD Sales Report */}
-                <div className="bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden dark:bg-gray-800 dark:border-gray-700">
+                <div className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden dark:bg-gray-800 dark:border-gray-700">
                   <div className="px-6 py-4 border-b border-gray-200">
                     <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-200">URD Sales Report</h2>
                   </div>
