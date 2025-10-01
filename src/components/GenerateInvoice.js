@@ -454,7 +454,7 @@ const InvoicePage = () => {
       return;
     }
 
-    const html = `<!doctype html><html><head><meta charset=\"utf-8\"><title>Invoice</title></head><body><iframe src=\"${previewUrl}\" style=\"width:100%;height:100%\"></iframe></body></html>`;
+  const html = `<!doctype html><html><head><meta charset="utf-8"><title>Invoice</title></head><body><iframe src="${previewUrl}" style="width:100%;height:100%"></iframe></body></html>`;
     const blob = new Blob([html], { type: 'application/msword' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
