@@ -9,6 +9,7 @@ import numberToWords from "number-to-words";
 import Template1 from "../billtemplates/Template1";
 import Template2 from "../billtemplates/Template2";
 import ActionModal from "./ActionModal";
+import TopAlert from './TopAlert';
 import axios from "axios";
 import * as pdfjsLib from 'pdfjs-dist/legacy/build/pdf';
 
@@ -43,59 +44,12 @@ const InvoicePage = () => {
   const [business, setSelectedBusiness] = useState(
     () => businesses?.find((b) => b._id === selectedBusiness) || {}
   );
+  const [topAlert, setTopAlert] = useState({ show: false, type: 'warning', message: '', position: 'top-center' });
 
   const templates = {
     template1: Template2,
     template2: Template1
   };
-
-  useEffect(() => {
-    // Build invoice data from global slices when rows or related state changes
-    if (!rows || rows.length === 0) return;
-
-    const invoiceDataFromGlobal = {
-      firstParty: {
-        gstin: business ? business.gstin : '',
-        legal_name: business ? business.legal_name : '',
-        trade_name: business ? business.trade_name : '',
-        principal_address: business ? business.principal_address : '',
-        shipping_address: business ? business.shipping_address : ''
-      },
-      party: {
-        gstin: gstDetails?.gstin || userDetails?.gstin || '',
-        legal_name: userDetails?.legalName || business?.legal_name || '',
-        trade_name: userDetails?.tradeName || business?.trade_name || '',
-        principal_address: userDetails?.primaryAddress || business?.principal_address || '',
-        shipping_address: userDetails?.shippingAddress || business?.shipping_address || '',
-        invoiceDate: userDetails?.invoiceDate || '',
-        invoiceNo: userDetails?.invoiceNo || '',
-        phoneNo: userDetails?.phoneNo || ''
-      },
-      quantities: rows.map((r) => parseFloat(r.quantity) || 0),
-      hsn_details: rows.map((row) => ({
-        hsn_code: row.hsn_code || '',
-        product_info: row.product_info || row.name || '',
-        cgst: row.cgst || '0',
-        sgst: row.sgst || '0',
-        unit: row.unit || ''
-      })),
-      rates: rows.map((r) => r.price || 0),
-      tandc: GSTtandcDetails,
-      signature: signature,
-      stamp: stamp,
-      logo: logo,
-      qr: qr,
-      bank: selectedGBank,
-      signatureEnabled: signatureEnabled,
-      stampEnabled: stampEnabled,
-      bankEnabled: bankEnabled,
-      attestationSelection: attestationSelection
-    };
-
-    const calculatedInvoice = calculateInvoiceTotals(invoiceDataFromGlobal);
-    setInvoiceData(calculatedInvoice);
-    generatePreview(calculatedInvoice);
-  }, [rows, gstDetails, selectedBusiness, userDetails, GSTtandcDetails, signature, stamp, selectedGBank, selectedTemplate, business, logo, qr, signatureEnabled, stampEnabled, bankEnabled, attestationSelection]);
 
   const calculateInvoiceTotals = (data) => {
     if (!data || !Array.isArray(data.hsn_details) || !Array.isArray(data.quantities) || !Array.isArray(data.rates)) {
@@ -184,6 +138,61 @@ const InvoicePage = () => {
       console.error('Error generating preview:', err);
     }
   };
+
+  useEffect(() => {
+    // Build invoice data from global slices when rows or related state changes
+    if (!rows || rows.length === 0) return;
+
+    const invoiceDataFromGlobal = {
+      firstParty: {
+        gstin: business ? business.gstin : '',
+        legal_name: business ? business.legal_name : '',
+        trade_name: business ? business.trade_name : '',
+        principal_address: business ? business.principal_address : '',
+        shipping_address: business ? business.shipping_address : ''
+      },
+      party: {
+        gstin: gstDetails?.gstin || userDetails?.gstin || '',
+        legal_name: userDetails?.legalName || business?.legal_name || '',
+        trade_name: userDetails?.tradeName || business?.trade_name || '',
+        principal_address: userDetails?.primaryAddress || business?.principal_address || '',
+        shipping_address: userDetails?.shippingAddress || business?.shipping_address || '',
+        invoiceDate: userDetails?.invoiceDate || '',
+        invoiceNo: userDetails?.invoiceNo || '',
+        phoneNo: userDetails?.phoneNo || ''
+      },
+      quantities: rows.map((r) => parseFloat(r.quantity) || 0),
+      hsn_details: rows.map((row) => ({
+        hsn_code: row.hsn_code || '',
+        product_info: row.product_info || row.name || '',
+        cgst: row.cgst || '0',
+        sgst: row.sgst || '0',
+        unit: row.unit || ''
+      })),
+      rates: rows.map((r) => r.price || 0),
+      tandc: GSTtandcDetails,
+      signature: signature,
+      stamp: stamp,
+      logo: logo,
+      qr: qr,
+      bank: selectedGBank,
+      signatureEnabled: signatureEnabled,
+      stampEnabled: stampEnabled,
+      bankEnabled: bankEnabled,
+      attestationSelection: attestationSelection
+    };
+
+    const calculatedInvoice = calculateInvoiceTotals(invoiceDataFromGlobal);
+    setInvoiceData(calculatedInvoice);
+    generatePreview(calculatedInvoice);
+  }, [rows, gstDetails, selectedBusiness, userDetails, GSTtandcDetails, signature, stamp, selectedGBank, selectedTemplate, business, logo, qr, signatureEnabled, stampEnabled, bankEnabled, attestationSelection]);
+
+  useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    if (queryParams.size > 0) {
+      setInvoiceType(queryParams.get('type'));
+    }
+  }, [location.search]);
 
   const handleTemplateChange = (e) => {
     setSelectedTemplate(e.target.value);
@@ -381,14 +390,6 @@ const InvoicePage = () => {
     dispatch(clearGSTDetails());
   };
 
-  useEffect(() => {
-    const queryParams = new URLSearchParams(location.search);
-    if (queryParams.size > 0) {
-      setInvoiceType(queryParams.get('type'));
-    }
-  }, [location.search]);
-
-  // Create a new bill: clear current data and navigate to appropriate editor
   const createNewBill = () => {
     handleCloseModalAndClear();
     if (invoiceType === 'gstinvoice') {
@@ -398,52 +399,37 @@ const InvoicePage = () => {
     }
   };
 
-  // Native share handler - shares the generated PDF using Web Share API when available
+  // Share handler: per user request, only force download and show bottom-right toast
   const handleShare = async () => {
     if (!previewUrl) {
-      alert('No Items are added');
+      setTopAlert({ show: true, type: 'error', message: 'No invoice available to download.', position: 'bottom-right' });
       return;
     }
 
     try {
-      const resp = await fetch(previewUrl);
-      const blob = await resp.blob();
-      const file = new File([blob], `invoice_${Date.now()}.pdf`, { type: 'application/pdf' });
+      const resp = await fetch(previewUrl, { cache: 'no-store' });
+      if (!resp.ok) throw new Error(`Failed to fetch preview for download: ${resp.status}`);
+      const arrayBuffer = await resp.arrayBuffer();
 
-      // If browser can share files (Web Share API v2)
-      if (navigator.canShare && navigator.canShare({ files: [file] })) {
-        await navigator.share({
-          files: [file],
-          title: `Invoice from ${business?.trade_name || 'Business'}`,
-          text: `Invoice for ₹${invoiceData?.totalAmount || ''}`,
-        });
-        setShowPdfModal(false);
-        return;
-      }
+      const blobForDownload = new Blob([arrayBuffer], { type: 'application/pdf' });
+      const downloadUrl = URL.createObjectURL(blobForDownload);
+      const a = document.createElement('a');
+      a.href = downloadUrl;
+      a.download = `invoice_${Date.now()}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(downloadUrl);
 
-      // Fallback: try sharing a URL/text using navigator.share if available
-      if (navigator.share) {
-        await navigator.share({
-          title: `Invoice from ${business?.trade_name || 'Business'}`,
-          text: `Invoice for ₹${invoiceData?.totalAmount || ''}`,
-          url: previewUrl,
-        });
-        setShowPdfModal(false);
-        return;
-      }
-
-      // Final fallback: copy the preview URL to clipboard and notify the user
-      if (navigator.clipboard) {
-        await navigator.clipboard.writeText(previewUrl);
-        alert('Invoice link copied to clipboard');
-        return;
-      }
-
-      // If nothing is available, open the PDF in a new tab as a last resort
-      window.open(previewUrl, '_blank');
+      setTopAlert({
+        show: true,
+        type: 'warning',
+        message: "This browser doesn't support native file sharing — the invoice has been downloaded. Use Chrome or Edge to share files directly.",
+        position: 'bottom-right'
+      });
     } catch (err) {
-      console.error('Error while sharing invoice:', err);
-      alert('Unable to share invoice on this device.');
+      console.error('[share] download-only fallback failed:', err);
+      setTopAlert({ show: true, type: 'error', message: 'Failed to download invoice. Please try again.', position: 'bottom-right' });
     }
   };
 
@@ -454,7 +440,7 @@ const InvoicePage = () => {
       return;
     }
 
-  const html = `<!doctype html><html><head><meta charset="utf-8"><title>Invoice</title></head><body><iframe src="${previewUrl}" style="width:100%;height:100%"></iframe></body></html>`;
+    const html = `<!doctype html><html><head><meta charset=\"utf-8\"><title>Invoice</title></head><body><iframe src=\"${previewUrl}\" style=\"width:100%;height:100%\"></iframe></body></html>`;
     const blob = new Blob([html], { type: 'application/msword' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -514,49 +500,59 @@ const InvoicePage = () => {
       alert('Failed to export invoice as image.');
     }
   };
-    return (
-      <div className="flex flex-col lg:flex-row w-full p-8 lg:space-x-6">
-        <div className="flex-1 p-6 bg-white border rounded-xl shadow-xl overflow-hidden mt-2 dark:bg-gray-800 dark:border-gray-700">
-          <div className="text-2xl font-bold text-gray-800 mb-3 dark:text-gray-200">Invoice Preview</div>
-          <div className="flex justify-center">
-            <iframe title="invoice-preview" src={previewUrl} className="w-3/4 h-[80vh] border border-gray-300 rounded-lg" />
-          </div>
-        </div>
 
-        <div className="w-full lg:w-1/3 h-auto p-6 bg-white border rounded-xl shadow-xl overflow-hidden flex flex-col items-center mt-2 dark:bg-gray-800 dark:border-gray-700">
-          <div className="text-2xl font-bold text-gray-800 mb-3 dark:text-gray-200">Customize Invoice</div>
+  return (
+    <div className="flex flex-col lg:flex-row w-full p-8 lg:space-x-6">
+      {topAlert.show && (
+        <TopAlert
+          type={topAlert.type}
+          message={topAlert.message}
+          position={topAlert.position}
+          onClose={() => setTopAlert({ ...topAlert, show: false })}
+        />
+      )}
 
-          <div className="w-full max-w-sm mb-6">
-            <label className="block text-gray-700 text-xl font-bold mb-2 dark:text-gray-200">Select Template</label>
-            <select value={selectedTemplate} onChange={handleTemplateChange} className="w-full px-4 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
-              {Object.keys(templates).map((key) => (
-                <option key={key} value={key}>{`Template ${key.charAt(key.length - 1)}`}</option>
-              ))}
-            </select>
-          </div>
-
-          <div className="flex flex-col space-y-4 w-full">
-            <button className="px-6 py-3 bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 transition duration-200 dark:bg-blue-800 dark:text-gray-200 dark:hover:bg-blue-700 dark:border-blue-800" onClick={addBill}>Generate Invoice</button>
-            <button className="px-6 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition duration-200" onClick={() => navigate('/gst-invoice')}>Edit Invoice</button>
-          </div>
-
-          <ActionModal
-            isOpen={showPdfModal}
-            onClose={handleSimpleCloseModal}
-            onGenerateEway={generateEway}
-            onCreateNewBill={createNewBill}
-            onDownloadbill={handleDownloadPDF}
-            onShareInvoice={handleShare}
-            onExportWord={exportAsWord}
-            onExportImage={exportAsImage}
-            invoiceType={invoiceType}
-            billId={billId}
-            forceShowShare={process.env.NODE_ENV !== 'production'}
-          />
-
+      <div className="flex-1 p-6 bg-white border rounded-xl shadow-xl overflow-hidden mt-2 dark:bg-gray-800 dark:border-gray-700">
+        <div className="text-2xl font-bold text-gray-800 mb-3 dark:text-gray-200">Invoice Preview</div>
+        <div className="flex justify-center">
+          <iframe title="invoice-preview" src={previewUrl} className="w-3/4 h-[80vh] border border-gray-300 rounded-lg" />
         </div>
       </div>
-    );
-  };
 
-  export default InvoicePage;
+      <div className="w-full lg:w-1/3 h-auto p-6 bg-white border rounded-xl shadow-xl overflow-hidden flex flex-col items-center mt-2 dark:bg-gray-800 dark:border-gray-700">
+        <div className="text-2xl font-bold text-gray-800 mb-3 dark:text-gray-200">Customize Invoice</div>
+
+        <div className="w-full max-w-sm mb-6">
+          <label className="block text-gray-700 text-xl font-bold mb-2 dark:text-gray-200">Select Template</label>
+          <select value={selectedTemplate} onChange={handleTemplateChange} className="w-full px-4 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            {Object.keys(templates).map((key) => (
+              <option key={key} value={key}>{`Template ${key.charAt(key.length - 1)}`}</option>
+            ))}
+          </select>
+        </div>
+
+        <div className="flex flex-col space-y-4 w-full">
+          <button className="px-6 py-3 bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 transition duration-200 dark:bg-blue-800 dark:text-gray-200 dark:hover:bg-blue-700 dark:border-blue-800" onClick={addBill}>Generate Invoice</button>
+          <button className="px-6 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition duration-200" onClick={() => navigate('/gst-invoice')}>Edit Invoice</button>
+        </div>
+
+        <ActionModal
+          isOpen={showPdfModal}
+          onClose={handleSimpleCloseModal}
+          onGenerateEway={generateEway}
+          onCreateNewBill={createNewBill}
+          onDownloadbill={handleDownloadPDF}
+          onShareInvoice={handleShare}
+          onExportWord={exportAsWord}
+          onExportImage={exportAsImage}
+          invoiceType={invoiceType}
+          billId={billId}
+          forceShowShare={process.env.NODE_ENV !== 'production'}
+        />
+
+      </div>
+    </div>
+  );
+};
+
+export default InvoicePage;
