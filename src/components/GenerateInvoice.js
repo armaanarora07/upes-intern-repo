@@ -450,6 +450,15 @@ const InvoicePage = () => {
           setTopAlert({ show: true, type: 'success', message: 'Invoice shared successfully.', position: 'top-center' });
           return;
         } catch (err) {
+          // If the user explicitly cancelled the native share (tapped outside or dismissed
+          // the share sheet), many browsers reject with an AbortError or include 'cancel'
+          // in the message. In that case we should NOT fall back to forcing a download.
+          const msg = err && (err.message || err.toString());
+          if (err && (err.name === 'AbortError' || /cancel/i.test(msg || ''))) {
+            // user cancelled share; treat as a no-op and show a short toast (optional)
+            setTopAlert({ show: true, type: 'info', message: 'Share cancelled.', position: 'top-center' });
+            return;
+          }
           console.warn('[share] native file share failed, falling back to URL share:', err);
           // continue to next option
         }
@@ -463,6 +472,11 @@ const InvoicePage = () => {
           setTopAlert({ show: true, type: 'success', message: 'Invoice shared successfully.', position: 'top-center' });
           return;
         } catch (err) {
+          const msg = err && (err.message || err.toString());
+          if (err && (err.name === 'AbortError' || /cancel/i.test(msg || ''))) {
+            setTopAlert({ show: true, type: 'info', message: 'Share cancelled.', position: 'top-center' });
+            return;
+          }
           console.warn('[share] navigator.share with URL failed, will fallback to download:', err);
           // continue to next option
         }
