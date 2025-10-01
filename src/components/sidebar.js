@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, Link, useLocation } from 'react-router-dom';
 import {FaBusinessTime, FaFileInvoice,FaChartLine, FaUsers, FaEnvelope, FaQuestionCircle,
   FaCog, FaSignOutAlt, FaChevronDown, FaChevronUp,FaAngleRight, FaAngleLeft,FaTruck, FaBoxOpen, FaBook, FaUserTie
 } from 'react-icons/fa';
@@ -158,19 +158,7 @@ const Sidebar = () => {
                     )}
                   </div>
                 ) : (
-                  <NavLink
-                    to={item.path}
-                    className={({ isActive }) => 
-                      `flex items-center ${expanded ? 'px-4 py-2.5' : 'px-0 py-3 flex-col justify-center'} 
-                      ${isActive ? 'text-white font-semibold' : 'text-gray-300 font-medium'} 
-                      hover:bg-gray-700 rounded-md`
-                    }
-                  >
-                    <div className={`text-gray-300 ${expanded ? 'mr-3' : ''} text-2xl`} >
-                      {item.icon}
-                    </div>
-                    {expanded && <span>{item.label}</span>}
-                  </NavLink>
+                  <SidebarLink item={item} expanded={expanded} />
                 )}
 
                 {/* Dropdown items - shown when expanded */}
@@ -255,3 +243,23 @@ const Sidebar = () => {
 };
 
 export default Sidebar;
+
+// Small helper component to render a collapsed-state active indicator
+const SidebarLink = ({ item, expanded }) => {
+  const location = useLocation();
+  const isActive = location.pathname === item.path;
+  const base = `flex items-center ${expanded ? 'px-4 py-2.5' : 'px-0 py-3 flex-col justify-center'} rounded-md`;
+  const activeClass = isActive ? (expanded ? 'bg-white/10 text-white font-semibold border-l-4 border-blue-400' : '') : 'text-gray-300 font-medium hover:bg-gray-700';
+
+  return (
+    <NavLink to={item.path} className={`${base} ${activeClass}`}>
+      <div className={`relative flex items-center ${expanded ? 'mr-3' : ''} text-2xl`}>
+        {item.icon}
+        {!expanded && isActive && (
+          <span className="absolute -right-3 top-1/2 transform -translate-y-1/2 w-2 h-2 rounded-full bg-blue-400" />
+        )}
+      </div>
+      {expanded && <span>{item.label}</span>}
+    </NavLink>
+  );
+};

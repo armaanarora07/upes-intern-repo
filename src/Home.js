@@ -9,6 +9,7 @@ import Payments from "./components/Payments";
 import Users from "./components/Users";
 import Messages from "./components/Messages";
 import Help from "./pages/Help";
+import PageTransition from './components/PageTransition';
 import Settings from "./pages/Settings";
 import Logout from "./components/Logout";
 import Inventory from "./components/Inventory";
@@ -53,28 +54,28 @@ function Home() {
         <Navbar />
         <div className="dark:bg-gray-800 mt-5 p-5">
           <Routes>
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/add-business" element={<AddBusiness />} />
-            <Route path="/my-business" element={<MyBusiness />} />
-            <Route path="/user-business" element={<UpdateBusiness />} />
-            <Route path="/generated-bills" element={<GeneratedBills />} />
-            <Route path="/gst-invoice" element={<GSTInvoice/>} />
-            <Route path="/urd-invoice" element={<URDInvoice/>} />
-            <Route path="/inventory" element={<Inventory/>}></Route>
-            <Route path="/eway-bills" element={<EwayBills />} />
-            <Route path="/EWayBillRequest" element={<EWayBillRequest />} />
-            <Route path="/update-eway" element={<UpdateEwayCred/>} />
-            <Route path="eway-transactions" element={<EWayTransactions/>}/>
-            <Route path="/payments" element={<Payments />} />
-            <Route path="/users" element={<Users />} />
-            <Route path="/messages" element={<Messages />} />
-            <Route path="/help" element={<Help/>} />
-            <Route path="/settings" element={<Settings />} />
-            <Route path="/logout" element={<Logout />} />
-            <Route path='/generate-invoice' element={<InvoicePage/>}/>
-            <Route path='/invite-user' element={<InvitationsPage/>}/>
+            <Route path="/dashboard" element={<PageTransition><Dashboard /></PageTransition>} />
+            <Route path="/add-business" element={<PageTransition><AddBusiness /></PageTransition>} />
+            <Route path="/my-business" element={<PageTransition><MyBusiness /></PageTransition>} />
+            <Route path="/user-business" element={<PageTransition><UpdateBusiness /></PageTransition>} />
+            <Route path="/generated-bills" element={<PageTransition><GeneratedBills /></PageTransition>} />
+            <Route path="/gst-invoice" element={<PageTransition><GSTInvoice/></PageTransition>} />
+            <Route path="/urd-invoice" element={<PageTransition><URDInvoice/></PageTransition>} />
+            <Route path="/inventory" element={<PageTransition><Inventory/></PageTransition>}></Route>
+            <Route path="/eway-bills" element={<PageTransition><EwayBills /></PageTransition>} />
+            <Route path="/EWayBillRequest" element={<PageTransition><EWayBillRequest /></PageTransition>} />
+            <Route path="/update-eway" element={<PageTransition><UpdateEwayCred/></PageTransition>} />
+            <Route path="eway-transactions" element={<PageTransition><EWayTransactions/></PageTransition>}/>
+            <Route path="/payments" element={<PageTransition><Payments /></PageTransition>} />
+            <Route path="/users" element={<PageTransition><Users /></PageTransition>} />
+            <Route path="/messages" element={<PageTransition><Messages /></PageTransition>} />
+            <Route path="/help" element={<PageTransition><Help/></PageTransition>} />
+            <Route path="/settings" element={<PageTransition><Settings /></PageTransition>} />
+            <Route path="/logout" element={<PageTransition><Logout /></PageTransition>} />
+            <Route path='/generate-invoice' element={<PageTransition><InvoicePage/></PageTransition>}/>
+            <Route path='/invite-user' element={<PageTransition><InvitationsPage/></PageTransition>}/>
             {/* Redirect unknown routes to Dashboard */}
-            <Route path="/*" element={<Dashboard />} />
+            <Route path="/*" element={<PageTransition><Dashboard /></PageTransition>} />
           </Routes>
         </div>
       </div>

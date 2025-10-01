@@ -20,6 +20,7 @@ const InvoicePage = () => {
   const [selectedTemplate, setSelectedTemplate] = useState('template1');
   const [showPdfModal, setShowPdfModal] = useState(false);
   const [billId, setBillId] = useState('');
+  const [modalKey, setModalKey] = useState(0);
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -273,9 +274,11 @@ const InvoicePage = () => {
       if (response.status === 200) {
         const Url = response.data.url;
         setBillId(response.data.bill_doc_id);
-        if (Url) setShowPdfModal(true);
+        // Return success if server returned a document URL
+        return !!Url;
       } else {
         console.error(`Error: ${response.status} ${response.statusText}`);
+        return false;
       }
     } catch (error) {
       console.error(error);
@@ -317,9 +320,11 @@ const InvoicePage = () => {
 
       if (response.status === 200) {
         const Url = response.data.url;
-        if (Url) setShowPdfModal(true);
+        // Return true when a URL is present so caller can open modal
+        return !!Url;
       } else {
         console.error(`Error: ${response.status} ${response.statusText}`);
+        return false;
       }
     } catch (error) {
       console.error(error);
@@ -363,9 +368,10 @@ const InvoicePage = () => {
       if (response.status === 200) {
         const Url = response.data.url;
         setBillId(response.data.bill_doc_id);
-        if (Url) setShowPdfModal(true);
+        return !!Url;
       } else {
         console.error(`Error: ${response.status} ${response.statusText}`);
+        return false;
       }
     } catch (error) {
       console.error(error);
@@ -373,15 +379,34 @@ const InvoicePage = () => {
   };
 
   const addBill = async () => {
+    // Reset modal state so it can be re-opened after previous usage
+    setShowPdfModal(false);
+    setBillId('');
+
+    let opened = false;
+
     if (invoiceType === 'gstinvoice') {
-      handleGSTBill();
+      opened = await handleGSTBill();
     } else if (invoiceType === 'urd/purchase-invoice') {
-      handleURDPurchaseBill();
+      opened = await handleURDPurchaseBill();
     } else if (invoiceType === 'urd/sales-invoice') {
-      handleURDSalesBill();
+      opened = await handleURDSalesBill();
     } else {
       alert('Invalid Invoice Type');
       return;
+    }
+
+    // If the server returned a document URL (opened === true) OR we have a
+    // client-generated preview (`previewUrl`), force a remount and show the
+    // modal. This allows the preview flow to work even when the backend
+    // doesn't return a hosted URL (for example, when preview is produced
+    // client-side).
+    if (opened || previewUrl) {
+      setModalKey((k) => k + 1);
+      setShowPdfModal(true);
+    } else {
+      // Provide feedback when neither server preview nor client preview exists
+      setTopAlert({ show: true, type: 'error', message: 'Failed to generate bill preview. Please try again.', position: 'top-center' });
     }
   };
 
@@ -402,17 +427,49 @@ const InvoicePage = () => {
   // Share handler: per user request, only force download and show bottom-right toast
   const handleShare = async () => {
     if (!previewUrl) {
-      setTopAlert({ show: true, type: 'error', message: 'No invoice available to download.', position: 'bottom-right' });
+      setTopAlert({ show: true, type: 'error', message: 'No invoice available to share.', position: 'bottom-right' });
       return;
     }
 
-    try {
+    // Helper: fetch blob from previewUrl
+    const fetchPdfBlob = async () => {
       const resp = await fetch(previewUrl, { cache: 'no-store' });
-      if (!resp.ok) throw new Error(`Failed to fetch preview for download: ${resp.status}`);
+      if (!resp.ok) throw new Error(`Failed to fetch preview for share/download: ${resp.status}`);
       const arrayBuffer = await resp.arrayBuffer();
+      return new Blob([arrayBuffer], { type: 'application/pdf' });
+    };
 
-      const blobForDownload = new Blob([arrayBuffer], { type: 'application/pdf' });
-      const downloadUrl = URL.createObjectURL(blobForDownload);
+    try {
+      const pdfBlob = await fetchPdfBlob();
+
+      // Option 1: Try sharing the file directly (mobile/Chromium with file sharing)
+      if (navigator.canShare && navigator.canShare({ files: [new File([pdfBlob], 'invoice.pdf', { type: 'application/pdf' })] }) && navigator.share) {
+        try {
+          const file = new File([pdfBlob], `invoice_${Date.now()}.pdf`, { type: 'application/pdf' });
+          await navigator.share({ files: [file], title: 'Invoice', text: 'Please find the invoice attached.' });
+          setTopAlert({ show: true, type: 'success', message: 'Invoice shared successfully.', position: 'top-center' });
+          return;
+        } catch (err) {
+          console.warn('[share] native file share failed, falling back to URL share:', err);
+          // continue to next option
+        }
+      }
+
+      // Option 2: Try sharing via URL (some browsers support sharing URLs even if file share unsupported)
+      if (navigator.share) {
+        try {
+          // ensure previewUrl is a blob/object URL reachable by the page
+          await navigator.share({ title: 'Invoice', text: 'View the invoice', url: previewUrl });
+          setTopAlert({ show: true, type: 'success', message: 'Invoice shared successfully.', position: 'top-center' });
+          return;
+        } catch (err) {
+          console.warn('[share] navigator.share with URL failed, will fallback to download:', err);
+          // continue to next option
+        }
+      }
+
+      // Option 3: Fallback -> force download and show bottom-right toast advising to use Chromium browsers for native sharing
+      const downloadUrl = URL.createObjectURL(pdfBlob);
       const a = document.createElement('a');
       a.href = downloadUrl;
       a.download = `invoice_${Date.now()}.pdf`;
@@ -424,12 +481,13 @@ const InvoicePage = () => {
       setTopAlert({
         show: true,
         type: 'warning',
-        message: "This browser doesn't support native file sharing — the invoice has been downloaded. Use Chrome or Edge to share files directly.",
+        message: "This browser doesn't support native file sharing — the invoice has been downloaded. Use a Chromium-based browser (Chrome/Edge) to share files directly.",
         position: 'bottom-right'
       });
+
     } catch (err) {
-      console.error('[share] download-only fallback failed:', err);
-      setTopAlert({ show: true, type: 'error', message: 'Failed to download invoice. Please try again.', position: 'bottom-right' });
+      console.error('[share] all share/download attempts failed:', err);
+      setTopAlert({ show: true, type: 'error', message: 'Failed to share or download invoice. Please try again.', position: 'bottom-right' });
     }
   };
 
@@ -537,6 +595,7 @@ const InvoicePage = () => {
         </div>
 
         <ActionModal
+          key={modalKey}
           isOpen={showPdfModal}
           onClose={handleSimpleCloseModal}
           onGenerateEway={generateEway}

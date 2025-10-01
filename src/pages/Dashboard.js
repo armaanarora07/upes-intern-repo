@@ -350,7 +350,10 @@ const Dashboard = () => {
   if (loading) {
     return (
       <div className="p-8 mt-10 min-h-screen dark:bg-gray-800  dark:text-gray-200">
-        <p>Loading data...</p>
+        <div className="flex items-center space-x-3">
+          <div className="w-5 h-5 border-2 border-t-2 border-gray-300 rounded-full animate-spin" />
+          <p>Loading data...</p>
+        </div>
       </div>
     );
   }
