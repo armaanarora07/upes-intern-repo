@@ -220,7 +220,7 @@ function Help() {
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className='p-8 mt-5 mb-10 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-2xl shadow-xl text-white relative overflow-hidden'
+        className='p-8 mt-5 mb-10 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-2xl shadow-xl text-white relative overflow-hidden z-0'
       >
         <div className="absolute inset-0 bg-white opacity-5 pattern-dots"></div>
         <div className="relative z-10">

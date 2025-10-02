@@ -12,7 +12,7 @@ const Navbar = () => {
 
   return (
     <nav
-      className={`bg-[#F9FAFC] dark:bg-gray-800 ${isHelp ? 'bg-opacity-95' : 'bg-opacity-60'} backdrop-blur-md h-16 flex items-center justify-between px-6 shadow-xl fixed top-0 right-0 z-10`}
+      className={`bg-[#F9FAFC] dark:bg-gray-800 ${isHelp ? 'bg-opacity-95' : 'bg-opacity-60'} backdrop-blur-md h-16 flex items-center justify-between px-6 shadow-xl fixed top-0 right-0 z-50`}
       style={{ left: "var(--sidebar-width, 16rem)" }}
     >
       <h1 className="text-[#4154f1] dark:text-white font-bold text-3xl">

@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import axios from "axios";
 import { Edit, Trash2, Plus, Search, Package, ArrowLeft, ArrowRight, ChevronDown } from "lucide-react";
 import { useDispatch } from "react-redux";
 import { setTitle } from "../slices/navbarSlice";
+import ReactDOM from "react-dom";
 
 const Inventory = () => {
   const [products, setProducts] = useState([]);
@@ -216,6 +217,193 @@ const totalPages = rowsPerPage.showAll ? 1 : Math.ceil(filteredProducts.length /
     if (!rowsPerPage.showAll) {
       setCurrentPage(pageNumber);
     }
+  };
+
+  // Portal-based dropdown component with proper animations and positioning
+  const RowsPerPageDropdown = () => {
+    const buttonRef = useRef(null);
+    const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0, width: 0, showAbove: false });
+    const options = [10, 20, 30, 50, 100];
+
+    // Calculate position when dropdown opens
+    useEffect(() => {
+      if (rowsPerPage.isOpen && buttonRef.current) {
+        const rect = buttonRef.current.getBoundingClientRect();
+        const viewportHeight = window.innerHeight;
+        const estimatedMenuHeight = 320;
+        
+        const spaceBelow = viewportHeight - rect.bottom;
+        const showAbove = spaceBelow < estimatedMenuHeight && rect.top > estimatedMenuHeight;
+        
+        setMenuPosition({
+          top: showAbove ? rect.top - 8 : rect.bottom + 8,
+          left: rect.right - 160, // Align to right edge of button
+          width: Math.max(rect.width, 160),
+          showAbove
+        });
+      }
+    }, [rowsPerPage.isOpen]);
+
+    // Handle keyboard navigation
+    const handleKeyDown = useCallback((e) => {
+      if (!rowsPerPage.isOpen) return;
+      const currentIndex = options.indexOf(rowsPerPage.value);
+      
+      switch (e.key) {
+        case 'Escape':
+          setRowsPerPage(prev => ({ ...prev, isOpen: false }));
+          break;
+        case 'ArrowDown':
+          e.preventDefault();
+          if (rowsPerPage.showAll) {
+            handleRowsPerPageChange(options[0]);
+          } else {
+            const next = options[currentIndex + 1];
+            if (next) handleRowsPerPageChange(next);
+            else handleRowsPerPageChange('all');
+          }
+          break;
+        case 'ArrowUp':
+          e.preventDefault();
+          if (rowsPerPage.showAll) {
+            handleRowsPerPageChange(options[options.length - 1]);
+          } else if (currentIndex > 0) {
+            handleRowsPerPageChange(options[currentIndex - 1]);
+          }
+          break;
+        case 'Home':
+          handleRowsPerPageChange(options[0]);
+          break;
+        case 'End':
+          handleRowsPerPageChange('all');
+          break;
+        default:
+          break;
+      }
+    }, [rowsPerPage.isOpen, rowsPerPage.value, rowsPerPage.showAll, options]);
+
+    useEffect(() => {
+      document.addEventListener('keydown', handleKeyDown);
+      return () => document.removeEventListener('keydown', handleKeyDown);
+    }, [handleKeyDown]);
+
+    // Render portal dropdown
+    const dropdownMenu = rowsPerPage.isOpen && ReactDOM.createPortal(
+      <>
+        {/* Backdrop with blur */}
+        <div
+          className="fixed inset-0 bg-black/20 backdrop-blur-sm z-[9998]"
+          style={{ animation: 'fadeIn 0.15s ease-out' }}
+          onClick={() => setRowsPerPage(prev => ({ ...prev, isOpen: false }))}
+        />
+        
+        {/* Menu */}
+        <div
+          className="fixed z-[9999] bg-white dark:bg-gray-800 rounded-lg shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden"
+          style={{
+            top: menuPosition.showAbove ? 'auto' : `${menuPosition.top}px`,
+            bottom: menuPosition.showAbove ? `${window.innerHeight - menuPosition.top}px` : 'auto',
+            left: `${menuPosition.left}px`,
+            width: `${menuPosition.width}px`,
+            transformOrigin: menuPosition.showAbove ? 'bottom center' : 'top center',
+            animation: 'dropdownIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards'
+          }}
+        >
+          <div className="py-2 max-h-[70vh] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600">
+            {options.map((v) => {
+              const isActive = rowsPerPage.value === v && !rowsPerPage.showAll;
+              return (
+                <button
+                  key={v}
+                  onClick={() => handleRowsPerPageChange(v)}
+                  className={`w-full px-4 py-2.5 text-left text-sm flex items-center justify-between transition-colors ${
+                    isActive
+                      ? 'bg-blue-50 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300 font-semibold'
+                      : 'text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700'
+                  }`}
+                >
+                  <span>{v} rows</span>
+                  {isActive && (
+                    <svg className="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"/>
+                    </svg>
+                  )}
+                </button>
+              );
+            })}
+            <div className="border-t border-gray-200 dark:border-gray-600 my-1"></div>
+            <button
+              onClick={() => handleRowsPerPageChange('all')}
+              className={`w-full px-4 py-2.5 text-left text-sm flex items-center justify-between transition-colors ${
+                rowsPerPage.showAll
+                  ? 'bg-blue-50 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300 font-semibold'
+                  : 'text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700'
+              }`}
+            >
+              <span>Show All</span>
+              {rowsPerPage.showAll && (
+                <svg className="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"/>
+                </svg>
+              )}
+            </button>
+          </div>
+        </div>
+
+        {/* Animation styles */}
+        <style>{`
+          @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+          }
+          @keyframes dropdownIn {
+            0% {
+              opacity: 0;
+              transform: scale(0.95) translateY(-4px);
+            }
+            100% {
+              opacity: 1;
+              transform: scale(1) translateY(0);
+            }
+          }
+          .scrollbar-thin::-webkit-scrollbar {
+            width: 6px;
+          }
+          .scrollbar-thin::-webkit-scrollbar-track {
+            background: transparent;
+          }
+          .scrollbar-thumb-gray-300::-webkit-scrollbar-thumb {
+            background: #d1d5db;
+            border-radius: 3px;
+          }
+          .dark .scrollbar-thumb-gray-600::-webkit-scrollbar-thumb {
+            background: #4b5563;
+          }
+        `}</style>
+      </>,
+      document.body
+    );
+
+    return (
+      <>
+        <button
+          ref={buttonRef}
+          type="button"
+          onClick={() => setRowsPerPage(prev => ({ ...prev, isOpen: !prev.isOpen }))}
+          className="flex items-center gap-2 px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-colors"
+          aria-haspopup="listbox"
+          aria-expanded={rowsPerPage.isOpen}
+        >
+          <span className="text-sm font-medium text-gray-700 dark:text-gray-200 select-none">
+            {rowsPerPage.showAll ? 'Show All' : `${rowsPerPage.value} rows`}
+          </span>
+          <ChevronDown 
+            className={`w-4 h-4 text-gray-500 dark:text-gray-400 transition-transform duration-200 ${rowsPerPage.isOpen ? 'rotate-180' : ''}`}
+          />
+        </button>
+        {dropdownMenu}
+      </>
+    );
   };
 
   return (
@@ -446,84 +634,23 @@ const totalPages = rowsPerPage.showAll ? 1 : Math.ceil(filteredProducts.length /
           </button>
         </>
       )}
-
-     {/* Rows per page dropdown */}
-{/* Rows per page dropdown */}
-<div className="relative inline-block text-left">
-  {/* Backdrop for clicking outside - moved outside and rendered first */}
-  {rowsPerPage.isOpen && (
-    <div 
-      className="fixed inset-0 z-40" 
-      onClick={() => setRowsPerPage(prev => ({...prev, isOpen: false}))}
-    ></div>
-  )}
-  
-  <button
-    onClick={() => setRowsPerPage(prev => ({...prev, isOpen: !prev.isOpen}))}
-    className="group flex items-center gap-2 px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none transition-all duration-200 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-600"
-    aria-haspopup="listbox"
-    aria-expanded={rowsPerPage.isOpen}
-  >
-    <span className="text-sm font-medium text-gray-700 dark:text-gray-200">
-      {rowsPerPage.showAll ? 'Show All' : `${rowsPerPage.value} rows`}
-    </span>
-    <ChevronDown 
-      className={`w-4 h-4 text-gray-400 transition-transform duration-300 group-hover:text-gray-600 dark:text-gray-400 dark:group-hover:text-gray-200 ${rowsPerPage.isOpen ? 'rotate-180' : ''}`} 
-    />
-  </button>
-  
-  {/* Dropdown container with animation */}
- <div 
-    className={`absolute right-0 mt-1 w-full bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 z-50 overflow-hidden transition-all duration-300 ease-in-out origin-top transform ${
-      rowsPerPage.isOpen 
-        ? 'opacity-100 scale-y-100 translate-y-0' 
-        : 'opacity-0 scale-y-0 -translate-y-2 pointer-events-none'
-    } dark:bg-gray-700 dark:ring-gray-600`}
-    style={{minWidth: "100%"}}
-  >
-
-   
-    <ul 
-      className="py-1 max-h-48 overflow-y-auto"
-      role="listbox"
-      style={{scrollbarWidth: 'thin'}}
-    >
-      {[10, 20, 30, 50, 100].map((value) => (
-        <li 
-          key={value}
-          onClick={() => handleRowsPerPageChange(value)}
-          className={`cursor-pointer flex items-center px-4 py-2 text-sm hover:bg-blue-50 dark:hover:bg-blue-800/30 transition-all duration-200 active:scale-95 ${
-            rowsPerPage.value === value && !rowsPerPage.showAll 
-              ? 'bg-blue-50 text-blue-600 dark:bg-blue-900/50 dark:text-blue-300 font-medium' 
-              : 'text-gray-700 dark:text-gray-200'
-          }`}
-        >
-          {value} rows
-        </li>
-      ))}
-      <li 
-        onClick={() => handleRowsPerPageChange('all')}
-        className={`cursor-pointer flex items-center px-4 py-2 text-sm hover:bg-blue-50 dark:hover:bg-blue-800/30 transition-all duration-200 active:scale-95 ${
-          rowsPerPage.showAll 
-            ? 'bg-blue-50 text-blue-600 dark:bg-blue-900/50 dark:text-blue-300 font-medium' 
-            : 'text-gray-700 dark:text-gray-200'
-        }`}
-      >
-        Show All
-      </li>
-    </ul>
+    </div>
+    
+    {/* Right side container with dropdown and showing text */}
+    <div className="flex items-center gap-4">
+      {/* Rows per page dropdown */}
+      <RowsPerPageDropdown />
+      
+      {/* Showing text */}
+      <div className="text-sm text-gray-600 dark:text-gray-200 whitespace-nowrap">
+        {rowsPerPage.showAll ? (
+          `Showing all ${currentProducts.length} products`
+        ) : (
+          `Page ${currentPage} of ${totalPages} • Showing ${currentProducts.length} of ${filteredProducts.length} products`
+        )}
+      </div>
+    </div>
   </div>
-</div>
-</div>
-{/* Showing text */}
-<div className="text-sm text-gray-600 dark:text-gray-200">
-  {rowsPerPage.showAll ? (
-    `Showing all ${currentProducts.length} products`
-  ) : (
-    `Page ${currentPage} of ${totalPages} • Showing ${currentProducts.length} of ${filteredProducts.length} products`
-  )}
-</div>
-</div>
 )}
       {/* Modal for Add/Edit Product */}
       {isModalOpen && (

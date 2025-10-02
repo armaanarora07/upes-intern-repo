@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import axios from "axios";
 import { FaFileAlt, FaSearch, FaEdit, FaTrashAlt, FaEye } from "react-icons/fa";
 import { Trash2 } from "lucide-react"; 
@@ -9,6 +9,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { selectUserDetails } from "../slices/userdetailsSlice";
 import { setTitle } from "../slices/navbarSlice";
 import BillPreview from "./BillPreview";
+import ReactDOM from "react-dom";
 
 const GeneratedBills = () => {
   // Replace single date with date range (start and end dates)
@@ -30,7 +31,19 @@ const GeneratedBills = () => {
   const [billdata,setBilldata] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
   const [currentPage, setCurrentPage] = useState(1);  // Pagination state
-  const itemsPerPage = 10;  // Show 10 entries per page
+  // Rows per page state (persisted in localStorage)
+  const [rowsPerPage, setRowsPerPage] = useState(() => {
+    try {
+      const raw = localStorage.getItem('gb_rows_per_page');
+      if (!raw) return { value: 10, showAll: false, isOpen: false };
+      return JSON.parse(raw);
+    } catch (e) {
+      return { value: 10, showAll: false, isOpen: false };
+    }
+  });
+
+  // Derived itemsPerPage for calculations
+  const itemsPerPage = rowsPerPage.showAll ? Infinity : rowsPerPage.value;
   const [searchTerm, setSearchTerm] = useState("");  // For Bill ID search
 
   const [totalBills, setTotalBills] = useState(0);           // For Total Bills Generated
@@ -130,6 +143,17 @@ const GeneratedBills = () => {
     setNavTitle();
   },[setTitle,dispatch])
 
+  // Persist rowsPerPage to localStorage whenever it changes
+  useEffect(() => {
+    try {
+      localStorage.setItem('gb_rows_per_page', JSON.stringify(rowsPerPage));
+    } catch (e) {
+      // ignore storage errors
+    }
+    // Reset to first page when rows per page changes
+    setCurrentPage(1);
+  }, [rowsPerPage]);
+
 
   // handle bill view 
 
@@ -218,13 +242,12 @@ const GeneratedBills = () => {
   }
 
   // Calculate the displayed bills based on the current page
-  const indexOfLastBill = currentPage * itemsPerPage;
-  const indexOfFirstBill = indexOfLastBill - itemsPerPage;
-
   const sortedBills = bills.sort((a, b) => 
     new Date(b.created_at) - new Date(a.created_at)
   );
 
+  const indexOfLastBill = rowsPerPage.showAll ? sortedBills.length : currentPage * itemsPerPage;
+  const indexOfFirstBill = rowsPerPage.showAll ? 0 : indexOfLastBill - itemsPerPage;
 
   //Update the filtering logic to use date range instead of single date
 // This checks if a bill's date falls within the selected start and end dates
@@ -251,10 +274,10 @@ const filteredBills = sortedBills.filter((bill) => {
   return isDateInRange && isSearchMatch;
 });
 
-  const currentBills = filteredBills.slice(indexOfFirstBill, indexOfLastBill);
+  const currentBills = rowsPerPage.showAll ? filteredBills : filteredBills.slice(indexOfFirstBill, indexOfLastBill);
 
   // Handle page change
-  const totalPages = Math.ceil(filteredBills.length / itemsPerPage);
+  const totalPages = rowsPerPage.showAll ? 1 : Math.ceil(filteredBills.length / itemsPerPage);
 
   const handleNextPage = () => {
     if (currentPage < totalPages) {
@@ -270,6 +293,207 @@ const filteredBills = sortedBills.filter((bill) => {
 
   const handlePageClick = (pageNumber) => {
     setCurrentPage(pageNumber);
+  };
+
+  // Handle rows per page selection
+  const handleRowsPerPageChange = (value) => {
+    if (value === 'all') {
+      setRowsPerPage(prev => ({ ...prev, showAll: true, isOpen: false }));
+    } else {
+      setRowsPerPage(prev => ({ ...prev, value: parseInt(value, 10), showAll: false, isOpen: false }));
+    }
+  };
+
+  // Portal-based dropdown component with proper animations and positioning
+  const RowsPerPageDropdown = ({ rowsPerPage, setRowsPerPage, onChange }) => {
+    const buttonRef = useRef(null);
+    const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0, width: 0, showAbove: false });
+    const options = [10, 20, 30, 50, 100];
+
+    // Calculate position when dropdown opens
+    useEffect(() => {
+      if (rowsPerPage.isOpen && buttonRef.current) {
+        const rect = buttonRef.current.getBoundingClientRect();
+        const viewportHeight = window.innerHeight;
+        const estimatedMenuHeight = 320; // Approximate height for 6 options
+        
+        // Determine if we should show above or below
+        const spaceBelow = viewportHeight - rect.bottom;
+        const showAbove = spaceBelow < estimatedMenuHeight && rect.top > estimatedMenuHeight;
+        
+        setMenuPosition({
+          top: showAbove ? rect.top - 8 : rect.bottom + 8,
+          left: rect.right - 160, // Align to right edge of button
+          width: Math.max(rect.width, 160),
+          showAbove
+        });
+      }
+    }, [rowsPerPage.isOpen]);
+
+    // Handle keyboard navigation
+    const handleKeyDown = useCallback((e) => {
+      if (!rowsPerPage.isOpen) return;
+      const currentIndex = options.indexOf(rowsPerPage.value);
+      
+      switch (e.key) {
+        case 'Escape':
+          setRowsPerPage(prev => ({ ...prev, isOpen: false }));
+          break;
+        case 'ArrowDown':
+          e.preventDefault();
+          if (rowsPerPage.showAll) {
+            onChange(options[0]);
+          } else {
+            const next = options[currentIndex + 1];
+            if (next) onChange(next);
+            else onChange('all');
+          }
+          break;
+        case 'ArrowUp':
+          e.preventDefault();
+          if (rowsPerPage.showAll) {
+            onChange(options[options.length - 1]);
+          } else if (currentIndex > 0) {
+            onChange(options[currentIndex - 1]);
+          }
+          break;
+        case 'Home':
+          onChange(options[0]);
+          break;
+        case 'End':
+          onChange('all');
+          break;
+        default:
+          break;
+      }
+    }, [rowsPerPage.isOpen, rowsPerPage.value, rowsPerPage.showAll, onChange, setRowsPerPage, options]);
+
+    useEffect(() => {
+      document.addEventListener('keydown', handleKeyDown);
+      return () => document.removeEventListener('keydown', handleKeyDown);
+    }, [handleKeyDown]);
+
+    // Render portal dropdown
+    const dropdownMenu = rowsPerPage.isOpen && ReactDOM.createPortal(
+      <>
+        {/* Backdrop with blur */}
+        <div
+          className="fixed inset-0 bg-black/20 backdrop-blur-sm z-[9998]"
+          style={{ animation: 'fadeIn 0.15s ease-out' }}
+          onClick={() => setRowsPerPage(prev => ({ ...prev, isOpen: false }))}
+        />
+        
+        {/* Menu */}
+        <div
+          className="fixed z-[9999] bg-white dark:bg-gray-800 rounded-lg shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden"
+          style={{
+            top: menuPosition.showAbove ? 'auto' : `${menuPosition.top}px`,
+            bottom: menuPosition.showAbove ? `${window.innerHeight - menuPosition.top}px` : 'auto',
+            left: `${menuPosition.left}px`,
+            width: `${menuPosition.width}px`,
+            transformOrigin: menuPosition.showAbove ? 'bottom center' : 'top center',
+            animation: 'dropdownIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards'
+          }}
+        >
+          <div className="py-2 max-h-[70vh] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600">
+            {options.map((v) => {
+              const isActive = rowsPerPage.value === v && !rowsPerPage.showAll;
+              return (
+                <button
+                  key={v}
+                  onClick={() => onChange(v)}
+                  className={`w-full px-4 py-2.5 text-left text-sm flex items-center justify-between transition-colors ${
+                    isActive
+                      ? 'bg-blue-50 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300 font-semibold'
+                      : 'text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700'
+                  }`}
+                >
+                  <span>{v} rows</span>
+                  {isActive && (
+                    <svg className="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"/>
+                    </svg>
+                  )}
+                </button>
+              );
+            })}
+            <div className="border-t border-gray-200 dark:border-gray-600 my-1"></div>
+            <button
+              onClick={() => onChange('all')}
+              className={`w-full px-4 py-2.5 text-left text-sm flex items-center justify-between transition-colors ${
+                rowsPerPage.showAll
+                  ? 'bg-blue-50 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300 font-semibold'
+                  : 'text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700'
+              }`}
+            >
+              <span>Show All</span>
+              {rowsPerPage.showAll && (
+                <svg className="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"/>
+                </svg>
+              )}
+            </button>
+          </div>
+        </div>
+
+        {/* Animation styles */}
+        <style>{`
+          @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+          }
+          @keyframes dropdownIn {
+            0% {
+              opacity: 0;
+              transform: scale(0.95) translateY(-4px);
+            }
+            100% {
+              opacity: 1;
+              transform: scale(1) translateY(0);
+            }
+          }
+          .scrollbar-thin::-webkit-scrollbar {
+            width: 6px;
+          }
+          .scrollbar-thin::-webkit-scrollbar-track {
+            background: transparent;
+          }
+          .scrollbar-thumb-gray-300::-webkit-scrollbar-thumb {
+            background: #d1d5db;
+            border-radius: 3px;
+          }
+          .dark .scrollbar-thumb-gray-600::-webkit-scrollbar-thumb {
+            background: #4b5563;
+          }
+        `}</style>
+      </>,
+      document.body
+    );
+
+    return (
+      <>
+        <button
+          ref={buttonRef}
+          type="button"
+          onClick={() => setRowsPerPage(prev => ({ ...prev, isOpen: !prev.isOpen }))}
+          className="flex items-center gap-2 px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-colors"
+          aria-haspopup="listbox"
+          aria-expanded={rowsPerPage.isOpen}
+        >
+          <span className="text-sm font-medium text-gray-700 dark:text-gray-200 select-none">
+            {rowsPerPage.showAll ? 'Show All' : `${rowsPerPage.value} rows`}
+          </span>
+          <svg 
+            className={`w-4 h-4 text-gray-500 dark:text-gray-400 transition-transform duration-200 ${rowsPerPage.isOpen ? 'rotate-180' : ''}`}
+            fill="currentColor" 
+            viewBox="0 0 20 20"
+          >
+            <path fillRule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z" clipRule="evenodd"/>
+          </svg>
+        </button>
+        {dropdownMenu}
+      </>
+    );
   };
 
   return (
@@ -389,7 +613,7 @@ const filteredBills = sortedBills.filter((bill) => {
       </div>
       
 
-      <div className="bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden dark:bg-gray-800 dark:border-gray-700">
+  <div className="bg-white border rounded-xl shadow-xl border-gray-200 overflow-visible dark:bg-gray-800 dark:border-gray-700">
           {/* Table Header */}
           <div className="px-6 py-4 border-b border-gray-200">
             <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-200">Generated Bills</h2>
@@ -546,9 +770,20 @@ const filteredBills = sortedBills.filter((bill) => {
                 </button>
               </div>
               
-              <div className="text-sm text-gray-600 dark:text-gray-200">
-                Page {currentPage} of {totalPages} • Showing {currentBills.length} bills
-              </div>
+             <div className="flex items-center gap-6">
+               <RowsPerPageDropdown
+               rowsPerPage={rowsPerPage}
+               setRowsPerPage={setRowsPerPage}
+               onChange={handleRowsPerPageChange}
+               />
+               <div className="text-sm text-gray-600 dark:text-gray-200 select-none">
+                 {rowsPerPage.showAll ? (
+                   `Showing all ${currentBills.length} bills`
+                 ) : (
+                   `Page ${currentPage} of ${totalPages} • Showing ${currentBills.length} of ${filteredBills.length} bills`
+                 )}
+               </div>
+             </div>
             </div>
           )}
         </div>

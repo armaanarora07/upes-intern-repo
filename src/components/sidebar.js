@@ -94,13 +94,13 @@ const Sidebar = () => {
 
   return (
     <div 
-      className={`bg-[#1E1E2D] dark:bg-gray-900 h-screen flex flex-col shadow-lg relative ${
+      className={`bg-[#1E1E2D] dark:bg-gray-900 h-screen flex flex-col shadow-lg relative z-50 ${
         expanded ? 'w-64' : 'w-20'
       }`}
     >
       {/* Toggle button - increased size */}
       <button 
-        className="absolute -right-4 top-18 mt-4 bg-white rounded-lg p-2 shadow-md z-10 hover:bg-gray-50 dark:bg-gray-400 dark:text-gray-200 dark:hover:bg-gray-600 dark:border-gray-700"
+        className="absolute -right-4 top-18 mt-4 bg-white rounded-lg p-2 shadow-md z-[60] hover:bg-gray-50 dark:bg-gray-400 dark:text-gray-200 dark:hover:bg-gray-600 dark:border-gray-700"
         onClick={toggleSidebar}
       >
         {expanded ? 

@@ -46,7 +46,7 @@ import InvitationsPage from "./pages/InvitationsPage";
 function Home() {
   return (
     <div className="flex">
-      <div className="fixed top-0 left-0 h-screen bg-[#F9FAFC] shadow-lg z-20">
+      <div className="fixed top-0 left-0 h-screen bg-[#F9FAFC] shadow-lg z-[60]">
         <Sidebar />
       </div>
       {/* Use CSS variable for dynamic margin */}
