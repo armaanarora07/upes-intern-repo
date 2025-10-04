@@ -74,7 +74,7 @@ const URDInvoice = () => {
     <div className="p-8">
       <StaggeredContainer>
         <StaggeredItem>
-          <div className='p-6 mt-5 mb-6 bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden dark:bg-gray-800 dark:border-gray-700'>
+          <div className='p-6 mt-5 mb-6 bg-white border border-gray-200 rounded-xl shadow-xl overflow-hidden dark:bg-gray-800 dark:border-gray-700'>
               <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-200">Select Invoice Type</h2>
               <select 
                 className="border rounded-md px-3 py-1 mt-3 ml-2 dark:bg-gray-600 dark:border-gray-700 dark:text-gray-200" 

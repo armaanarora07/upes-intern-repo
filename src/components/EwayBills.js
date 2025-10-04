@@ -63,7 +63,7 @@ const EWayBillSystem = () => {
     <div className="p-8 min-h-screen dark:bg-gray-800">
           <div className="flex flex-col items-center justify-center mt-5">
              <StaggeredItem>
-               <div className="p-6 mt-5 mb-6 bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden dark:bg-gray-800 dark:border-gray-700">
+               <div className="p-6 mt-5 mb-6 bg-white border border-gray-200 rounded-xl shadow-xl overflow-hidden dark:bg-gray-800 dark:border-gray-700">
                   <form onSubmit={handleEnableService} className="w-96 mb-5">
                   
                   <h2 className="text-2xl font-bold text-gray-800 text-center mb-4 dark:text-gray-200">Activate E-Way Services</h2>

@@ -15,7 +15,7 @@ const BusinessCard = ({ id,gstin, legalName, tradeName}) => {
   };
 
   return (
-    <div onClick={handleClick} className="p-6 mb-6 bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm w-full h-auto transform transition-all duration-300 cursor-pointer hover:scale-105 dark:bg-gray-800 dark:border-gray-700">
+    <div onClick={handleClick} className="p-6 mb-6 bg-white border border-gray-200 rounded-xl shadow-xl w-full h-auto transform transition-all duration-300 cursor-pointer hover:scale-105 dark:bg-gray-800 dark:border-gray-700">
           <div className="flex flex-col space-y-2">
             <div className="flex justify-between items-center">
               <span className="font-semibold dark:text-gray-200">GSTIN</span>
@@ -72,7 +72,7 @@ const MyBusiness = () => {
                 </StaggeredItem>
               ))}
               <StaggeredItem>
-                <div className="p-6 mb-6 bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden w-full h-auto transform transition-all duration-300 hover:scale-105 flex items-center justify-center cursor-pointer dark:bg-gray-800 dark:border-gray-700" onClick={() => navigate('/add-business')}>
+                <div className="p-6 mb-6 bg-white border border-gray-200 rounded-xl shadow-xl overflow-hidden w-full h-auto transform transition-all duration-300 hover:scale-105 flex items-center justify-center cursor-pointer dark:bg-gray-800 dark:border-gray-700" onClick={() => navigate('/add-business')}>
                   <FaPlusCircle className="text-3xl mr-2 dark:text-gray-200" />
                   <p className="text-xl font-semibold dark:text-gray-200">Add More Business</p>
                 </div>

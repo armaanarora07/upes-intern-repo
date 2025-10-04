@@ -478,7 +478,7 @@ const totalPages = rowsPerPage.showAll ? 1 : Math.ceil(filteredProducts.length /
       </div>
       
       {/* Main Content */}
-      <div className="bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm dark:bg-gray-800 dark:border-gray-700">
+      <div className="bg-white border border-gray-200 rounded-xl shadow-xl dark:bg-gray-800 dark:border-gray-700">
         {/* Table Header */}
         <div className="px-6 py-4 border-b border-gray-200">
           <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-200">Product Inventory</h2>
@@ -694,7 +694,7 @@ const totalPages = rowsPerPage.showAll ? 1 : Math.ceil(filteredProducts.length /
                   onChange={(e) =>
                     setNewProduct({ ...newProduct, name: e.target.value })
                   }
-                  className="border border-gray-300 p-2 rounded-lg w-full focus:ring-blue-500 focus:border-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4154f1]"
+                  className="border border-gray-300 p-2 rounded-lg w-full dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4154f1]"
                   required
                 />
               </div>
@@ -709,7 +709,7 @@ const totalPages = rowsPerPage.showAll ? 1 : Math.ceil(filteredProducts.length /
                   onChange={(e) =>
                     setNewProduct({ ...newProduct, serial_no: e.target.value })
                   }
-                  className="border border-gray-300 p-2 rounded-lg w-full focus:ring-blue-500 focus:border-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4154f1]"
+                  className="border border-gray-300 p-2 rounded-lg w-full dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4154f1]"
                 />
               </div>
               <div>
@@ -723,7 +723,7 @@ const totalPages = rowsPerPage.showAll ? 1 : Math.ceil(filteredProducts.length /
                   onChange={(e) =>
                     setNewProduct({ ...newProduct, hsn_code: e.target.value })
                   }
-                  className="border border-gray-300 p-2 rounded-lg w-full focus:ring-blue-500 focus:border-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4154f1]"
+                  className="border border-gray-300 p-2 rounded-lg w-full dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4154f1]"
                   required
                 />
               </div>
@@ -741,7 +741,7 @@ const totalPages = rowsPerPage.showAll ? 1 : Math.ceil(filteredProducts.length /
                       quantity: parseInt(e.target.value, 10),
                     })
                   }
-                  className="border border-gray-300 p-2 rounded-lg w-full focus:ring-blue-500 focus:border-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4154f1]"
+                  className="border border-gray-300 p-2 rounded-lg w-full dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4154f1]"
                   required
                 />
               </div>
@@ -763,7 +763,7 @@ const totalPages = rowsPerPage.showAll ? 1 : Math.ceil(filteredProducts.length /
                         price: parseFloat(e.target.value),
                       })
                     }
-                    className="border border-gray-300 p-2 pl-8 rounded-lg w-full focus:ring-blue-500 focus:border-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4154f1]"
+                    className="border border-gray-300 p-2 pl-8 rounded-lg w-full dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4154f1]"
                     required
                   />
                 </div>
@@ -782,7 +782,7 @@ const totalPages = rowsPerPage.showAll ? 1 : Math.ceil(filteredProducts.length /
                       gst_rate: parseFloat(e.target.value),
                     })
                   }
-                  className="border border-gray-300 p-2 rounded-lg w-full focus:ring-blue-500 focus:border-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4154f1]"
+                  className="border border-gray-300 p-2 rounded-lg w-full dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4154f1]"
                   required
                 />
               </div>
@@ -802,7 +802,7 @@ const totalPages = rowsPerPage.showAll ? 1 : Math.ceil(filteredProducts.length /
                       unit_metrics: e.target.value,
                     })
                   }
-                  className="border border-gray-300 p-2 rounded-lg w-full focus:ring-blue-500 focus:border-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4154f1]"
+                  className="border border-gray-300 p-2 rounded-lg w-full dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4154f1]"
                 >
                   <option value="Pcs">Pieces (Pcs)</option>
                   <option value="Kg">Kilograms (Kg)</option>
@@ -831,7 +831,7 @@ const totalPages = rowsPerPage.showAll ? 1 : Math.ceil(filteredProducts.length /
                       description: e.target.value,
                     })
                   }
-                  className="border border-gray-300 p-2 rounded-lg w-full h-24 focus:ring-blue-500 focus:border-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4154f1]"
+                  className="border border-gray-300 p-2 rounded-lg w-full h-24 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4154f1]"
                 ></textarea>
               </div>
               <div className="md:col-span-2 flex justify-end space-x-4 mt-4">

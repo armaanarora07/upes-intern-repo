@@ -76,7 +76,7 @@ const AddBusiness = () => {
        
        <div className='mt-5'>
             <div className='flex justify-center'>
-              <div className='p-8 bg-white border border-gray-200 rounded-lg shadow-xl w-full max-w-lg p-8 h-1/2 dark:bg-gray-800 dark:border-gray-700'>
+              <div className='p-8 bg-white border border-gray-200 rounded-lg shadow-xl w-full max-w-lg h-1/2 dark:bg-gray-800 dark:border-gray-700'>
                 <h2 className="text-2xl font-bold text-gray-800 text-center dark:text-gray-200">Add Business</h2>
 
                 <div className="relative mt-4">

@@ -272,7 +272,7 @@ const UpdateBusiness = () => {
      {/* Back Button */}
      <BackButton to="/my-business" destination="My Business" />
      
-     <div className="p-6 mt-5 mb-6 bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden dark:bg-gray-800 dark:border-gray-700">
+     <div className="p-6 mt-5 mb-6 bg-white border border-gray-200 rounded-xl shadow-xl overflow-hidden dark:bg-gray-800 dark:border-gray-700">
       
       <div className="text-2xl font-bold text-gray-800 mt-3 dark:text-gray-200">
         My Business Details 

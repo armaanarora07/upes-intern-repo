@@ -64,7 +64,7 @@ const EWayTransactions = () => {
       
       <div className="mt-5">
 
-      <div className="bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden dark:bg-gray-800 dark:border-gray-700">
+      <div className="bg-white border border-gray-200 rounded-xl shadow-xl overflow-hidden dark:bg-gray-800 dark:border-gray-700">
         
         {/* Table Header */}
         <div className="px-6 py-4 border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
