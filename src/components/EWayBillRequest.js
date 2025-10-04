@@ -8,6 +8,7 @@ import { clearProducts } from "../slices/productSlice";
 import { clearUserDetails } from "../slices/userdetailsSlice";
 import { setTitle } from "../slices/navbarSlice";
 import BillPreview from "./BillPreview";
+import BackButton from './BackButton';
 
 const EWayBillRequest = () => {
   const [preview,setPreview] = useState(false);
@@ -91,6 +92,9 @@ const EWayBillRequest = () => {
 
   return (
     <div className="p-8 min-h-screen dark:bg-gray-800">
+      {/* Back Button */}
+      <BackButton to="/eway-transactions" destination="E-Way Transactions" />
+      
       <div className="mt-5">
         <div className="flex flex-col items-center justify-center">
           <div className="p-6 mt-5 mb-6 bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden dark:bg-gray-800 dark:border-gray-700">

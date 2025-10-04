@@ -5,6 +5,7 @@ import { FaBriefcase, FaCheckCircle, FaTrashAlt, FaPlus, FaMapMarkerAlt, FaEdit 
 import { useSelector, useDispatch } from "react-redux";
 import { fetchBusinesses } from '../slices/businessSlice.js';
 import { setTitle } from '../slices/navbarSlice.js';
+import BackButton from './BackButton';
 
 const UpdateBusiness = () => {
   const [gstin, setGstin] = useState(''); 
@@ -268,6 +269,8 @@ const UpdateBusiness = () => {
 
   return (
     <div className='p-8 min-h-screen dark:bg-gray-800'>
+     {/* Back Button */}
+     <BackButton to="/my-business" destination="My Business" />
      
      <div className="p-6 mt-5 mb-6 bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden dark:bg-gray-800 dark:border-gray-700">
       

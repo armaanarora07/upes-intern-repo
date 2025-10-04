@@ -4,6 +4,7 @@ import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { signup, verifyotp } from "../slices/authSlice.js";
 import { setEway } from "../slices/ewaySlice.js";
+import BackButton from '../components/BackButton';
 
 const InviteRegister = () => {
   const location = useLocation();
@@ -120,7 +121,12 @@ const InviteRegister = () => {
   };
   
   return (
-    <div className="min-h-screen flex items-center justify-center px-4">
+    <div className="min-h-screen flex flex-col items-center justify-center px-4">
+      {/* Back Button */}
+      <div className='mb-4 w-full max-w-lg'>
+        <BackButton to="/invite-user" destination="Invite User" />
+      </div>
+      
       <div className="relative w-full max-w-lg p-8 space-y-8 bg-white border rounded-lg shadow-xl border-gray-200 overflow-hidden transition-all duration-500 hover:shadow-2xl hover:scale-105">
         <div className="text-center">
           <h2 className="text-4xl font-extrabold text-transparent bg-clip-text bg-[#1E1E2D]">

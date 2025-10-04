@@ -199,58 +199,82 @@ class Template1 {
   }
 
   drawBankAndTerms(invoiceData, finalY) {
-    // Bank details
+    // Bank details section
     this.doc.rect(15, finalY + 20, 85, 20, "S");
+    
+    // Always draw "Bank Details" header
+    this.doc.setFont("helvetica", "bold");
+    this.doc.setFontSize(9);
+    this.doc.text("Bank Details", 17, finalY + 25);
+    
+    // Check if bank is enabled and has data
+    if(invoiceData.bankEnabled && invoiceData.bank){
+      this.doc.setFont("helvetica", "normal");
+      this.doc.setFontSize(8);
+      this.doc.text(`UPI ID: ${invoiceData.bank.upiId || 'N/A'}`, 17, finalY + 29);
+      this.doc.text(`A/c No: ${invoiceData.bank.accountNumber || 'N/A'}`, 17, finalY + 32);
+      this.doc.text(`IFSC: ${invoiceData.bank.ifscCode || 'N/A'}`, 17, finalY + 35);
+      this.doc.text(`Bank: ${invoiceData.bank.bankName || 'N/A'}`, 17, finalY + 38);
+    } else {
+      // Show message when disabled
+      this.doc.setFont("helvetica", "italic");
+      this.doc.setFontSize(8);
+      this.doc.text("(Not provided)", 17, finalY + 30);
+    }
+    
+    // Terms and conditions section
+    this.doc.rect(15, finalY + 40, 85, 20, "S");
+    this.doc.setFont("helvetica", "bold");
+    this.doc.setFontSize(9);
+    this.doc.text("Terms & Conditions", 17, finalY + 45);
     this.doc.setFont("helvetica", "normal");
     this.doc.setFontSize(8);
-    if(invoiceData.bankEnabled && invoiceData.bank){
-    this.doc.text("Bank Details", 17, finalY + 24);
-    this.doc.text(`UPI ID : ${invoiceData.bank?.upiId}`, 17, finalY + 27);
-    this.doc.text(`Account Number : ${invoiceData.bank?.accountNumber}`, 17, finalY + 30);
-    this.doc.text(`IFSC Code : ${invoiceData.bank?.ifscCode}`, 17, finalY + 33);
-    this.doc.text(`Bank Name : ${invoiceData.bank?.bankName}`, 17, finalY + 36);
-    }
-    // Terms and conditions
-    this.doc.rect(15, finalY + 40, 85, 20, "S");
-    this.doc.text("Terms & Conditions", 17, finalY + 45);
-    this.doc.text(`${invoiceData.tandc}`, 17, finalY + 50);
+    const wrappedTerms = this.doc.splitTextToSize(`${invoiceData.tandc || 'N/A'}`, 80);
+    this.doc.text(wrappedTerms, 17, finalY + 50);
   }
 
   drawSignatureAndStamp(invoiceData, finalY) {
         
-    // Signature and  Stamp  section
+    // Signature and Stamp section (right side)
     this.doc.rect(100, finalY + 60, 95, 40, "S");
     this.doc.setFont("helvetica", "bold");
-    if(invoiceData.attestationSelection) {
-       // Stamp section
-       if(invoiceData.stampEnabled && invoiceData.stamp){
-       this.doc.text("Stamp :", 102, finalY + 70);
-       const stX = 150 - 20;
-       const stY = finalY + 71.5;
-       this.doc.addImage(invoiceData.stamp, "PNG", stX, stY, 20, 20);
-       }
-    } else{
-        // Signature section
-        if(invoiceData.signatureEnabled && invoiceData.signature){
-          this.doc.text("Signature :", 102, finalY + 70);
-          const sigX = 150 - 20;
-          const sigY = finalY + 71.5;
-          this.doc.addImage(invoiceData.signature, "PNG", sigX, sigY, 20, 20);
-        }
-    }
-    //Payment QR
-    this.doc.rect(15, finalY + 60, 85, 40, "S");
-    this.doc.setFont("helvetica", "bold");
-    if(invoiceData.qr){
-      this.doc.text("Payment QR :", 17, finalY + 70);
-      const stX = 150 - 110;
-      const stY = finalY + 71.5;
-      this.doc.addImage(invoiceData.qr, "PNG", stX, stY, 20, 20);
+    this.doc.setFontSize(10);
+    
+    // Company name at TOP to avoid overlap with images below
+    const tradeName = invoiceData.firstParty.trade_name.replace(/^M\/S\s+/i, "");
+    this.doc.text(`for ${tradeName}`, 150, finalY + 65, { align: "center" });
+    
+    const hasSignature = invoiceData.signatureEnabled && invoiceData.signature;
+    const hasStamp = invoiceData.stampEnabled && invoiceData.stamp;
+    
+    if (hasSignature && hasStamp) {
+      // Both enabled - show side by side BELOW company name
+      this.doc.setFontSize(8);
+      this.doc.text("Signature:", 110, finalY + 72);
+      this.doc.addImage(invoiceData.signature, "PNG", 108, finalY + 73, 25, 20);
+      
+      this.doc.text("Stamp:", 160, finalY + 72);
+      this.doc.addImage(invoiceData.stamp, "PNG", 158, finalY + 73, 25, 20);
+    } else if (hasSignature) {
+      // Only signature - centered below company name
+      this.doc.setFontSize(9);
+      this.doc.text("Signature:", 150, finalY + 72, { align: "center" });
+      this.doc.addImage(invoiceData.signature, "PNG", 135, finalY + 73, 30, 24);
+    } else if (hasStamp) {
+      // Only stamp - centered below company name
+      this.doc.setFontSize(9);
+      this.doc.text("Stamp:", 150, finalY + 72, { align: "center" });
+      this.doc.addImage(invoiceData.stamp, "PNG", 135, finalY + 73, 30, 24);
     }
     
-    // Company name
-    const tradeName = invoiceData.firstParty.trade_name.replace(/^M\/S\s+/i, "");
-    this.doc.text(`for ${tradeName}`, 130, finalY + 95, { align: "left" });
+    // Payment QR (left side)
+    this.doc.rect(15, finalY + 60, 85, 40, "S");
+    this.doc.setFont("helvetica", "bold");
+    this.doc.setFontSize(9);
+    if(invoiceData.qr){
+      this.doc.text("Payment QR:", 17, finalY + 66);
+      this.doc.addImage(invoiceData.qr, "PNG", 40, finalY + 68, 25, 25);
+    }
   }
 
   generateInvoice(invoiceData) {

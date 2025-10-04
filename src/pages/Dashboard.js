@@ -6,6 +6,7 @@ import { useSelector,useDispatch } from "react-redux";
 import {checkAndFetchBusinesses,setBusiness} from '../slices/businessSlice';
 import { setTitle } from '../slices/navbarSlice';
 import { logout } from "../slices/authSlice";
+import StaggeredContainer, { StaggeredItem } from '../components/StaggeredContainer';
 
 import {
   Chart as ChartJS,
@@ -403,9 +404,10 @@ const Dashboard = () => {
           </select>
         </div>
           {allTransactions.length > 0 ? (
-            <>
+            <StaggeredContainer>
               {/* Header with improved alignment */}
-              <div className="px-6 py-5 mb-6 bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden dark:bg-gray-800 dark:border-gray-700">
+              <StaggeredItem>
+                <div className="px-6 py-5 mb-6 bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden dark:bg-gray-800 dark:border-gray-700">
 
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                   {/* Business Name */}
@@ -452,9 +454,10 @@ const Dashboard = () => {
                 )}
 
               </div>
+              </StaggeredItem>
 
                {/* Analytics Cards */}
-               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
+               <StaggeredContainer className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
                 {[
                   { label: "Total Sales", value: totalSales },
                   { label: "Total GST Sales", value: totalGSTSales },
@@ -462,26 +465,26 @@ const Dashboard = () => {
                   { label: "Total URD Sales", value: totalURDSales },
                   { label: "Total URD Purchases", value: totalURDPurchases }
                 ].map(({ label, value }, index) => (
-                  <div
-                    key={index}
-                    className="bg-white shadow-lg border rounded-3xl p-6 w-full h-40 transform transition-all duration-300 hover:scale-105 dark:bg-gray-800 dark:border-gray-700"
-                  >
-                    <h2 className="text-4xl text-center text-gray-800 mt-2 dark:text-gray-200">
-                      {new Intl.NumberFormat("en-IN", {
-                        style: "currency",
-                        currency: "INR",
-                        minimumFractionDigits: 2
-                      }).format(value)}
-                    </h2>
-                    <p className="text-center text-black text-lg font-medium mt-4 dark:text-gray-200">
-                      {label}
-                    </p>
-                  </div>
+                  <StaggeredItem key={index}>
+                    <div className="bg-white shadow-lg border rounded-3xl p-6 w-full h-40 transform transition-all duration-300 hover:scale-105 dark:bg-gray-800 dark:border-gray-700">
+                      <h2 className="text-4xl text-center text-gray-800 mt-2 dark:text-gray-200">
+                        {new Intl.NumberFormat("en-IN", {
+                          style: "currency",
+                          currency: "INR",
+                          minimumFractionDigits: 2
+                        }).format(value)}
+                      </h2>
+                      <p className="text-center text-black text-lg font-medium mt-4 dark:text-gray-200">
+                        {label}
+                      </p>
+                    </div>
+                  </StaggeredItem>
                 ))}
-              </div>
+               </StaggeredContainer>
 
               {/* Latest Transactions Card - Improved styling */}
-              <div className="mb-6">
+              <StaggeredItem>
+                <div className="mb-6">
                 <div className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden dark:bg-gray-800 dark:border-gray-700">
                   <div className="px-6 py-4 border-b border-gray-200">
                     <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-200">Latest Transactions</h2>
@@ -522,11 +525,13 @@ const Dashboard = () => {
                   </div>
                 </div>
               </div>
+              </StaggeredItem>
 
               {/* Charts Grid - Improved layout and responsiveness */}
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Total Sales Report */}
-                <div className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden dark:bg-gray-800 dark:border-gray-700">
+                <StaggeredItem>
+                  <div className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden dark:bg-gray-800 dark:border-gray-700">
                   <div className="px-6 py-4 border-b border-gray-200">
                     <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-200">Total Sales Report</h2>
                   </div>
@@ -590,9 +595,11 @@ const Dashboard = () => {
                     )}
                   </div>
                 </div>
+                </StaggeredItem>
   
                 {/* GST Sales Report */}
-                <div className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden dark:bg-gray-800 dark:border-gray-700">
+                <StaggeredItem>
+                  <div className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden dark:bg-gray-800 dark:border-gray-700">
                   <div className="px-6 py-4 border-b border-gray-200">
                     <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-200">GST Sales Report</h2>
                   </div>
@@ -656,9 +663,11 @@ const Dashboard = () => {
                     )}
                   </div>
                 </div>
+                </StaggeredItem>
   
                 {/* URD Sales Report */}
-                <div className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden dark:bg-gray-800 dark:border-gray-700">
+                <StaggeredItem>
+                  <div className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden dark:bg-gray-800 dark:border-gray-700">
                   <div className="px-6 py-4 border-b border-gray-200">
                     <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-200">URD Sales Report</h2>
                   </div>
@@ -722,9 +731,11 @@ const Dashboard = () => {
                     )}
                   </div>
                 </div>
+                </StaggeredItem>
   
                 {/* URD Purchases Report */}
-                <div className="bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden dark:bg-gray-800 dark:border-gray-700">
+                <StaggeredItem>
+                  <div className="bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden dark:bg-gray-800 dark:border-gray-700">
                   <div className="px-6 py-4 border-b border-gray-200">
                     <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-200">URD Purchases Report</h2>
                   </div>
@@ -788,8 +799,9 @@ const Dashboard = () => {
                     )}
                   </div>
                 </div>
+                </StaggeredItem>
               </div>
-            </>
+            </StaggeredContainer>
           ) : (
             <div className="flex flex-col items-center justify-center p-8 bg-white border rounded-lg shadow-xl border-gray-200 overflow-hidden dark:bg-gray-800 dark:border-gray-700">
               {businesses.length === 0? (

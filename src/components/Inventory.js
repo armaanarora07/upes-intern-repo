@@ -4,6 +4,7 @@ import { Edit, Trash2, Plus, Search, Package, ArrowLeft, ArrowRight, ChevronDown
 import { useDispatch } from "react-redux";
 import { setTitle } from "../slices/navbarSlice";
 import ReactDOM from "react-dom";
+import StaggeredContainer, { StaggeredItem } from './StaggeredContainer';
 
 const Inventory = () => {
   const [products, setProducts] = useState([]);
@@ -410,24 +411,32 @@ const totalPages = rowsPerPage.showAll ? 1 : Math.ceil(filteredProducts.length /
     <div className="p-8 min-h-screen dark:bg-gray-800">
       <div className="mt-3">
       {/* Analytics Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 px-4 py-2 mb-6">
-        <div className="bg-white shadow-xl border rounded-3xl p-6 w-full h-40 transform transition-all duration-300 hover:scale-105 dark:bg-gray-800 dark:border-gray-700">
-          <h2 className="text-5xl text-center text-gray-800 mt-2 dark:text-gray-200">{totalItems}</h2>
-          <p className="text-center text-black text-[16px] font-medium mt-4 dark:text-gray-200">Total Products</p>
-        </div>
-        <div className="bg-white shadow-xl border rounded-3xl p-6 w-full h-40 transform transition-all duration-300 hover:scale-105 dark:bg-gray-800 dark:border-gray-700">
-          <h2 className="text-5xl text-center text-gray-800 mt-2 dark:text-gray-200">{totalStock}</h2>
-          <p className="text-center text-black text-[16px] font-medium mt-4 dark:text-gray-200">Total Stock Items</p>
-        </div>
-        <div className="bg-white shadow-xl border rounded-3xl p-6 w-full h-40 transform transition-all duration-300 hover:scale-105 dark:bg-gray-800 dark:border-gray-700">
-          <h2 className="text-5xl text-center text-amber-500 mt-2 dark:text-gray-200">{lowStockItems}</h2>
-          <p className="text-center text-black text-[16px] font-medium mt-4 dark:text-gray-200">Low Stock Items</p>
-        </div>
-        <div className="bg-white shadow-xl border rounded-3xl p-6 w-full h-40 transform transition-all duration-300 hover:scale-105 dark:bg-gray-800 dark:border-gray-700">
-          <h2 className="text-5xl text-center text-red-500 mt-2 dark:text-gray-200">{outOfStockItems}</h2>
-          <p className="text-center text-black text-[16px] font-medium mt-4 dark:text-gray-200">Out of Stock Items</p>
-        </div>
-      </div>
+      <StaggeredContainer className="grid grid-cols-1 md:grid-cols-4 gap-6 px-4 py-2 mb-6">
+        <StaggeredItem>
+          <div className="bg-white shadow-xl border rounded-3xl p-6 w-full h-40 transform transition-all duration-300 hover:scale-105 dark:bg-gray-800 dark:border-gray-700">
+            <h2 className="text-5xl text-center text-gray-800 mt-2 dark:text-gray-200">{totalItems}</h2>
+            <p className="text-center text-black text-[16px] font-medium mt-4 dark:text-gray-200">Total Products</p>
+          </div>
+        </StaggeredItem>
+        <StaggeredItem>
+          <div className="bg-white shadow-xl border rounded-3xl p-6 w-full h-40 transform transition-all duration-300 hover:scale-105 dark:bg-gray-800 dark:border-gray-700">
+            <h2 className="text-5xl text-center text-gray-800 mt-2 dark:text-gray-200">{totalStock}</h2>
+            <p className="text-center text-black text-[16px] font-medium mt-4 dark:text-gray-200">Total Stock Items</p>
+          </div>
+        </StaggeredItem>
+        <StaggeredItem>
+          <div className="bg-white shadow-xl border rounded-3xl p-6 w-full h-40 transform transition-all duration-300 hover:scale-105 dark:bg-gray-800 dark:border-gray-700">
+            <h2 className="text-5xl text-center text-amber-500 mt-2 dark:text-gray-200">{lowStockItems}</h2>
+            <p className="text-center text-black text-[16px] font-medium mt-4 dark:text-gray-200">Low Stock Items</p>
+          </div>
+        </StaggeredItem>
+        <StaggeredItem>
+          <div className="bg-white shadow-xl border rounded-3xl p-6 w-full h-40 transform transition-all duration-300 hover:scale-105 dark:bg-gray-800 dark:border-gray-700">
+            <h2 className="text-5xl text-center text-red-500 mt-2 dark:text-gray-200">{outOfStockItems}</h2>
+            <p className="text-center text-black text-[16px] font-medium mt-4 dark:text-gray-200">Out of Stock Items</p>
+          </div>
+        </StaggeredItem>
+      </StaggeredContainer>
       {/* Close the .mt-3 div */}
       </div>
 

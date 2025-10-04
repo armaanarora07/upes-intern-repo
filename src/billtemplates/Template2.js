@@ -247,44 +247,94 @@ class Template2 {
     const pageWidth = this.doc.internal.pageSize.width;
 
     this.doc.setFont("helvetica", "bold");
+    this.doc.setFontSize(10);
 
-    this.doc.text("Terms and Conditions",15, finalY + 55);
+    // ============ LEFT SIDE - Bank Details + Terms ============
+    
+    // Bank Details Section
+    this.doc.text("Bank Details",15, finalY + 55);
+    
+    if(invoiceData.bankEnabled && invoiceData.bank){
+      this.doc.setFont("helvetica", "normal");
+      this.doc.setFontSize(8);
+      this.doc.text(`UPI ID: ${invoiceData.bank.upiId || 'N/A'}`, 15, finalY + 60);
+      this.doc.text(`A/c No: ${invoiceData.bank.accountNumber || 'N/A'}`, 15, finalY + 63);
+      this.doc.text(`IFSC: ${invoiceData.bank.ifscCode || 'N/A'}`, 15, finalY + 66);
+      this.doc.text(`Bank: ${invoiceData.bank.bankName || 'N/A'}`, 15, finalY + 69);
+    } else {
+      this.doc.setFont("helvetica", "italic");
+      this.doc.setFontSize(8);
+      this.doc.text("(Not provided)", 15, finalY + 60);
+    }
 
-    this.doc.text("E & O.E",15, finalY + 60);
+    // Terms and Conditions Section
+    this.doc.setFont("helvetica", "bold");
+    this.doc.setFontSize(10);
+    this.doc.text("Terms and Conditions",15, finalY + 78);
+    this.doc.text("E & O.E",15, finalY + 83);
 
-    this.doc.line(10,finalY+63,pageWidth/2,finalY+63); // line
-
-  const inputText = Array.isArray(invoiceData.tandc) ? invoiceData.tandc.join('\n') : (invoiceData.tandc || '');
+    // Terms content starts here
+    const inputText = Array.isArray(invoiceData.tandc) ? invoiceData.tandc.join('\n') : (invoiceData.tandc || '');
 
     const points = inputText.split("\n");
 
-    let y = finalY+68;
+    let y = finalY+88;
 
     this.doc.setFont("helvetica", "normal");
+    this.doc.setFontSize(8);
 
     points.forEach(point => {
        
       const wrappedText = this.doc.splitTextToSize(point, (pageWidth/2)-10); // Wrap text
        
-      this.doc.text(wrappedText, 12, y);
+      this.doc.text(wrappedText, 15, y);
        
-      y += wrappedText.length * 3 + 4; // Add line spacing dynamically
+      y += wrappedText.length * 3 + 2; // Add line spacing dynamically
     
     });
     
-    this.doc.line(pageWidth / 2,finalY+50, pageWidth / 2, finalY+90);  // Vertical Line
-
+    // ============ RIGHT SIDE - Signature + Company ============
+    
     this.doc.setFont("helvetica", "bold");
+    this.doc.setFontSize(10);
 
     this.doc.text("Receiver Signature:",pageWidth/2 + 2, finalY + 55);
     
-    this.doc.line(pageWidth/2,finalY+70,200,finalY+70);
+    // Single horizontal line across BOTH sections (Bank Details & Receiver Signature)
+    this.doc.line(10, finalY+70, 200, finalY+70);
+    
+    // Vertical Line separator - extends all the way down to company name area
+    this.doc.line(pageWidth / 2, finalY+50, pageWidth / 2, finalY+108);
 
+    const hasSignature = invoiceData.signatureEnabled && invoiceData.signature;
+    const hasStamp = invoiceData.stampEnabled && invoiceData.stamp;
+    
+    // Signature and Stamp labels on SAME LINE, images below
+    if (hasSignature && hasStamp) {
+      // Both enabled - labels on same line, images side by side
+      this.doc.setFontSize(9);
+      this.doc.text("Signature:", pageWidth/2 + 20, finalY + 75);
+      this.doc.text("Stamp:", pageWidth/2 + 60, finalY + 75);
+      
+      this.doc.addImage(invoiceData.signature, "PNG", pageWidth/2 + 18, finalY + 76, 22, 18);
+      this.doc.addImage(invoiceData.stamp, "PNG", pageWidth/2 + 58, finalY + 76, 22, 18);
+    } else if (hasSignature) {
+      // Only signature - centered
+      this.doc.setFontSize(9);
+      this.doc.text("Signature:", pageWidth/2 + 35, finalY + 75);
+      this.doc.addImage(invoiceData.signature, "PNG", pageWidth/2 + 33, finalY + 76, 28, 22);
+    } else if (hasStamp) {
+      // Only stamp - centered
+      this.doc.setFontSize(9);
+      this.doc.text("Stamp:", pageWidth/2 + 35, finalY + 75);
+      this.doc.addImage(invoiceData.stamp, "PNG", pageWidth/2 + 33, finalY + 76, 28, 22);
+    }
+
+    // Company name at bottom (NO line above it)
     const tradeName = invoiceData.firstParty.trade_name.replace(/^M\/S\s+/i, "");
-
-    this.doc.text(`For ${tradeName}`,pageWidth/2 + 20, finalY + 85);
-
-    this.doc.line(10,finalY+90,200,finalY+90);
+    this.doc.setFont("helvetica", "bold");
+    this.doc.setFontSize(10);
+    this.doc.text(`For ${tradeName}`, pageWidth/2 + 35, finalY + 100);
   }
 
   generateInvoice(invoiceData) {

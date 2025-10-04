@@ -3,6 +3,7 @@ import axios from 'axios';
 import { FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
 import { useSelector, useDispatch } from "react-redux";
 import { setTitle } from '../slices/navbarSlice';
+import BackButton from './BackButton';
 
 const AddBusiness = () => {
   const [gstin, setGstin] = useState('');
@@ -70,6 +71,9 @@ const AddBusiness = () => {
 
   return (
     <div className='p-8 min-h-screen dark:bg-gray-800'>
+       {/* Back Button */}
+       <BackButton to="/my-business" destination="My Business" />
+       
        <div className='mt-5'>
             <div className='flex justify-center'>
               <div className='p-8 bg-white border border-gray-200 rounded-lg shadow-xl w-full max-w-lg p-8 h-1/2 dark:bg-gray-800 dark:border-gray-700'>

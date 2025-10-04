@@ -5,6 +5,7 @@ import { FaEye} from "react-icons/fa";
 import {Truck} from 'lucide-react';
 import { useSelector,useDispatch } from "react-redux";
 import { setTitle } from "../slices/navbarSlice";
+import BackButton from './BackButton';
 
 const EWayTransactions = () => {
   const [transactions, setTransactions] = useState([]);
@@ -58,6 +59,9 @@ const EWayTransactions = () => {
 
   return (
     <div className="p-8 min-h-screen dark:bg-gray-800">
+      {/* Back Button */}
+      <BackButton to="/eway-bills" destination="E-Way Bills" />
+      
       <div className="mt-5">
 
       <div className="bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden dark:bg-gray-800 dark:border-gray-700">

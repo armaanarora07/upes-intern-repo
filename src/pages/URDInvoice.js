@@ -12,6 +12,7 @@ import { selectUserDetails } from '../slices/userdetailsSlice';
 import {setTitle} from '../slices/navbarSlice';
 import FloatingButton from '../components/FloatingButton';
 import SignatureSelection from '../components/SignatureSelection';
+import StaggeredContainer, { StaggeredItem } from '../components/StaggeredContainer';
 
 const URDInvoice = () => {
 
@@ -35,6 +36,8 @@ const URDInvoice = () => {
       }
 
       setisRequired(false);
+      // Save this page to sessionStorage before navigating
+      sessionStorage.setItem('lastInvoicePage', '/urd-invoice');
       navigate(`/generate-invoice?type=${invoiceType}`);
       return;
 
@@ -46,6 +49,8 @@ const URDInvoice = () => {
   }
 
   useEffect(()=>{
+    // Save this page to sessionStorage on component mount
+    sessionStorage.setItem('lastInvoicePage', '/urd-invoice');
     
     const setNavTitle = () =>{
       dispatch(setTitle('Create URD Invoice'));
@@ -67,25 +72,39 @@ const URDInvoice = () => {
 
   return (
     <div className="p-8">
-      <div className='p-6 mt-5 mb-6 bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden dark:bg-gray-800 dark:border-gray-700'>
-          <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-200">Select Invoice Type</h2>
-          <select 
-            className="border rounded-md px-3 py-1 mt-3 ml-2 dark:bg-gray-600 dark:border-gray-700 dark:text-gray-200" 
-            onChange={(e) => handleDropdown(e.target.value)}
-          >
-                <option value='urd/purchase-invoice'>
-                  Purchase Invoice
-                </option>
-                <option value='urd/sales-invoice'>
-                  Sales Invoice
-                </option>
-          </select>
-      </div>
-      <UserDetails Title = {titleName} isRequired={isRequired} isInvoiceRequired={isInvoiceRequired}/>
-      <Products/>
-      <BankDetails/>
-      <TermsAndConditions/>
-      <SignatureSelection/>
+      <StaggeredContainer>
+        <StaggeredItem>
+          <div className='p-6 mt-5 mb-6 bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden dark:bg-gray-800 dark:border-gray-700'>
+              <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-200">Select Invoice Type</h2>
+              <select 
+                className="border rounded-md px-3 py-1 mt-3 ml-2 dark:bg-gray-600 dark:border-gray-700 dark:text-gray-200" 
+                onChange={(e) => handleDropdown(e.target.value)}
+              >
+                    <option value='urd/purchase-invoice'>
+                      Purchase Invoice
+                    </option>
+                    <option value='urd/sales-invoice'>
+                      Sales Invoice
+                    </option>
+              </select>
+          </div>
+        </StaggeredItem>
+        <StaggeredItem>
+          <UserDetails Title = {titleName} isRequired={isRequired} isInvoiceRequired={isInvoiceRequired}/>
+        </StaggeredItem>
+        <StaggeredItem>
+          <Products/>
+        </StaggeredItem>
+        <StaggeredItem>
+          <BankDetails/>
+        </StaggeredItem>
+        <StaggeredItem>
+          <TermsAndConditions/>
+        </StaggeredItem>
+        <StaggeredItem>
+          <SignatureSelection/>
+        </StaggeredItem>
+      </StaggeredContainer>
       <FloatingButton onClick={handleBillGeneration}/>
     </div>
   )

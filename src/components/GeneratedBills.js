@@ -10,6 +10,7 @@ import { selectUserDetails } from "../slices/userdetailsSlice";
 import { setTitle } from "../slices/navbarSlice";
 import BillPreview from "./BillPreview";
 import ReactDOM from "react-dom";
+import StaggeredContainer, { StaggeredItem } from './StaggeredContainer';
 
 const GeneratedBills = () => {
   // Replace single date with date range (start and end dates)
@@ -501,20 +502,26 @@ const filteredBills = sortedBills.filter((bill) => {
     <div className="mt-3">
       {errorMessage && <p className="text-red-500">{errorMessage}</p>}
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-16 px-4 py-2 mb-3">
-        <div className="bg-white shadow-xl border rounded-3xl p-6 w-full h-40 transform transition-all duration-300 hover:scale-105 dark:bg-gray-800 dark:border-gray-700">
-          <h2 className="text-5xl text-center text-gray-800 mt-2 dark:text-gray-200">{totalBills}</h2>
-          <p className="text-center text-black text-[16px] font-medium mt-4 dark:text-gray-200">Total Bills Generated</p>
-        </div>
-        <div className="bg-white shadow-xl border rounded-3xl p-6 w-full h-40 transform transition-all duration-300 hover:scale-105 dark:bg-gray-800 dark:border-gray-700">
-          <h2 className="text-5xl text-center text-gray-800 mt-2 dark:text-gray-200">{lastMonthBills}</h2>
-          <p className="text-center text-black text-[16px] font-medium mt-4 dark:text-gray-200">Bills Generated Last Month</p>
-        </div>
-        <div className="bg-white shadow-xl border rounded-3xl p-6 w-full h-40 transform transition-all duration-300 hover:scale-105 dark:bg-gray-800 dark:border-gray-700">
-          <h2 className="text-5xl text-center text-gray-800 mt-2 dark:text-gray-200">{thisMonthBills}</h2>
-          <p className="text-center text-black text-[16px] font-medium mt-4 dark:text-gray-200">Bills Generated This Month</p>
-        </div>
-      </div>
+      <StaggeredContainer className="grid grid-cols-1 md:grid-cols-3 gap-16 px-4 py-2 mb-3">
+        <StaggeredItem>
+          <div className="bg-white shadow-xl border rounded-3xl p-6 w-full h-40 transform transition-all duration-300 hover:scale-105 dark:bg-gray-800 dark:border-gray-700">
+            <h2 className="text-5xl text-center text-gray-800 mt-2 dark:text-gray-200">{totalBills}</h2>
+            <p className="text-center text-black text-[16px] font-medium mt-4 dark:text-gray-200">Total Bills Generated</p>
+          </div>
+        </StaggeredItem>
+        <StaggeredItem>
+          <div className="bg-white shadow-xl border rounded-3xl p-6 w-full h-40 transform transition-all duration-300 hover:scale-105 dark:bg-gray-800 dark:border-gray-700">
+            <h2 className="text-5xl text-center text-gray-800 mt-2 dark:text-gray-200">{lastMonthBills}</h2>
+            <p className="text-center text-black text-[16px] font-medium mt-4 dark:text-gray-200">Bills Generated Last Month</p>
+          </div>
+        </StaggeredItem>
+        <StaggeredItem>
+          <div className="bg-white shadow-xl border rounded-3xl p-6 w-full h-40 transform transition-all duration-300 hover:scale-105 dark:bg-gray-800 dark:border-gray-700">
+            <h2 className="text-5xl text-center text-gray-800 mt-2 dark:text-gray-200">{thisMonthBills}</h2>
+            <p className="text-center text-black text-[16px] font-medium mt-4 dark:text-gray-200">Bills Generated This Month</p>
+          </div>
+        </StaggeredItem>
+      </StaggeredContainer>
       
        <div className="flex flex-col sm:flex-row justify-end items-center gap-3 p-4">
         {/* Search Input */}

@@ -12,6 +12,7 @@ import {setTitle} from '../slices/navbarSlice';
 import FloatingButton from '../components/FloatingButton';
 import { selectUserDetails } from '../slices/userdetailsSlice';
 import SignatureSelection from '../components/SignatureSelection';
+import StaggeredContainer, { StaggeredItem } from '../components/StaggeredContainer';
 
 const GSTInvoice = () => {
 
@@ -27,6 +28,8 @@ const GSTInvoice = () => {
     
       if(gstDetails && userDetails.tradeName.length > 0 && userDetails.phoneNo.length > 0 && rows.length > 0 && rows[0].hsn_code.length > 0 ){
         setisRequired(false);
+        // Save this page to sessionStorage before navigating
+        sessionStorage.setItem('lastInvoicePage', '/gst-invoice');
         navigate('/generate-invoice?type=gstinvoice');
         return;
       }
@@ -36,6 +39,8 @@ const GSTInvoice = () => {
   }
 
   useEffect(()=>{
+    // Save this page to sessionStorage on component mount
+    sessionStorage.setItem('lastInvoicePage', '/gst-invoice');
     
     const setNavTitle = () =>{
       dispatch(setTitle('Create GST Invoice'));
@@ -46,12 +51,26 @@ const GSTInvoice = () => {
 
   return (
     <div className="p-8">
-      <GSTVerify isRequired={isRequired}/>
-      <UserDetails Title={'Buyer Details'} isRequired={isRequired}/>
-      <Products/>
-      <BankDetails/>
-      <TermsAndConditions/>
-      <SignatureSelection/>
+      <StaggeredContainer>
+        <StaggeredItem>
+          <GSTVerify isRequired={isRequired}/>
+        </StaggeredItem>
+        <StaggeredItem>
+          <UserDetails Title={'Buyer Details'} isRequired={isRequired}/>
+        </StaggeredItem>
+        <StaggeredItem>
+          <Products/>
+        </StaggeredItem>
+        <StaggeredItem>
+          <BankDetails/>
+        </StaggeredItem>
+        <StaggeredItem>
+          <TermsAndConditions/>
+        </StaggeredItem>
+        <StaggeredItem>
+          <SignatureSelection/>
+        </StaggeredItem>
+      </StaggeredContainer>
       <FloatingButton onClick={handleBillGeneration}/>
     </div>
   )

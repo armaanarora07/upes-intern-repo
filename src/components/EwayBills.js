@@ -5,6 +5,7 @@ import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
 import { setEway } from "../slices/ewaySlice";
 import { setTitle } from "../slices/navbarSlice";
+import StaggeredContainer, { StaggeredItem } from './StaggeredContainer';
 
 const EWayBillSystem = () => {
   const [credentials, setCredentials] = useState({ x: "", y: "" });
@@ -61,8 +62,9 @@ const EWayBillSystem = () => {
   return (
     <div className="p-8 min-h-screen dark:bg-gray-800">
           <div className="flex flex-col items-center justify-center mt-5">
-             <div className="p-6 mt-5 mb-6 bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden dark:bg-gray-800 dark:border-gray-700">
-                <form onSubmit={handleEnableService} className="w-96 mb-5">
+             <StaggeredItem>
+               <div className="p-6 mt-5 mb-6 bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden dark:bg-gray-800 dark:border-gray-700">
+                  <form onSubmit={handleEnableService} className="w-96 mb-5">
                   
                   <h2 className="text-2xl font-bold text-gray-800 text-center mb-4 dark:text-gray-200">Activate E-Way Services</h2>
 
@@ -93,7 +95,8 @@ const EWayBillSystem = () => {
                   </button>
                   </div>
                 </form>
-              </div> 
+              </div>
+             </StaggeredItem>
           </div>
     </div>
   );

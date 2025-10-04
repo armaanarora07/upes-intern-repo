@@ -4,6 +4,7 @@ import {FaBriefcase, FaEdit, FaPlusCircle} from 'react-icons/fa';
 import { useNavigate} from 'react-router-dom';
 import {checkAndFetchBusinesses} from '../slices/businessSlice.js';
 import { setTitle } from '../slices/navbarSlice.js';
+import StaggeredContainer, { StaggeredItem } from './StaggeredContainer';
 
 const BusinessCard = ({ id,gstin, legalName, tradeName}) => {
 
@@ -57,27 +58,30 @@ const MyBusiness = () => {
       ) : error ? (
         <p className="text-red-500">{error}</p>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mt-5">
+        <StaggeredContainer className="grid grid-cols-1 md:grid-cols-3 gap-12 mt-5">
           {businesses.length > 0 ? (
             <>
               {businesses.map((business, index) => (
-                <BusinessCard
-                  key={index}
-                  id = {business._id}
-                  gstin={business.gstin}
-                  legalName={business.legal_name}
-                  tradeName={business.trade_name}
-                />
+                <StaggeredItem key={index}>
+                  <BusinessCard
+                    id = {business._id}
+                    gstin={business.gstin}
+                    legalName={business.legal_name}
+                    tradeName={business.trade_name}
+                  />
+                </StaggeredItem>
               ))}
-              <div className="p-6 mb-6 bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden w-full h-auto transform transition-all duration-300 hover:scale-105 flex items-center justify-center cursor-pointer dark:bg-gray-800 dark:border-gray-700" onClick={() => navigate('/add-business')}>
-                <FaPlusCircle className="text-3xl mr-2 dark:text-gray-200" />
-                <p className="text-xl font-semibold dark:text-gray-200">Add More Business</p>
-              </div>
+              <StaggeredItem>
+                <div className="p-6 mb-6 bg-white border rounded-lg shadow-xl border-gray-200 rounded-xl shadow-sm overflow-hidden w-full h-auto transform transition-all duration-300 hover:scale-105 flex items-center justify-center cursor-pointer dark:bg-gray-800 dark:border-gray-700" onClick={() => navigate('/add-business')}>
+                  <FaPlusCircle className="text-3xl mr-2 dark:text-gray-200" />
+                  <p className="text-xl font-semibold dark:text-gray-200">Add More Business</p>
+                </div>
+              </StaggeredItem>
             </>
           ) : (
             <p>No businesses found</p>
           )}
-        </div>
+        </StaggeredContainer>
       )}
 
     </div>

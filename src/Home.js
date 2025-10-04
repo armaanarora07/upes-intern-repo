@@ -1,4 +1,5 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
+import { AnimatePresence } from "framer-motion";
 import Sidebar from "./components/sidebar";
 import Dashboard from "./pages/Dashboard";
 import AddBusiness from "./components/AddBusiness";
@@ -44,6 +45,8 @@ import InvitationsPage from "./pages/InvitationsPage";
 */
 
 function Home() {
+  const location = useLocation();
+
   return (
     <div className="flex">
       <div className="fixed top-0 left-0 h-screen bg-[#F9FAFC] shadow-lg z-[60]">
@@ -53,30 +56,32 @@ function Home() {
       <div className="flex-grow" style={{ marginLeft: 'var(--sidebar-width, 16rem)' }}>
         <Navbar />
         <div className="dark:bg-gray-800 mt-5 p-5">
-          <Routes>
-            <Route path="/dashboard" element={<PageTransition><Dashboard /></PageTransition>} />
-            <Route path="/add-business" element={<PageTransition><AddBusiness /></PageTransition>} />
-            <Route path="/my-business" element={<PageTransition><MyBusiness /></PageTransition>} />
-            <Route path="/user-business" element={<PageTransition><UpdateBusiness /></PageTransition>} />
-            <Route path="/generated-bills" element={<PageTransition><GeneratedBills /></PageTransition>} />
-            <Route path="/gst-invoice" element={<PageTransition><GSTInvoice/></PageTransition>} />
-            <Route path="/urd-invoice" element={<PageTransition><URDInvoice/></PageTransition>} />
-            <Route path="/inventory" element={<PageTransition><Inventory/></PageTransition>}></Route>
-            <Route path="/eway-bills" element={<PageTransition><EwayBills /></PageTransition>} />
-            <Route path="/EWayBillRequest" element={<PageTransition><EWayBillRequest /></PageTransition>} />
-            <Route path="/update-eway" element={<PageTransition><UpdateEwayCred/></PageTransition>} />
-            <Route path="eway-transactions" element={<PageTransition><EWayTransactions/></PageTransition>}/>
-            <Route path="/payments" element={<PageTransition><Payments /></PageTransition>} />
-            <Route path="/users" element={<PageTransition><Users /></PageTransition>} />
-            <Route path="/messages" element={<PageTransition><Messages /></PageTransition>} />
-            <Route path="/help" element={<PageTransition><Help/></PageTransition>} />
-            <Route path="/settings" element={<PageTransition><Settings /></PageTransition>} />
-            <Route path="/logout" element={<PageTransition><Logout /></PageTransition>} />
-            <Route path='/generate-invoice' element={<PageTransition><InvoicePage/></PageTransition>}/>
-            <Route path='/invite-user' element={<PageTransition><InvitationsPage/></PageTransition>}/>
-            {/* Redirect unknown routes to Dashboard */}
-            <Route path="/*" element={<PageTransition><Dashboard /></PageTransition>} />
-          </Routes>
+          <AnimatePresence mode="wait">
+            <Routes location={location} key={location.pathname}>
+              <Route path="/dashboard" element={<PageTransition><Dashboard /></PageTransition>} />
+              <Route path="/add-business" element={<PageTransition><AddBusiness /></PageTransition>} />
+              <Route path="/my-business" element={<PageTransition><MyBusiness /></PageTransition>} />
+              <Route path="/user-business" element={<PageTransition><UpdateBusiness /></PageTransition>} />
+              <Route path="/generated-bills" element={<PageTransition><GeneratedBills /></PageTransition>} />
+              <Route path="/gst-invoice" element={<PageTransition><GSTInvoice/></PageTransition>} />
+              <Route path="/urd-invoice" element={<PageTransition><URDInvoice/></PageTransition>} />
+              <Route path="/inventory" element={<PageTransition><Inventory/></PageTransition>}></Route>
+              <Route path="/eway-bills" element={<PageTransition><EwayBills /></PageTransition>} />
+              <Route path="/EWayBillRequest" element={<PageTransition><EWayBillRequest /></PageTransition>} />
+              <Route path="/update-eway" element={<PageTransition><UpdateEwayCred/></PageTransition>} />
+              <Route path="eway-transactions" element={<PageTransition><EWayTransactions/></PageTransition>}/>
+              <Route path="/payments" element={<PageTransition><Payments /></PageTransition>} />
+              <Route path="/users" element={<PageTransition><Users /></PageTransition>} />
+              <Route path="/messages" element={<PageTransition><Messages /></PageTransition>} />
+              <Route path="/help" element={<PageTransition><Help/></PageTransition>} />
+              <Route path="/settings" element={<PageTransition><Settings /></PageTransition>} />
+              <Route path="/logout" element={<PageTransition><Logout /></PageTransition>} />
+              <Route path='/generate-invoice' element={<PageTransition><InvoicePage/></PageTransition>}/>
+              <Route path='/invite-user' element={<PageTransition><InvitationsPage/></PageTransition>}/>
+              {/* Redirect unknown routes to Dashboard */}
+              <Route path="/*" element={<PageTransition><Dashboard /></PageTransition>} />
+            </Routes>
+          </AnimatePresence>
         </div>
       </div>
     </div>

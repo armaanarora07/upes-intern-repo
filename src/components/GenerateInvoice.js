@@ -9,6 +9,7 @@ import numberToWords from "number-to-words";
 import Template1 from "../billtemplates/Template1";
 import Template2 from "../billtemplates/Template2";
 import ActionModal from "./ActionModal";
+import BackButton from './BackButton';
 import TopAlert from './TopAlert';
 import axios from "axios";
 import * as pdfjsLib from 'pdfjs-dist/legacy/build/pdf';
@@ -574,15 +575,22 @@ const InvoicePage = () => {
   };
 
   return (
-    <div className="flex flex-col lg:flex-row w-full p-8 lg:space-x-6">
-      {topAlert.show && (
-        <TopAlert
-          type={topAlert.type}
-          message={topAlert.message}
-          position={topAlert.position}
-          onClose={() => setTopAlert({ ...topAlert, show: false })}
-        />
-      )}
+    <div className="flex flex-col w-full p-8">
+      {/* Back Button */}
+      <BackButton 
+        to={invoiceType === 'gstinvoice' ? '/gst-invoice' : '/urd-invoice'} 
+        destination={`${invoiceType === 'gstinvoice' ? 'GST' : 'URD'} Invoice`}
+      />
+
+      <div className="flex flex-col lg:flex-row w-full lg:space-x-6">
+        {topAlert.show && (
+          <TopAlert
+            type={topAlert.type}
+            message={topAlert.message}
+            position={topAlert.position}
+            onClose={() => setTopAlert({ ...topAlert, show: false })}
+          />
+        )}
 
       <div className="flex-1 p-6 bg-white border rounded-xl shadow-xl overflow-hidden mt-2 dark:bg-gray-800 dark:border-gray-700">
         <div className="text-2xl font-bold text-gray-800 mb-3 dark:text-gray-200">Invoice Preview</div>
@@ -623,6 +631,7 @@ const InvoicePage = () => {
           forceShowShare={process.env.NODE_ENV !== 'production'}
         />
 
+      </div>
       </div>
     </div>
   );

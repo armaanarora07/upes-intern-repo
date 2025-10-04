@@ -12,6 +12,7 @@ const Sidebar = () => {
   const [hoveredItem, setHoveredItem] = useState(null);
   const { businesses } = useSelector((state) => state.business);
   const dropdownRefs = useRef({});
+  const location = useLocation(); // Get current location to check active routes
 
   // Set CSS variable for sidebar width that can be used across the app
   useEffect(() => {
@@ -20,6 +21,19 @@ const Sidebar = () => {
       expanded ? '16rem' : '5rem'
     );
   }, [expanded]);
+
+  // Auto-expand dropdown when on a sub-page
+  useEffect(() => {
+    // Check if we're on a page that should auto-expand "Generate New Bill"
+    if (location.pathname === '/generate-invoice' || 
+        location.pathname === '/gst-invoice' || 
+        location.pathname === '/urd-invoice') {
+      setExpandedItems(prev => ({
+        ...prev,
+        'Generate New Bill': true
+      }));
+    }
+  }, [location.pathname]);
 
   const toggleDropdown = (key) => {
 
@@ -140,23 +154,48 @@ const Sidebar = () => {
             >
               <div>
                 {item.hasDropdown ? (
-                  <div 
-                    className={`flex items-center ${expanded ? 'px-4 py-2.5 justify-between' : 'px-0 py-3 flex-col justify-center'} 
-                    text-white font-medium cursor-pointer hover:bg-gray-700 rounded-md`}
-                    onClick={() => toggleDropdown(item.label)}
-                  >
-                    <div className={`flex items-center ${!expanded && 'justify-center w-full'}`}>
-                      <div className={`text-gray-300 ${expanded ? 'mr-3' : ''} text-2xl`}>
-                        {item.icon}
-                      </div>
-                      {expanded && <span>{item.label}</span>}
-                    </div>
-                    {expanded && (
-                      expandedItems[item.label] ? 
-                        <FaChevronUp className="text-gray-400" /> : 
-                        <FaChevronDown className="text-gray-400" />
-                    )}
-                  </div>
+                  <>
+                    {(() => {
+                      // Check if any dropdown item is currently active OR if we're on a related sub-page
+                      const isAnyDropdownActive = item.dropdownItems?.some(
+                        dropdownItem => {
+                          // Direct match
+                          if (location.pathname === dropdownItem.path) return true;
+                          
+                          // Check for related sub-routes (e.g., /generate-invoice for GST/URD invoice)
+                          if (dropdownItem.path === '/gst-invoice' || dropdownItem.path === '/urd-invoice') {
+                            return location.pathname === '/generate-invoice';
+                          }
+                          
+                          return false;
+                        }
+                      );
+                      
+                      return (
+                        <div 
+                          className={`flex items-center ${expanded ? 'px-4 py-2.5 justify-between' : 'px-0 py-3 flex-col justify-center'} 
+                          text-white font-medium cursor-pointer rounded-md ${
+                            isAnyDropdownActive 
+                              ? 'bg-white/10 border-l-4 border-blue-400' 
+                              : 'hover:bg-gray-700'
+                          }`}
+                          onClick={() => toggleDropdown(item.label)}
+                        >
+                          <div className={`flex items-center ${!expanded && 'justify-center w-full'}`}>
+                            <div className={`text-gray-300 ${expanded ? 'mr-3' : ''} text-2xl`}>
+                              {item.icon}
+                            </div>
+                            {expanded && <span>{item.label}</span>}
+                          </div>
+                          {expanded && (
+                            expandedItems[item.label] ? 
+                              <FaChevronUp className="text-gray-400" /> : 
+                              <FaChevronDown className="text-gray-400" />
+                          )}
+                        </div>
+                      );
+                    })()}
+                  </>
                 ) : (
                   <SidebarLink item={item} expanded={expanded} />
                 )}
@@ -165,20 +204,52 @@ const Sidebar = () => {
                 {expanded && item.hasDropdown && expandedItems[item.label] && (
                   <div className="overflow-hidden bg-gray-800 rounded-md mt-1 shadow-inner">
                     <ul className="py-1">
-                      {item.dropdownItems.map((dropdownItem) => (
-                        <li key={dropdownItem.path}>
-                          <NavLink
-                            to={dropdownItem.path}
-                            className={({ isActive }) =>
-                              `block pl-11 pr-4 py-2 ${
-                                isActive ? 'text-white font-semibold' : 'text-gray-300 font-medium'
-                              } hover:bg-gray-700`
-                            }
-                          >
-                            {dropdownItem.label}
-                          </NavLink>
-                        </li>
-                      ))}
+                      {item.dropdownItems.map((dropdownItem) => {
+                        // Determine if this item should be considered active
+                        const isItemActive = (dropdownItem) => {
+                          // Direct path match
+                          if (location.pathname === dropdownItem.path) return true;
+                          
+                          // Special case: highlight the appropriate invoice type when on /generate-invoice
+                          if (location.pathname === '/generate-invoice') {
+                            // Try to get the invoice type from URL params or window location
+                            const urlParams = new URLSearchParams(window.location.search);
+                            const invoiceType = urlParams.get('type');
+                            
+                            if (invoiceType === 'gstinvoice' && dropdownItem.path === '/gst-invoice') return true;
+                            if (invoiceType === 'urdinvoice' && dropdownItem.path === '/urd-invoice') return true;
+                            
+                            // Fallback: check if we came from this invoice page (using sessionStorage)
+                            const lastInvoicePage = sessionStorage.getItem('lastInvoicePage');
+                            if (lastInvoicePage === dropdownItem.path) return true;
+                          }
+                          
+                          return false;
+                        };
+                        
+                        const isActive = isItemActive(dropdownItem);
+                        
+                        return (
+                          <li key={dropdownItem.path}>
+                            <NavLink
+                              to={dropdownItem.path}
+                              className={`block pl-11 pr-4 py-2 rounded-md relative ${
+                                isActive 
+                                  ? 'text-white font-semibold' 
+                                  : 'text-gray-300 font-medium hover:bg-gray-700'
+                              }`}
+                            >
+                              <>
+                                {/* Blue dot indicator for active item - positioned absolutely so text doesn't move */}
+                                {isActive && (
+                                  <span className="absolute left-5 top-1/2 transform -translate-y-1/2 w-2 h-2 bg-blue-400 rounded-full animate-pulse"></span>
+                                )}
+                                {dropdownItem.label}
+                              </>
+                            </NavLink>
+                          </li>
+                        );
+                      })}
                     </ul>
                   </div>
                 )}
@@ -192,24 +263,44 @@ const Sidebar = () => {
                     onMouseLeave={handleDropdownMouseLeave}
                   >
                     <ul role="menu" className="py-2">
-                      {item.dropdownItems?.map((dropdownItem, idx) => (
-                        <li key={dropdownItem.path} role="menuitem">
-                          <NavLink
-                            to={dropdownItem.path}
-                            className={({ isActive }) =>
-                              `block px-4 py-3 ${
+                      {item.dropdownItems?.map((dropdownItem, idx) => {
+                        // Same active logic as expanded dropdown
+                        const isItemActive = () => {
+                          if (location.pathname === dropdownItem.path) return true;
+                          
+                          if (location.pathname === '/generate-invoice') {
+                            const urlParams = new URLSearchParams(window.location.search);
+                            const invoiceType = urlParams.get('type');
+                            
+                            if (invoiceType === 'gstinvoice' && dropdownItem.path === '/gst-invoice') return true;
+                            if (invoiceType === 'urdinvoice' && dropdownItem.path === '/urd-invoice') return true;
+                            
+                            const lastInvoicePage = sessionStorage.getItem('lastInvoicePage');
+                            if (lastInvoicePage === dropdownItem.path) return true;
+                          }
+                          
+                          return false;
+                        };
+                        
+                        const isActive = isItemActive();
+                        
+                        return (
+                          <li key={dropdownItem.path} role="menuitem">
+                            <NavLink
+                              to={dropdownItem.path}
+                              className={`block px-4 py-3 ${
                                 isActive 
                                   ? "bg-gray-200 text-gray-700 font-semibold" 
                                   : idx % 2 === 0 
                                     ? "bg-gray-100 text-gray-700 hover:bg-gray-200" 
                                     : "bg-white text-gray-700 hover:bg-gray-200"
-                              }`
-                            }
-                          >
-                            {dropdownItem.label}
-                          </NavLink>
-                        </li>
-                      ))}
+                              }`}
+                            >
+                              {dropdownItem.label}
+                            </NavLink>
+                          </li>
+                        );
+                      })}
                     </ul>
                   </div>
                 )}
@@ -256,19 +347,31 @@ const SidebarLink = ({ item, expanded }) => {
   if (item.path === '/dashboard') {
     // Dashboard should be active for '/', '/dashboard', and default route
     isActive = pathname === '/' || pathname === '/dashboard' || pathname.startsWith('/dashboard');
+  } else if (item.path === '/my-business') {
+    // My Business should stay active for add-business and user-business routes
+    isActive = pathname === '/my-business' || pathname === '/add-business' || pathname === '/user-business';
+  } else if (item.path === '/eway-bills') {
+    // E-way Bills should stay active for related routes
+    isActive = pathname === '/eway-bills' || pathname === '/eway-transactions' || pathname === '/EWayBillRequest' || pathname === '/update-eway';
+  } else if (item.path === '/users') {
+    // Users/Parties should stay active for user details
+    isActive = pathname === '/users' || pathname.startsWith('/user-details');
+  } else if (item.path === '/invite-user') {
+    // Invite User should stay active for registration page
+    isActive = pathname === '/invite-user' || pathname === '/invite-register';
   } else {
     isActive = pathname === item.path || pathname.startsWith(item.path + '/') || pathname.startsWith(item.path);
   }
   const base = `flex items-center ${expanded ? 'px-4 py-2.5' : 'px-0 py-3 flex-col justify-center'} rounded-md`;
-  const activeClass = isActive ? (expanded ? 'bg-white/10 text-white font-semibold border-l-4 border-blue-400' : '') : 'text-gray-300 font-medium hover:bg-gray-700';
+  // Show highlight box in both expanded and collapsed states when active
+  const activeClass = isActive 
+    ? 'bg-white/10 text-white font-semibold border-l-4 border-blue-400' 
+    : 'text-gray-300 font-medium hover:bg-gray-700';
 
   return (
     <NavLink to={item.path} className={`${base} ${activeClass}`}>
       <div className={`relative flex items-center ${expanded ? 'mr-3' : ''} text-2xl`}>
         {item.icon}
-        {!expanded && isActive && (
-          <span className="absolute -right-3 top-1/2 transform -translate-y-1/2 w-2 h-2 rounded-full bg-blue-400" />
-        )}
       </div>
       {expanded && <span>{item.label}</span>}
     </NavLink>
