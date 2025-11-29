@@ -23,6 +23,110 @@ const GeneratedBills = () => {
   endDate: null
 });
 
+  // Handle start date change with validation
+  const handleStartDateChange = (date) => {
+    setDateRange(prev => {
+      // If there's an end date and the new start date is after it, clear the end date
+      if (prev.endDate && date && date > prev.endDate) {
+        return { startDate: date, endDate: null };
+      }
+      return { ...prev, startDate: date };
+    });
+  };
+
+  // Handle end date change with validation
+  const handleEndDateChange = (date) => {
+    setDateRange(prev => ({ ...prev, endDate: date }));
+  };
+
+  // Custom input component for date picker with formatting
+  const CustomDateInput = React.forwardRef(({ value, onClick, onChange, placeholder, disabled }, ref) => {
+    const [inputValue, setInputValue] = React.useState('');
+
+    React.useEffect(() => {
+      if (value) {
+        setInputValue(value);
+      } else {
+        setInputValue('');
+      }
+    }, [value]);
+
+    const handleInputChange = (e) => {
+      let input = e.target.value.replace(/\D/g, ''); // Remove non-digits
+      let formatted = '';
+      
+      if (input.length > 0) {
+        // Day formatting: auto-add leading zero if single digit
+        let day = input.slice(0, 2);
+        if (input.length === 1 && parseInt(input) > 3) {
+          day = '0' + input;
+          input = day + input.slice(1);
+        }
+        formatted = day;
+        
+        // Auto-add "/" after day
+        if (input.length >= 2) {
+          formatted = input.slice(0, 2) + '/';
+          
+          // Month formatting
+          if (input.length > 2) {
+            let month = input.slice(2, 4);
+            if (input.length === 3 && parseInt(input[2]) > 1) {
+              month = '0' + input[2];
+              input = input.slice(0, 2) + month + input.slice(3);
+            }
+            formatted += month;
+            
+            // Auto-add "/" after month
+            if (input.length >= 4) {
+              formatted += '/';
+              
+              // Year
+              if (input.length > 4) {
+                formatted += input.slice(4, 8);
+              }
+            }
+          }
+        }
+      }
+      
+      setInputValue(formatted);
+      
+      // Parse and validate the complete date
+      if (formatted.length === 10) {
+        const [day, month, year] = formatted.split('/');
+        const date = new Date(year, month - 1, day);
+        
+        // Check if it's a valid date
+        if (date.getDate() == day && date.getMonth() == month - 1 && date.getFullYear() == year) {
+          // Trigger the DatePicker's onChange
+          if (onChange) {
+            const syntheticEvent = {
+              target: { value: formatted }
+            };
+            onChange(date);
+          }
+        }
+      } else if (formatted.length === 0 && onChange) {
+        // Clear the date if input is empty
+        onChange(null);
+      }
+    };
+
+    return (
+      <input
+        ref={ref}
+        value={inputValue}
+        onClick={onClick}
+        onChange={handleInputChange}
+        placeholder={placeholder}
+        disabled={disabled}
+        className="w-full border border-[#4154f1] rounded-lg p-2 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4154f1] disabled:bg-gray-100 disabled:cursor-not-allowed dark:disabled:bg-gray-700"
+        maxLength={10}
+      />
+    );
+  });
+
   // ADDITION: Add state for delete confirmation modal - Made by Sagar
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [billToDelete, setBillToDelete] = useState(null);
@@ -264,10 +368,19 @@ const GeneratedBills = () => {
   // With this: change by Sagar 
 const filteredBills = sortedBills.filter((bill) => {
   const billDate = new Date(bill.created_at);
+  billDate.setHours(0, 0, 0, 0); // Normalize to start of day for comparison
   
-  // Date range check
-  const isDateInRange = (!dateRange.startDate || billDate >= dateRange.startDate) && 
-                        (!dateRange.endDate || billDate <= new Date(dateRange.endDate.setHours(23, 59, 59, 999)));
+  // Date range check - only filter if BOTH dates are selected
+  let isDateInRange = true;
+  if (dateRange.startDate && dateRange.endDate) {
+    const startDate = new Date(dateRange.startDate);
+    startDate.setHours(0, 0, 0, 0);
+    
+    const endDate = new Date(dateRange.endDate);
+    endDate.setHours(23, 59, 59, 999);
+    
+    isDateInRange = billDate >= startDate && billDate <= endDate;
+  }
   
   // Search term check
   const isSearchMatch = bill.sn_no.toLowerCase().includes(searchTerm.toLowerCase());
@@ -453,6 +566,14 @@ const filteredBills = sortedBills.filter((bill) => {
               transform: scale(1) translateY(0);
             }
           }
+          @keyframes bounce-subtle {
+            0%, 100% {
+              transform: translateY(0);
+            }
+            50% {
+              transform: translateY(-8px);
+            }
+          }
           .scrollbar-thin::-webkit-scrollbar {
             width: 6px;
           }
@@ -565,15 +686,17 @@ const filteredBills = sortedBills.filter((bill) => {
   <div className="relative w-full">
     <DatePicker
       selected={dateRange.startDate}
-      onChange={(date) => setDateRange(prev => ({ ...prev, startDate: date }))}
+      onChange={handleStartDateChange}
       selectsStart
       startDate={dateRange.startDate}
       endDate={dateRange.endDate}
+      maxDate={dateRange.endDate || new Date()}
       dateFormat="dd/MM/yyyy"
-      placeholderText="Start Date"
-      className="w-full border border-[#4154f1] rounded-lg p-2 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4154f1]"
+      placeholderText="DD/MM/YYYY"
+      isClearable
+      customInput={<CustomDateInput />}
     />
-    <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+    <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none">
       <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
       </svg>
@@ -582,19 +705,22 @@ const filteredBills = sortedBills.filter((bill) => {
   
   <span className="text-gray-500 dark:text-gray-400">to</span>
   
-  <div className="relative w-full">
+  <div className="relative w-full group">
     <DatePicker
       selected={dateRange.endDate}
-      onChange={(date) => setDateRange(prev => ({ ...prev, endDate: date }))}
+      onChange={handleEndDateChange}
       selectsEnd
       startDate={dateRange.startDate}
       endDate={dateRange.endDate}
       minDate={dateRange.startDate}
+      maxDate={new Date()}
       dateFormat="dd/MM/yyyy"
-      placeholderText="End Date"
-      className="w-full border border-[#4154f1] rounded-lg p-2 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4154f1]"
+      placeholderText="DD/MM/YYYY"
+      isClearable
+      disabled={!dateRange.startDate}
+      customInput={<CustomDateInput />}
     />
-    <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+    <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none">
       <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
       </svg>
