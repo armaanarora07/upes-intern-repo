@@ -118,10 +118,10 @@ const GeneratedBills = () => {
         ref={ref}
         value={inputValue}
         onClick={onClick}
-        onChange={handleInputChange}
         placeholder={placeholder}
         disabled={disabled}
-        className="w-full border border-[#4154f1] rounded-lg p-2 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4154f1] disabled:bg-gray-100 disabled:cursor-not-allowed dark:disabled:bg-gray-700"
+        readOnly
+        className="w-full border border-[#4154f1] rounded-lg p-2 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4154f1] disabled:bg-gray-100 disabled:cursor-not-allowed dark:disabled:bg-gray-700 cursor-pointer"
         maxLength={10}
       />
     );

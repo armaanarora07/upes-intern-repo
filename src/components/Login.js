@@ -6,6 +6,34 @@ import { motion, AnimatePresence } from "framer-motion";
 import { login, signup, verifyotp } from "../slices/authSlice.js";
 import { setEway } from "../slices/ewaySlice.js";
 import { setDate } from "../slices/validitySlice.js";
+import FyntlLogo from "../assets/FyntlLogo1.png";
+
+// Reusable Input Component - MUST be outside Login to prevent re-creation on every render
+const InputField = ({ id, type = 'text', value, onChange, placeholder, label, prefix, disabled }) => (
+  <div className="group">
+    {label && (
+      <label htmlFor={id} className="block text-sm font-medium text-gray-700 mb-1 group-focus-within:text-indigo-600">
+        {label}
+      </label>
+    )}
+    <div className={prefix ? "flex" : ""}>
+      {prefix && (
+        <div className="flex items-center justify-center px-4 rounded-l-lg border border-r-0 border-gray-300 bg-gray-50 text-gray-500 group-focus-within:border-indigo-500 group-focus-within:bg-indigo-50">
+          {prefix}
+        </div>
+      )}
+      <input
+        id={id}
+        type={type}
+        value={value}
+        onChange={onChange}
+        placeholder={placeholder}
+        disabled={disabled}
+        className={`px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed ${prefix ? 'flex-1 min-w-0 rounded-l-none' : 'w-full'}`}
+      />
+    </div>
+  </div>
+);
 
 const Login = () => {
   const [phone, setPhone] = useState("");
@@ -243,7 +271,7 @@ const Login = () => {
 
   // Reusable Button Component
   const Button = ({ children, onClick, disabled, btnLoading, variant = 'primary', className = '' }) => {
-    const baseClasses = "w-full py-3 px-4 rounded-lg font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 ease-in-out transform hover:scale-[1.02] active:scale-[0.98] disabled:hover:scale-100";
+    const baseClasses = "w-full py-3 px-4 rounded-lg font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-300 ease-in-out";
     const variants = {
       primary: "bg-indigo-600 text-white hover:bg-indigo-700 hover:shadow-lg hover:shadow-indigo-300/50 focus:ring-indigo-500 active:bg-indigo-800",
       secondary: "text-indigo-600 font-medium hover:text-indigo-800 hover:bg-indigo-50 focus:ring-indigo-500",
@@ -269,45 +297,18 @@ const Login = () => {
     );
   };
 
-  // Reusable Input Component
-  const Input = ({ id, type = 'text', value, onChange, placeholder, label, prefix, disabled }) => (
-    <div className="group">
-      {label && (
-        <label htmlFor={id} className="block text-sm font-medium text-gray-700 mb-1 transition-colors duration-200 group-focus-within:text-indigo-600">
-          {label}
-        </label>
-      )}
-      <div className={prefix ? "flex" : ""}>
-        {prefix && (
-          <div className="flex items-center justify-center px-4 rounded-l-lg border border-r-0 border-gray-300 bg-gray-50 text-gray-500 transition-all duration-300 group-focus-within:border-indigo-500 group-focus-within:bg-indigo-50">
-            {prefix}
-          </div>
-        )}
-        <input
-          id={id}
-          type={type}
-          value={value}
-          onChange={onChange}
-          placeholder={placeholder}
-          disabled={disabled}
-          className={`px-4 py-3 border border-gray-300 rounded-lg transition-all duration-300 ease-in-out hover:shadow-md hover:shadow-gray-300/50 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:shadow-lg focus:shadow-indigo-200/50 focus:outline-none transform hover:scale-[1.02] focus:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed ${prefix ? 'flex-1 min-w-0 rounded-l-none' : 'w-full'}`}
-        />
-      </div>
-    </div>
-  );
-
   // Login View
   const renderLogin = () => (
     <motion.div
       key="login"
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: 10 }}
-      transition={{ duration: 0.3, ease: "easeInOut" }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.15, ease: "easeOut" }}
       className="space-y-6"
     >
-      <div className="animate-slideInFromTop">
-        <Input
+      <div>
+        <InputField
           id="phone"
           type="tel"
           value={phone}
@@ -318,7 +319,7 @@ const Login = () => {
         />
       </div>
 
-      <div className="animate-slideInFromTop" style={{ animationDelay: '100ms' }}>
+      <div>
         <div className="flex items-center space-x-2">
           <input
             type="checkbox"
@@ -350,13 +351,13 @@ const Login = () => {
         </div>
       </div>
 
-      <div className="animate-slideInFromBottom" style={{ animationDelay: '200ms' }}>
+      <div>
         <Button onClick={handlePhoneSubmit} btnLoading={loading} disabled={!termsAccepted}>
           {loading ? 'Sending OTP...' : 'Send OTP'}
         </Button>
       </div>
 
-      <div className="text-center mt-4 animate-fadeIn" style={{ animationDelay: '300ms' }}>
+      <div className="text-center mt-4">
         <p className="text-sm text-gray-600">
           Don't have an account?{' '}
           <button 
@@ -374,10 +375,10 @@ const Login = () => {
   const renderOTP = () => (
     <motion.div
       key="otp"
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: 10 }}
-      transition={{ duration: 0.3, ease: "easeInOut" }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.15, ease: "easeOut" }}
       className="space-y-6"
     >
       <div className="text-center mb-4">
@@ -436,14 +437,14 @@ const Login = () => {
   const renderRegister = () => (
     <motion.div
       key="register"
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: 10 }}
-      transition={{ duration: 0.3, ease: "easeInOut" }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.15, ease: "easeOut" }}
       className="space-y-6"
     >
-      <div className="animate-slideInFromTop">
-        <Input
+      <div>
+        <InputField
           id="registerPhone"
           type="tel"
           value={phone}
@@ -454,7 +455,7 @@ const Login = () => {
         />
       </div>
 
-      <div className="animate-slideInFromTop" style={{ animationDelay: '100ms' }}>
+      <div>
         <div className="flex items-center space-x-2">
           <input
             type="checkbox"
@@ -486,13 +487,13 @@ const Login = () => {
         </div>
       </div>
 
-      <div className="animate-slideInFromBottom" style={{ animationDelay: '200ms' }}>
+      <div>
         <Button onClick={handleRegisterSubmit} btnLoading={loading} disabled={!termsAccepted}>
           {loading ? 'Sending Code...' : 'Sign Up'}
         </Button>
       </div>
 
-      <div className="text-center mt-4 animate-fadeIn" style={{ animationDelay: '300ms' }}>
+      <div className="text-center mt-4">
         <p className="text-sm text-gray-600">
           Already have an account?{' '}
           <button 
@@ -510,10 +511,10 @@ const Login = () => {
   const renderRegisterOTP = () => (
     <motion.div
       key="registerOtp"
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: 10 }}
-      transition={{ duration: 0.3, ease: "easeInOut" }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.15, ease: "easeOut" }}
       className="space-y-6"
     >
       <div className="text-center mb-4">
@@ -571,7 +572,7 @@ const Login = () => {
   const titles = {
     login: { title: 'Welcome to Fyntl-AI', subtitle: 'Login with your phone number' },
     otp: { title: 'Welcome to Fyntl-AI', subtitle: 'Enter verification code' },
-    register: { title: 'Welcome to Fyntl-AI', subtitle: 'Create your account' },
+    register: { title: 'Join Fyntl-AI Now!', subtitle: 'Sign up with phone number and be part of something amazing' },
     registerOtp: { title: 'Welcome to Fyntl-AI', subtitle: 'Verify your phone number' }
   };
 
@@ -587,6 +588,16 @@ const Login = () => {
       >
         {/* Header - Static */}
         <div className="bg-indigo-600 p-6 text-center">
+          {/* Logo */}
+          <div className="flex justify-center mb-4">
+            <img 
+              src={FyntlLogo} 
+              alt="Fyntl-AI Logo" 
+              className="h-12 w-auto"
+            />
+          </div>
+          
+          {/* Title and Subtitle */}
           <h1 className="text-2xl font-bold text-white">
             {titles[view].title}
           </h1>
@@ -599,6 +610,7 @@ const Login = () => {
         <motion.div
           layout
           transition={{ duration: 0.3, ease: "easeInOut" }}
+          style={{ overflow: "hidden" }}
           className="p-6"
         >
           {/* Main Content - Wait Mode Enforced */}
